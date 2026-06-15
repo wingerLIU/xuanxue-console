@@ -9,9 +9,6 @@ jobs:
     runs-on: windows-latest
     env:
       PYTHONUTF8: "1"
-      TEMP: ${{ runner.temp }}
-      TMP: ${{ runner.temp }}
-      XUANXUE_RUNS_ROOT: ${{ runner.temp }}\xuanxue_console_runs
 
     steps:
       - name: Checkout
@@ -26,4 +23,9 @@ jobs:
         run: python -m pip install -r scripts\requirements.txt
 
       - name: Run verification
-        run: .\verify.cmd
+        shell: pwsh
+        run: |
+          $env:TEMP = $env:RUNNER_TEMP
+          $env:TMP = $env:RUNNER_TEMP
+          $env:XUANXUE_RUNS_ROOT = Join-Path $env:RUNNER_TEMP "xuanxue_console_runs"
+          .\verify.cmd
