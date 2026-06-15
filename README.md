@@ -1,28 +1,34 @@
 # Xuanxue Console
 
-`xuanxue-console` 是一个本地运行的综合玄学结构化排盘与报告生产工作流。它把八字、紫微斗数、西洋占星、MBTI、六爻和小六壬等信息先整理成可复查的 JSON / Markdown 事实档案，再基于知识库、规则卡和质量闸门生成读者能直接阅读的丰富版、简洁版或合盘报告。
+`xuanxue-console` 是一个 Codex Skill 项目，也是一个本地运行的综合玄学结构化排盘与报告生成实验。它把八字、紫微斗数、西洋占星、MBTI、六爻和小六壬等信息先整理成可复查的 JSON / Markdown 事实档案，再基于知识库、规则卡和质量闸门生成可阅读的丰富版、简洁版或合盘文本。
 
-这个项目不是一个“随便问一句就自由发挥”的聊天模板，而是一个强调证据链、隐私隔离、复盘沉淀和交付质量的本地工作台。
+这个项目不是一个“随便问一句就自由发挥”的聊天模板，而是一个强调证据链、隐私隔离、复盘沉淀和输出一致性的本地工作台。它更适合学习、研究、个人实验和 Codex Skill 工作流参考，不鼓励直接包装成付费算命产品或批量商业服务。
 
 ## What It Can Do
 
 - 生成八字、紫微斗数、西洋占星、MBTI、六爻、小六壬等结构化结果。
 - 把排盘结果沉淀为 `<RUN_DIR>/data/*.json` 和 `<RUN_DIR>/data/*-facts.md`，方便后续追问和复查，不需要每次重新手算。
-- 生成单盘丰富版、单盘简洁版、合盘丰富版、合盘简洁版等读者报告。
-- 打包 PDF、手机阅读 HTML、Markdown / DOCX / ZIP 等交付物。
-- 通过 `finalize_case.py`、`audit_longform_consistency.py`、`validate_relationship_report.py` 等脚本检查事实一致性、串案风险、模板感和读者交付完整度。
+- 生成单盘丰富版、单盘简洁版、合盘丰富版、合盘简洁版等长文文本。
+- 打包 PDF、手机阅读 HTML、Markdown / DOCX / ZIP 等本地产物。
+- 通过 `finalize_case.py`、`audit_longform_consistency.py`、`validate_relationship_report.py` 等脚本检查事实一致性、串案风险、模板感和输出完整度。
 - 用去隐私复盘机制把真实反馈沉淀成知识库改进，而不是无限堆写作补丁。
 
 ## Use Cases
 
 - 想把传统命理分析做成更稳定、更可复查的 AI 工作流。
 - 想研究八字、紫微、西占、MBTI 等多体系如何交叉校准。
-- 想做付费报告、合盘报告或追问服务，但需要明确的隐私边界和交付 SOP。
-- 想把 AI 输出从“像聊天”推进到“有事实、有规则、有质量闸门的读者版报告”。
+- 想学习 Codex Skill 如何把脚本、知识库、模板和质量闸门组织成一个可复用工作流。
+- 想把 AI 输出从“像聊天”推进到“有事实、有规则、有质量闸门的长文生成”。
+
+## Project Position
+
+这个项目开源出来主要是为了学习交流和个人研究。它参考、学习了很多公开项目和资料的思路，因此不希望被简单换壳、批量包装成商业算命服务。
+
+你可以 fork、研究、改造、自己玩，也欢迎提出 issue 或 PR。若要做公开展示、二次发布或商业化尝试，请认真处理来源、隐私、客户边界和内容风险，不要把它当成可以直接卖给用户的成品系统。
 
 ## Contact
 
-如果你想交流这个项目、试用报告流程、做定制报告或讨论服务化合作，可以加微信：
+如果你想交流这个项目、聊 Codex Skill、AI 工作流或玄学知识库建设，可以加微信：
 
 ```text
 a249256088
@@ -48,22 +54,22 @@ python scripts\xuanxue_console.py combo --solar 1991-08-15 --time 01:30 --gender
 
 完整交付通常先创建外部 run workspace，再把结构化事实、草稿、交付物和复盘都放到项目外部目录，避免污染仓库。
 
-## Service Layer
+## Workflow Notes
 
-如果要把这个流程作为付费服务交付，优先阅读：
+如果要理解完整生产流程、隐私边界和质量控制，优先阅读：
 
-- `service/README.md`: 服务产品形态、卖点和边界。
-- `service/client-intake-form.md`: 客户资料收集表。
-- `service/production-sop.md`: 从接单到打包的生产 SOP。
-- `service/quality-gate.md`: 交付前质量闸门。
-- `service/pricing-and-cost-model.md`: 报价、人工成本和模型成本拆分。
+- `service/README.md`: 流程形态、边界和注意事项。
+- `service/client-intake-form.md`: 资料收集表。
+- `service/production-sop.md`: 从输入到打包的生产 SOP。
+- `service/quality-gate.md`: 输出前质量闸门。
+- `service/cost-accounting-notes.md`: 成本核算笔记，不代表鼓励商业化。
 - `service/case-retrospective-2026-06-12.md`: 当前项目复盘和下一步优化。
 
-商业交付新增一个推荐检查：用 `scripts/audit_case_isolation.py` 对比旧 case，防止相似命盘或模板写作造成串案。
+完整报告流程建议额外运行 `scripts/audit_case_isolation.py` 对比旧 case，防止相似命盘或模板写作造成串案。
 
 ## Knowledge Layer
 
-本项目不让模型只凭记忆做专业解释。付费报告默认使用三层依据：
+本项目不让模型只凭记忆做解释。正式长文默认使用三层依据：
 
 1. `<RUN_DIR>/data/*.json`: 结构化排盘事实。
 2. `knowledge/`: 来源索引、规则卡、推断合同和写作规则。
@@ -78,7 +84,7 @@ python scripts\xuanxue_console.py combo --solar 1991-08-15 --time 01:30 --gender
 - `knowledge/bazi/`: 八字结构、十神、地支关系和流年规则卡。
 - `knowledge/ziwei/`: 紫微命身、宫位、星曜、四化和大限规则卡。
 - `knowledge/western/`: 西占行星、相位、宫位和时间敏感边界。
-- `knowledge/writing/reader-rich-report.md`: 付费读者版写作规则。
+- `knowledge/writing/reader-rich-report.md`: 读者版长文写作规则。
 
 知识库审计：
 

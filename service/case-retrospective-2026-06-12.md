@@ -14,19 +14,19 @@
 - manifest 的精确 marker 一开始比正文更严格，导致最终验收卡在 `狮子27.73`、`金牛24.90`。
 - 两个同类测试盘出现相近结构时，读者会自然感觉相似；以后必须主动解释相似原因和差异点。
 - 排盘 HTML 偏后台 JSON 复核页，已降级为可选 debug；默认用 `data/<case>-combo.json` 和 `data/<case>-facts.md` 做事实复查。
-- README 仍以旧样例为主，服务化入口需要单独放到 `service/`。
+- README 仍以旧样例为主，流程说明入口需要单独放到 `service/`。
 
 ## 已做优化
 
-- 新增服务化文档：
+- 新增流程化文档：
   - `service/README.md`
   - `service/client-intake-form.md`
   - `service/production-sop.md`
   - `service/quality-gate.md`
-  - `service/pricing-and-cost-model.md`
+  - `service/cost-accounting-notes.md`
 - 新增串案检查脚本：
   - `scripts/audit_case_isolation.py`
-- 明确商业交付边界：
+- 明确输出风险边界：
   - 传统文化与自我观察参考。
   - 不替代医疗、法律、投资、婚恋决定。
   - 不用恐吓话术引导付费。
