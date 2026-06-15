@@ -1,5 +1,8 @@
 # Xuanxue Console
 
+[![verify](https://github.com/wingerLIU/xuanxue-console/actions/workflows/verify.yml/badge.svg)](https://github.com/wingerLIU/xuanxue-console/actions/workflows/verify.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 `xuanxue-console` 是一个 Codex Skill 项目，也是一个本地运行的玄学排盘与长文生成实验。
 
 它的核心思路很简单：**排盘交给脚本，解释交给 Codex，事实和反馈都留痕**。八字、紫微斗数、西洋占星、MBTI、六爻、小六壬等信息会先变成可复查的 JSON / Markdown，再用于生成更像人读文章的分析文本。
@@ -27,6 +30,14 @@ python scripts\xuanxue_console.py combo --solar 1991-08-15 --time 01:30 --gender
 ```
 
 如果你把它当 Codex Skill 使用，优先看 [SKILL.md](SKILL.md)。用户只需要用自然语言说明想看什么，并提供必要信息；Codex 负责调用脚本、读取知识库、生成解释。
+
+## Install As A Codex Skill
+
+```powershell
+git clone https://github.com/wingerLIU/xuanxue-console.git $env:USERPROFILE\.codex\skills\xuanxue-console
+```
+
+也可以 clone 到任意目录后，把整个项目目录复制到 `%USERPROFILE%\.codex\skills\xuanxue-console`。
 
 ## How Reports Are Written
 
@@ -65,6 +76,9 @@ python scripts\xuanxue_console.py combo --solar 1991-08-15 --time 01:30 --gender
 - [templates/](templates/): 单盘、合盘、丰富版和简洁版模板。
 - [service/](service/): 流程笔记、资料表、SOP、质量闸门和成本核算笔记。
 - [EXTERNAL_ARTIFACTS.md](EXTERNAL_ARTIFACTS.md): 为什么真实 run 和交付物必须放在仓库外部。
+- [CONTRIBUTING.md](CONTRIBUTING.md): 贡献方式、隐私边界和不应提交的内容。
+- [docs/showcase.md](docs/showcase.md): 公开展示图和样例截图的边界建议。
+- [.github/workflows/verify.yml](.github/workflows/verify.yml): GitHub Actions 验证流程。
 
 ## Validate
 
