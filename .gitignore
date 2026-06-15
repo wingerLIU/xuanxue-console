@@ -1,0 +1,29 @@
+# Python/cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local/runtime artifacts must live outside the project repo.
+reports/
+output/
+inputs/
+runs/
+delivery/
+deliveries/
+media/
+.playwright-cli/
+
+# Reader-facing generated deliverables.
+*.zip
+*.pdf
+*.docx
+*.html
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Secrets/local environment.
+.env
+.env.*
+!.env.example

@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "type": "object",
+  "required": [
+    "rule",
+    "source",
+    "scope",
+    "limits",
+    "modern_translation",
+    "report_usage"
+  ],
+  "properties": {
+    "rule": {
+      "type": "string"
+    },
+    "source": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scope": {
+      "type": "string"
+    },
+    "limits": {
+      "type": "string"
+    },
+    "modern_translation": {
+      "type": "string"
+    },
+    "report_usage": {
+      "type": "string"
+    },
+    "claim_level": {
+      "type": "string",
+      "enum": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ]
+    }
+  }
+}

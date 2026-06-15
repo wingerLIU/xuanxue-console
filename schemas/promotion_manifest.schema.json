@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "description": "Schema contract for knowledge/promotion/knowledge_promotion_manifest.json.",
+  "required_top_level_keys": [
+    "schema_version",
+    "purpose",
+    "policy",
+    "entries"
+  ],
+  "required_entry_keys": [
+    "id",
+    "type",
+    "status",
+    "path",
+    "source_ids",
+    "approval_status",
+    "human_approved",
+    "notes"
+  ],
+  "allowed_statuses": [
+    "candidate",
+    "curated",
+    "verified",
+    "deprecated"
+  ],
+  "allowed_approval_statuses": [
+    "user_requested_project_update",
+    "user_allowed_network_research",
+    "human_approved_case_retrospective"
+  ],
+  "allowed_types": [
+    "project_seed",
+    "project_process",
+    "source_register",
+    "source_boundary",
+    "classical_anchor",
+    "classical_method",
+    "modern_reference",
+    "case_retrospective"
+  ]
+}

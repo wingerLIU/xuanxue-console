@@ -1,0 +1,4 @@
+interface:
+  display_name: "玄学综合控制台"
+  short_description: "综合八字、紫微、MBTI、六爻和小六壬的结构化排盘与解读 skill。"
+  default_prompt: "你先问我必要信息，然后调用 xuanxue_console helper 做排盘，再给我综合玄学分析。"

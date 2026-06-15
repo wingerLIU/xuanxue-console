@@ -1,0 +1,82 @@
+{
+  "schema_version": "0.1.0",
+  "id": "CR-20260613-mobile-reader-single-relationship-standard",
+  "title": "去隐私移动阅读器标准复盘",
+  "status": "curated",
+  "human_approved": true,
+  "approved_by": "EDY",
+  "privacy": {
+    "deidentified": true,
+    "contains_birth_data": false,
+    "contains_client_name": false,
+    "contains_local_paths": false,
+    "contains_delivery_text": false
+  },
+  "source_case": {
+    "case_type": "relationship-rich-report",
+    "date_bucket": "2026-Q2",
+    "raw_material_location": "external-only",
+    "case_id_hash": "b67e61a91eef",
+    "run_id_hash": "11f78b788499"
+  },
+  "evidence_summary": "一次付费长文交付迭代显示，读者对手机端阅读的感受不只取决于内容长度，也取决于排版细节：标题应保留对象和核心判断，冒号后自然分行而不是逗号处硬断；单盘和合盘应共用暖纸深字、少色、无卡片的阅读器；重点句只用字重强调，不用底纹、荧光笔或多色跳转；源稿漏标重点时，阅读器可以每章最多补一处白话结论加粗，但自动补重点应优先选择第二段以后或章节收束句，避免每章第一段机械加粗；自动加粗只能改善扫读节奏，不能替代正文写作质量。",
+  "domains": [
+    "quality",
+    "relationship",
+    "writing"
+  ],
+  "target_artifacts": [
+    "scripts/package_mobile_html.py",
+    "scripts/finalize_case.py",
+    "scripts/test_xuanxue_delivery.py",
+    "templates/longform-analysis-template.md",
+    "templates/concise-report-template.md",
+    "templates/relationship-rich-template.md"
+  ],
+  "promotions": [
+    {
+      "artifact": "scripts/package_mobile_html.py",
+      "change_type": "delivery_renderer",
+      "summary": "统一单盘和合盘移动阅读器的标题分行、字重强调和少色无卡片标准"
+    },
+    {
+      "artifact": "scripts/finalize_case.py",
+      "change_type": "validation_gate",
+      "summary": "把移动阅读器关键 UI 标准纳入 finalize 合同检查"
+    },
+    {
+      "artifact": "scripts/test_xuanxue_delivery.py",
+      "change_type": "regression_test",
+      "summary": "用单盘 rich 和自动补重点场景验证加粗句分布，不让重点机械集中在每章第一段"
+    },
+    {
+      "artifact": "templates/longform-analysis-template.md",
+      "change_type": "template_rule",
+      "summary": "要求单盘丰富版沿用同一移动阅读器排版标准"
+    },
+    {
+      "artifact": "templates/concise-report-template.md",
+      "change_type": "template_rule",
+      "summary": "要求单盘简洁版沿用同一移动阅读器排版标准"
+    },
+    {
+      "artifact": "templates/relationship-rich-template.md",
+      "change_type": "template_rule",
+      "summary": "保持合盘移动阅读器与单盘标准一致"
+    }
+  ],
+  "counterexamples": [
+    "如果交付目标是正式 PDF 印刷或桌面宽屏排版，不应直接套用手机单列阅读器标准。",
+    "如果源稿本身缺少白话结论，阅读器自动加粗只能补阅读节奏，不能替代重新写稿。"
+  ],
+  "limits": [
+    "该候选只处理读者交付 HTML 的视觉阅读体验和重点句呈现，不改变命盘计算、合盘事实或报告结论。"
+  ],
+  "approval_checklist": [
+    "确认没有客户姓名、昵称、出生年月日时、截图路径、本机路径或报告原文。",
+    "确认 evidence_summary 只保留抽象机制。",
+    "确认 promotions 指向真实项目 artifact。",
+    "确认至少一个反例或限制仍然成立。",
+    "人工批准后再运行 promote_case_retrospective.py。"
+  ]
+}

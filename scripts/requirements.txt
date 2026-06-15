@@ -1,0 +1,6 @@
+lunar-python>=1.4.8
+iztro-py>=0.3.4
+ephem>=4.2.0
+python-docx>=1.1.2
+reportlab>=4.2.0
+pypdf>=5.0.0

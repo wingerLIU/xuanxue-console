@@ -1,0 +1,102 @@
+{
+  "schema_version": "0.1.0",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "status",
+    "human_approved",
+    "privacy",
+    "source_case",
+    "evidence_summary",
+    "domains",
+    "target_artifacts",
+    "promotions",
+    "counterexamples",
+    "limits"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^CR-[0-9]{8}-[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "curated",
+        "verified"
+      ]
+    },
+    "human_approved": {
+      "type": "boolean"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "deidentified",
+        "contains_birth_data",
+        "contains_client_name",
+        "contains_local_paths",
+        "contains_delivery_text"
+      ]
+    },
+    "source_case": {
+      "type": "object"
+    },
+    "evidence_summary": {
+      "type": "string"
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "bazi",
+          "ziwei",
+          "western",
+          "mbti",
+          "liuyao",
+          "xiaoliuren",
+          "writing",
+          "relationship",
+          "source_register",
+          "quality",
+          "case_retrospectives",
+          "completeness"
+        ]
+      }
+    },
+    "target_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "promotions": {
+      "type": "array"
+    },
+    "counterexamples": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

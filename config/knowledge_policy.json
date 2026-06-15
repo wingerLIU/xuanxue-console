@@ -1,0 +1,151 @@
+{
+  "schema_version": "0.1.0",
+  "claim_levels": [
+    "calculated_fact",
+    "classical_rule",
+    "modern_synthesis",
+    "case_calibration",
+    "practical_advice"
+  ],
+  "source_statuses": [
+    "candidate",
+    "curated",
+    "verified",
+    "deprecated"
+  ],
+  "promotion_requires": [
+    "human_approved=true",
+    "source_entry",
+    "scope",
+    "limits",
+    "example_or_counterexample"
+  ],
+  "required_runtime_knowledge": [
+    "knowledge/knowledge_map.json",
+    "knowledge/source-index.md",
+    "knowledge/sources/README.md",
+    "knowledge/sources/source-register.json",
+    "knowledge/sources/online-classics.md",
+    "knowledge/sources/modern-references.md",
+    "knowledge/sources/research-backlog.md",
+    "knowledge/rules/inference-contract.md",
+    "knowledge/rules/research-and-promotion.md",
+    "knowledge/completeness/README.md",
+    "knowledge/completeness/coverage-matrix.json",
+    "knowledge/completeness/retrospective-requirements.json",
+    "knowledge/bazi/foundations.md",
+    "knowledge/bazi/classical-anchors.md",
+    "knowledge/bazi/shenfeng-anchors.md",
+    "knowledge/bazi/shenfeng-methods.md",
+    "knowledge/bazi/ten-gods.md",
+    "knowledge/bazi/structure-and-flow.md",
+    "knowledge/ziwei/foundations.md",
+    "knowledge/ziwei/classical-anchors.md",
+    "knowledge/ziwei/quanshu-vs-quanji-boundary.md",
+    "knowledge/ziwei/palaces-stars-four-transformations.md",
+    "knowledge/western/foundations.md",
+    "knowledge/western/classical-anchors.md",
+    "knowledge/western/modern-psychological.md",
+    "knowledge/western/planets-aspects-houses.md",
+    "knowledge/mbti/behavior-language.md",
+    "knowledge/liuyao/classical-anchors.md",
+    "knowledge/liuyao/question-reading.md",
+    "knowledge/xiaoliuren/classical-anchors.md",
+    "knowledge/xiaoliuren/quick-timing.md",
+    "knowledge/writing/reader-rich-report.md",
+    "templates/concise-report-template.md",
+    "knowledge/case-retrospectives/README.md",
+    "knowledge/case-retrospectives/promotion-protocol.md",
+    "knowledge/case-retrospectives/template.md",
+    "knowledge/promotion/knowledge_promotion_manifest.json",
+    "schemas/case_retrospective.schema.json",
+    "schemas/promotion_manifest.schema.json",
+    "schemas/source_register.schema.json",
+    "scripts/build_fact_archive.py",
+    "scripts/finalize_case.py",
+    "scripts/create_followup_context.py",
+    "scripts/create_retrospective_intake.py"
+  ],
+  "case_retrospective_requires": [
+    "human_approved=true",
+    "deidentified=true",
+    "counterexamples",
+    "limits",
+    "target_artifacts",
+    "no_birth_data",
+    "no_client_names",
+    "no_local_paths",
+    "no_delivery_text"
+  ],
+  "global_knowledge_must_not_contain": [
+    "client names",
+    "birth screenshots",
+    "case-local private facts",
+    "absolute source image paths",
+    "paid-client delivery drafts"
+  ],
+  "completion_requires": [
+    "scripts/audit_project_hygiene.py",
+    "scripts/audit_knowledge_base.py",
+    "scripts/audit_source_register.py",
+    "scripts/audit_source_documentation.py",
+    "scripts/audit_promotion_manifest.py",
+    "scripts/audit_rule_cards.py",
+    "scripts/check_source_urls.py",
+    "scripts/audit_case_retrospectives.py",
+    "scripts/audit_knowledge_coverage.py",
+    "scripts/build_knowledge_context.py",
+    "scripts/create_retrospective_intake.py",
+    "scripts/finalize_case.py",
+    "scripts/create_case_retrospective_candidate.py",
+    "scripts/promote_case_retrospective.py",
+    "no_goal_completion_blockers"
+  ],
+  "gate_freeze": {
+    "effective_date": "2026-06-13",
+    "no_new_gate_scripts_without": "hard_error_or_explicit_user_approval",
+    "reuse_first": [
+      "scripts/finalize_case.py",
+      "scripts/audit_longform_consistency.py",
+      "scripts/create_followup_context.py",
+      "scripts/create_retrospective_intake.py"
+    ]
+  },
+  "legacy_compatibility": {
+    "artifact_alias_sunset": "2026-07-31",
+    "temporary_aliases": [
+      "html_report",
+      "facts_markdown",
+      "fact_archive_md",
+      "longform_source_md",
+      "reader_pdf",
+      "rich_pdf",
+      "data_combo",
+      "data_bazi",
+      "data_ziwei",
+      "data_western"
+    ],
+    "after_sunset": "new runs must emit canonical manifest keys; legacy aliases are kept only for archived run repair"
+  },
+  "knowledge_growth_priority": {
+    "prefer": "deidentified_case_retrospectives_with_reader_feedback",
+    "avoid": "new_generic_writing_rules_without_case_evidence",
+    "minimum_before_new_rules": "one approved retrospective or explicit reader counterexample"
+  },
+  "large_file_split": {
+    "completed_splits": [
+      "longform rendering -> scripts/xuanxue_longform.py"
+    ],
+    "soft_limit_kb": {
+      "scripts/xuanxue_console.py": 75,
+      "scripts/test_xuanxue_console.py": 65
+    },
+    "next_split_targets": [
+      "cli entrypoints",
+      "bazi calculators",
+      "ziwei calculators",
+      "western calculators",
+      "runtime contract tests"
+    ]
+  }
+}

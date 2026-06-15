@@ -1,0 +1,10 @@
+{
+  "schema_version": "0.1.0",
+  "external_root_env": "XUANXUE_RUNS_ROOT",
+  "default_external_root": "%USERPROFILE%\\Documents\\xuanxue_console_runs",
+  "inputs_subdir": "inputs",
+  "runs_subdir": "runs",
+  "archive_subdir": "archive",
+  "case_manifest_name": "case_manifest.json",
+  "repo_local_outputs_allowed": false
+}

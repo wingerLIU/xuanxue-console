@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Machine-readable minimum retrospective evidence required before knowledge-completion blockers can be closed.",
+  "status_rank": {
+    "candidate": 0,
+    "curated": 1,
+    "verified": 2
+  },
+  "requirements": [
+    {
+      "id": "REQ-RETRO-BAZI",
+      "domain": "bazi",
+      "gap_id": "GAP-BAZI-VERIFIED-CASES",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Bazi interpretation rules need more than one deidentified human-approved case before stronger claims are considered calibrated."
+    },
+    {
+      "id": "REQ-RETRO-ZIWEI",
+      "domain": "ziwei",
+      "gap_id": "GAP-ZIWEI-VERIFIED-CASES",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Ziwei palace/star interpretation needs repeated deidentified calibration before single-star or palace patterns can be treated as stable."
+    },
+    {
+      "id": "REQ-RETRO-WESTERN",
+      "domain": "western",
+      "gap_id": "GAP-WESTERN-VERIFIED-CASES",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Western astrology language is symbolic and time-sensitive, so reader feedback must be checked before it influences reusable wording."
+    },
+    {
+      "id": "REQ-RETRO-LIUYAO",
+      "domain": "liuyao",
+      "gap_id": "GAP-LIUYAO-VERIFIED-QUESTIONS",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Liuyao question reading needs repeated deidentified question outcomes before short-term judgment patterns can be considered calibrated."
+    },
+    {
+      "id": "REQ-RETRO-WRITING",
+      "domain": "writing",
+      "gap_id": "GAP-WRITING-LIVE-CLIENT-RETROSPECTIVES",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Reader-rich paid-report writing rules require repeated deidentified reader feedback, not just internal taste."
+    },
+    {
+      "id": "REQ-RETRO-RELATIONSHIP",
+      "domain": "relationship",
+      "gap_id": "GAP-RELATIONSHIP-VERIFIED-CASES",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Relationship reports combine two individual charts, deterministic cross facts and delicate reader positioning, so real deidentified feedback is required before reusable relationship claims are treated as calibrated."
+    },
+    {
+      "id": "REQ-RETRO-ANY",
+      "domain": "*",
+      "gap_id": "GAP-CASE-RETROSPECTIVES-VERIFIED",
+      "min_entries": 1,
+      "min_status": "curated",
+      "rationale": "The global retrospective layer is not complete until at least one audited human-approved retrospective has been promoted."
+    }
+  ]
+}

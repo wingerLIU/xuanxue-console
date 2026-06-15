@@ -1,0 +1,69 @@
+{
+  "schema_version": "0.1.0",
+  "id": "CR-20260613-reader-delivery-subtitle-cleanup",
+  "title": "去隐私读者交付副标题复盘",
+  "status": "curated",
+  "human_approved": true,
+  "approved_by": "EDY",
+  "privacy": {
+    "deidentified": true,
+    "contains_birth_data": false,
+    "contains_client_name": false,
+    "contains_local_paths": false,
+    "contains_delivery_text": false
+  },
+  "source_case": {
+    "case_type": "relationship-rich-report",
+    "date_bucket": "2026-Q2",
+    "raw_material_location": "external-only",
+    "case_id_hash": "b67e61a91eef",
+    "run_id_hash": "11f78b788499"
+  },
+  "evidence_summary": "一次读者交付迭代显示，简洁版和手机转发场景里，固定副标题、版本标签或报告类型标签会增加流程感；读者更需要标题直接呈现对象和核心判断，DOCX/PDF 封面与 HTML 一样应允许无副标题交付。该反馈应沉淀为打包层能力和模板命令，而不是靠每次手动删除。",
+  "domains": [
+    "quality",
+    "relationship",
+    "writing"
+  ],
+  "target_artifacts": [
+    "scripts/package_reader_delivery.py",
+    "scripts/export_longform_documents.py",
+    "templates/concise-report-template.md",
+    "templates/relationship-concise-template.md"
+  ],
+  "promotions": [
+    {
+      "artifact": "scripts/package_reader_delivery.py",
+      "change_type": "delivery_packaging",
+      "summary": "支持无副标题打包，避免简洁版读者交付出现固定流程标签"
+    },
+    {
+      "artifact": "scripts/export_longform_documents.py",
+      "change_type": "document_rendering",
+      "summary": "DOCX/PDF 在副标题为空时不渲染空副标题段落"
+    },
+    {
+      "artifact": "templates/concise-report-template.md",
+      "change_type": "template_command",
+      "summary": "单盘简洁版推荐命令默认使用无副标题交付"
+    },
+    {
+      "artifact": "templates/relationship-concise-template.md",
+      "change_type": "template_command",
+      "summary": "合盘简洁版推荐命令默认使用无副标题交付"
+    }
+  ],
+  "counterexamples": [
+    "如果客户明确要求正式封面副标题或机构化报告标题，仍可显式传入 subtitle。"
+  ],
+  "limits": [
+    "该候选只处理读者交付文件的封面与流程标签，不改变正文判断、计算事实或 HTML 阅读器主体样式。"
+  ],
+  "approval_checklist": [
+    "确认没有客户姓名、昵称、出生年月日时、截图路径、本机路径或报告原文。",
+    "确认 evidence_summary 只保留抽象机制。",
+    "确认 promotions 指向真实项目 artifact。",
+    "确认至少一个反例或限制仍然成立。",
+    "人工批准后再运行 promote_case_retrospective.py。"
+  ]
+}

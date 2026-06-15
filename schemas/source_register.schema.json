@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "description": "Schema contract for knowledge/sources/source-register.json.",
+  "required_top_level_keys": [
+    "schema_version",
+    "last_updated",
+    "purpose",
+    "entries"
+  ],
+  "required_entry_keys": [
+    "id",
+    "title",
+    "type",
+    "status",
+    "evidence_mode",
+    "domains",
+    "urls",
+    "local_paths",
+    "used_for",
+    "limits",
+    "promotion_targets"
+  ],
+  "allowed_statuses": [
+    "candidate",
+    "curated",
+    "verified",
+    "deprecated"
+  ],
+  "allowed_types": [
+    "calculation_runtime",
+    "classical_text",
+    "modern_reference",
+    "project_rule",
+    "case_retrospective"
+  ],
+  "allowed_evidence_modes": [
+    "runtime_package",
+    "online_public_entry",
+    "catalog_or_boundary",
+    "modern_public_reference",
+    "project_artifact",
+    "tradition_placeholder",
+    "case_retrospective_protocol"
+  ]
+}

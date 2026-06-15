@@ -1,0 +1,378 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Machine-auditable coverage state for the xuanxue-console knowledge base.",
+  "last_updated": "2026-06-12",
+  "goal_complete": false,
+  "completion_rule": {
+    "goal_complete_requires_no_blockers": true,
+    "required_audits": [
+      "scripts/audit_project_hygiene.py",
+      "scripts/audit_source_register.py",
+      "scripts/audit_source_documentation.py",
+      "scripts/audit_promotion_manifest.py",
+      "scripts/check_source_urls.py --dry-run",
+      "scripts/audit_knowledge_base.py",
+      "scripts/audit_rule_cards.py",
+      "scripts/audit_case_retrospectives.py",
+      "scripts/audit_knowledge_coverage.py",
+      "knowledge/completeness/retrospective-requirements.json",
+      "python -B -X utf8 -m unittest scripts.test_xuanxue_console"
+    ],
+    "network_source_rule": "Online classics may be used for source verification only after they are registered, scoped, boundary-marked and promoted through the knowledge manifest."
+  },
+  "domains": [
+    {
+      "id": "source_register",
+      "status": "audit_curated",
+      "runtime_files": [
+        "knowledge/sources/README.md",
+        "knowledge/sources/source-register.json",
+        "knowledge/sources/online-classics.md",
+        "knowledge/sources/modern-references.md",
+        "knowledge/sources/research-backlog.md",
+        "schemas/source_register.schema.json",
+        "scripts/check_source_urls.py",
+        "scripts/audit_source_documentation.py"
+      ],
+      "source_ids": [
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "claim_levels": [
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-SOURCE-LIVENESS-NOT-AUTO-FETCHED",
+          "description": "Source register validates provenance structure and URL allowlist, but does not fetch every URL on every verify run.",
+          "blocks_goal_completion": false,
+          "blocked_by": "run targeted network verification when promoting new sources"
+        }
+      ]
+    },
+    {
+      "id": "bazi",
+      "status": "runtime_curated",
+      "runtime_files": [
+        "knowledge/bazi/foundations.md",
+        "knowledge/bazi/classical-anchors.md",
+        "knowledge/bazi/shenfeng-anchors.md",
+        "knowledge/bazi/shenfeng-methods.md",
+        "knowledge/bazi/ten-gods.md",
+        "knowledge/bazi/structure-and-flow.md"
+      ],
+      "source_ids": [
+        "SRC-RUNTIME-LUNAR-PYTHON",
+        "SRC-BAZI-ZIPING-ZHENQUAN",
+        "SRC-BAZI-DITIAN-SUI",
+        "SRC-BAZI-QIONGTONG-BAOJIAN",
+        "SRC-BAZI-SANMING-TONGHUI",
+        "SRC-BAZI-YUANHAI-ZIPING",
+        "SRC-BAZI-SHENFENG-TONGKAO",
+        "SRC-BAZI-PROJECT-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-BAZI-VERIFIED-CASES",
+          "description": "No deidentified verified case retrospectives have been promoted for Bazi interpretation yet.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires human-approved deidentified retrospectives"
+        }
+      ]
+    },
+    {
+      "id": "ziwei",
+      "status": "runtime_curated_with_source_boundary",
+      "runtime_files": [
+        "knowledge/ziwei/foundations.md",
+        "knowledge/ziwei/classical-anchors.md",
+        "knowledge/ziwei/quanshu-vs-quanji-boundary.md",
+        "knowledge/ziwei/palaces-stars-four-transformations.md"
+      ],
+      "source_ids": [
+        "SRC-RUNTIME-IZTRO-PY",
+        "SRC-ZIWEI-DOUSHU-QUANSHU",
+        "SRC-ZIWEI-DOUSHU-QUANJI",
+        "SRC-ZIWEI-FU-TEXTS",
+        "SRC-ZIWEI-PROJECT-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-ZIWEI-QUANJI-FULLTEXT",
+          "description": "Stable public full text for Ziwei Doushu Quanji has not been found; current use is boundary-only.",
+          "blocks_goal_completion": false,
+          "blocked_by": "requires stable public full text or human-verified source notes"
+        },
+        {
+          "id": "GAP-ZIWEI-VERIFIED-CASES",
+          "description": "No deidentified verified case retrospectives have been promoted for Ziwei interpretation yet.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires human-approved deidentified retrospectives"
+        }
+      ]
+    },
+    {
+      "id": "western",
+      "status": "runtime_curated",
+      "runtime_files": [
+        "knowledge/western/foundations.md",
+        "knowledge/western/classical-anchors.md",
+        "knowledge/western/modern-psychological.md",
+        "knowledge/western/planets-aspects-houses.md"
+      ],
+      "source_ids": [
+        "SRC-RUNTIME-EPHEM",
+        "SRC-WESTERN-PTOLEMY-TETRABIBLOS",
+        "SRC-WESTERN-LILLY-CHRISTIAN-ASTROLOGY",
+        "SRC-WESTERN-MODERN-PSYCHOLOGICAL",
+        "SRC-WESTERN-SCIENTIFIC-BOUNDARY",
+        "SRC-WESTERN-PROJECT-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "calculated_fact",
+        "modern_synthesis",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-WESTERN-VERIFIED-CASES",
+          "description": "No deidentified verified case retrospectives have been promoted for Western astrology language calibration yet.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires human-approved deidentified retrospectives"
+        }
+      ]
+    },
+    {
+      "id": "mbti",
+      "status": "runtime_boundary_curated",
+      "runtime_files": [
+        "knowledge/mbti/behavior-language.md"
+      ],
+      "source_ids": [
+        "SRC-MBTI-MODERN-TYPOLOGY",
+        "SRC-MBTI-CRITICAL-BOUNDARY",
+        "SRC-MBTI-PROJECT-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "modern_synthesis",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-MBTI-USER-PROVIDED-TYPE",
+          "description": "MBTI can only be used when the user provides a type or requests behavior-language supplementation.",
+          "blocks_goal_completion": false,
+          "blocked_by": "requires user-provided MBTI type for case use"
+        }
+      ]
+    },
+    {
+      "id": "liuyao",
+      "status": "runtime_curated",
+      "runtime_files": [
+        "knowledge/liuyao/question-reading.md",
+        "knowledge/liuyao/classical-anchors.md"
+      ],
+      "source_ids": [
+        "SRC-LIUYAO-YIJING",
+        "SRC-LIUYAO-ZENGSHAN-BU",
+        "SRC-LIUYAO-BUSHI-ZHENGZONG",
+        "SRC-LIUYAO-HUOZHULIN",
+        "SRC-LIUYAO-PROJECT-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-LIUYAO-VERIFIED-QUESTIONS",
+          "description": "No deidentified verified question retrospectives have been promoted for Liuyao calibration yet.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires human-approved deidentified retrospectives"
+        }
+      ]
+    },
+    {
+      "id": "xiaoliuren",
+      "status": "runtime_boundary_curated",
+      "runtime_files": [
+        "knowledge/xiaoliuren/classical-anchors.md",
+        "knowledge/xiaoliuren/quick-timing.md"
+      ],
+      "source_ids": [
+        "SRC-XIAOLIUREN-DUONENG-BISHI",
+        "SRC-XIAOLIUREN-XIEJI-BIANFANG",
+        "SRC-XIAOLIUREN-TRADITION",
+        "SRC-XIAOLIUREN-PROJECT-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-XIAOLIUREN-METHOD-VARIANTS",
+          "description": "Modern method variants are not promoted; Xiao Liuren remains weak-signal short-term timing only.",
+          "blocks_goal_completion": false,
+          "blocked_by": "requires stable source and explicit variant policy before expansion"
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "status": "runtime_curated",
+      "runtime_files": [
+        "knowledge/writing/reader-rich-report.md",
+        "templates/longform-analysis-template.md",
+        "templates/concise-report-template.md",
+        "references/interpretation-guide.md",
+        "scripts/finalize_case.py",
+        "scripts/validate_longform_report.py",
+        "scripts/audit_longform_consistency.py"
+      ],
+      "source_ids": [
+        "SRC-PROJECT-INTERPRETATION-GUIDE",
+        "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-WRITING-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-WRITING-LIVE-CLIENT-RETROSPECTIVES",
+          "description": "Reader-rich writing rules exist, but no deidentified verified reader feedback loop has been promoted yet.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires human-approved deidentified retrospectives"
+        }
+      ]
+    },
+    {
+      "id": "relationship",
+      "status": "runtime_curated_no_verified_cases",
+      "runtime_files": [
+        "templates/relationship-rich-template.md",
+        "templates/relationship-concise-template.md",
+        "scripts/build_relationship_facts.py",
+        "scripts/create_relationship_workspace.py",
+        "scripts/validate_relationship_report.py",
+        "scripts/create_followup_context.py",
+        "scripts/package_mobile_html.py"
+      ],
+      "source_ids": [
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-WRITING-SYNTHESIS"
+      ],
+      "claim_levels": [
+        "calculated_fact",
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-RELATIONSHIP-VERIFIED-CASES",
+          "description": "Relationship workflow, facts and templates exist, but no deidentified human-approved relationship retrospective has been promoted yet.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires human-approved deidentified relationship retrospectives"
+        }
+      ]
+    },
+    {
+      "id": "case_retrospectives",
+      "status": "protocol_curated_no_entries",
+      "runtime_files": [
+        "knowledge/case-retrospectives/README.md",
+        "knowledge/case-retrospectives/promotion-protocol.md",
+        "knowledge/case-retrospectives/template.md",
+        "schemas/case_retrospective.schema.json",
+        "scripts/create_retrospective_intake.py",
+        "scripts/create_case_retrospective_candidate.py",
+        "scripts/promote_case_retrospective.py",
+        "scripts/audit_case_retrospectives.py"
+      ],
+      "source_ids": [
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-CASE-RETROSPECTIVE",
+        "SRC-PROJECT-QUALITY-GATE"
+      ],
+      "claim_levels": [
+        "case_calibration",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-CASE-RETROSPECTIVES-VERIFIED",
+          "description": "No real human-approved deidentified retrospective JSON entries exist yet.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires audited retrospective JSON entries promoted according to policy"
+        }
+      ]
+    },
+    {
+      "id": "completeness",
+      "status": "audit_curated",
+      "runtime_files": [
+        "knowledge/completeness/README.md",
+        "knowledge/completeness/coverage-matrix.json",
+        "knowledge/completeness/retrospective-requirements.json",
+        "schemas/promotion_manifest.schema.json",
+        "scripts/audit_rule_cards.py",
+        "scripts/build_knowledge_context.py",
+        "scripts/create_retrospective_intake.py",
+        "scripts/finalize_case.py",
+        "scripts/audit_promotion_manifest.py",
+        "scripts/audit_source_documentation.py"
+      ],
+      "source_ids": [
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "claim_levels": [
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-COMPLETENESS-BLOCKERS-OPEN",
+          "description": "The audit layer is present, but goal completion remains false while blocker gaps remain open.",
+          "blocks_goal_completion": false,
+          "blocked_by": "requires all blocking gaps to be closed"
+        }
+      ]
+    }
+  ],
+  "global_blockers": [
+    {
+      "id": "GAP-CASE-RETROSPECTIVES-VERIFIED",
+      "description": "No real human-approved deidentified retrospective JSON entries exist yet.",
+      "blocks_goal_completion": true,
+      "required_evidence": "At least one audited retrospective JSON entry promoted to verified or curated according to policy."
+    }
+  ]
+}

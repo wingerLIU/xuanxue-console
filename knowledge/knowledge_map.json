@@ -1,0 +1,174 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Machine-readable map of runtime knowledge cards for xuanxue-console.",
+  "always_read": [
+    "knowledge/source-index.md",
+    "knowledge/sources/source-register.json",
+    "knowledge/sources/online-classics.md",
+    "knowledge/sources/modern-references.md",
+    "knowledge/sources/research-backlog.md",
+    "knowledge/rules/inference-contract.md",
+    "knowledge/rules/research-and-promotion.md",
+    "knowledge/completeness/coverage-matrix.json"
+  ],
+  "modules": {
+    "bazi": {
+      "files": [
+        "knowledge/bazi/foundations.md",
+        "knowledge/bazi/classical-anchors.md",
+        "knowledge/bazi/shenfeng-anchors.md",
+        "knowledge/bazi/shenfeng-methods.md",
+        "knowledge/bazi/ten-gods.md",
+        "knowledge/bazi/structure-and-flow.md"
+      ],
+      "runtime_role": "Season, day-master, ten-god, structure, luck-cycle and flow-year interpretation boundaries.",
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ]
+    },
+    "ziwei": {
+      "files": [
+        "knowledge/ziwei/foundations.md",
+        "knowledge/ziwei/classical-anchors.md",
+        "knowledge/ziwei/quanshu-vs-quanji-boundary.md",
+        "knowledge/ziwei/palaces-stars-four-transformations.md"
+      ],
+      "runtime_role": "Palace, star, four-transformation and decadal-stage interpretation boundaries.",
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ]
+    },
+    "western": {
+      "files": [
+        "knowledge/western/foundations.md",
+        "knowledge/western/classical-anchors.md",
+        "knowledge/western/modern-psychological.md",
+        "knowledge/western/planets-aspects-houses.md"
+      ],
+      "runtime_role": "Psychological language, relationship expression, angles, houses and time-sensitive boundary handling.",
+      "claim_levels": [
+        "calculated_fact",
+        "modern_synthesis",
+        "practical_advice"
+      ]
+    },
+    "mbti": {
+      "files": [
+        "knowledge/mbti/behavior-language.md"
+      ],
+      "runtime_role": "Behavior-language supplement only; never fate or diagnosis evidence.",
+      "claim_levels": [
+        "modern_synthesis",
+        "practical_advice"
+      ]
+    },
+    "liuyao": {
+      "files": [
+        "knowledge/liuyao/question-reading.md"
+        ,
+        "knowledge/liuyao/classical-anchors.md"
+      ],
+      "runtime_role": "Concrete question reading and short-term issue calibration.",
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ]
+    },
+    "xiaoliuren": {
+      "files": [
+        "knowledge/xiaoliuren/classical-anchors.md",
+        "knowledge/xiaoliuren/quick-timing.md"
+      ],
+      "runtime_role": "Weak-signal short-term timing prompt only.",
+      "claim_levels": [
+        "calculated_fact",
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ]
+    },
+    "writing": {
+      "files": [
+        "knowledge/writing/reader-rich-report.md",
+        "templates/longform-analysis-template.md",
+        "templates/concise-report-template.md",
+        "references/interpretation-guide.md"
+      ],
+      "runtime_role": "Paid reader-rich and concise report shape, second-person voice, hook-summary, professional-anchor and process-language boundaries.",
+      "claim_levels": [
+        "practical_advice"
+      ]
+    },
+    "relationship": {
+      "files": [
+        "templates/relationship-rich-template.md",
+        "templates/relationship-concise-template.md",
+        "scripts/build_relationship_facts.py",
+        "scripts/create_relationship_workspace.py",
+        "scripts/validate_relationship_report.py",
+        "scripts/create_followup_context.py",
+        "scripts/package_mobile_html.py"
+      ],
+      "runtime_role": "Relationship/synastry run shape, deterministic relationship facts, rich/concise templates, mobile delivery and follow-up boundaries.",
+      "claim_levels": [
+        "calculated_fact",
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ]
+    },
+    "case_retrospectives": {
+      "files": [
+        "knowledge/case-retrospectives/README.md",
+        "knowledge/case-retrospectives/promotion-protocol.md",
+        "knowledge/case-retrospectives/template.md",
+        "schemas/case_retrospective.schema.json",
+        "scripts/create_retrospective_intake.py",
+        "scripts/create_case_retrospective_candidate.py",
+        "scripts/promote_case_retrospective.py",
+        "scripts/audit_case_retrospectives.py"
+      ],
+      "runtime_role": "Self-evolution layer for deidentified feedback, counterexamples and human-approved rule promotion.",
+      "claim_levels": [
+        "case_calibration",
+        "practical_advice"
+      ]
+    },
+    "completeness": {
+      "files": [
+        "knowledge/completeness/README.md",
+        "knowledge/completeness/coverage-matrix.json"
+      ],
+      "runtime_role": "Machine-readable coverage and goal-completion audit layer.",
+      "claim_levels": [
+        "practical_advice"
+      ]
+    },
+    "source_register": {
+      "files": [
+        "knowledge/sources/README.md",
+        "knowledge/sources/source-register.json",
+        "knowledge/sources/online-classics.md",
+        "knowledge/sources/modern-references.md",
+        "knowledge/sources/research-backlog.md",
+        "schemas/source_register.schema.json",
+        "scripts/audit_source_documentation.py"
+      ],
+      "runtime_role": "Machine-readable source provenance, network intake and source-boundary registry.",
+      "claim_levels": [
+        "classical_rule",
+        "modern_synthesis",
+        "practical_advice"
+      ]
+    }
+  }
+}

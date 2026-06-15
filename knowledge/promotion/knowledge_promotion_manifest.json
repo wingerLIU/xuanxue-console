@@ -1,0 +1,689 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Track reusable xuanxue knowledge promoted into the runtime knowledge base.",
+  "policy": "knowledge/rules/research-and-promotion.md",
+  "entries": [
+    {
+      "id": "PROMO-20260612-KB-SEED-BAZI",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/bazi/foundations.md",
+      "source_ids": [
+        "SRC-RUNTIME-LUNAR-PYTHON",
+        "SRC-BAZI-ZIPING-ZHENQUAN",
+        "SRC-BAZI-DITIAN-SUI",
+        "SRC-BAZI-QIONGTONG-BAOJIAN",
+        "SRC-BAZI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Seeded foundational Bazi inference rules with modern report boundaries."
+    },
+    {
+      "id": "PROMO-20260612-KB-SEED-ZIWEI",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/ziwei/foundations.md",
+      "source_ids": [
+        "SRC-RUNTIME-IZTRO-PY",
+        "SRC-ZIWEI-DOUSHU-QUANSHU",
+        "SRC-ZIWEI-DOUSHU-QUANJI",
+        "SRC-ZIWEI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Seeded Ziwei report usage rules: no single-star fatalism, use palaces and four transformations as scoped evidence."
+    },
+    {
+      "id": "PROMO-20260612-KB-SEED-WESTERN",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/western/foundations.md",
+      "source_ids": [
+        "SRC-RUNTIME-EPHEM",
+        "SRC-WESTERN-MODERN-PSYCHOLOGICAL",
+        "SRC-WESTERN-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Seeded Western astrology boundaries for psychological language and time-sensitive axes."
+    },
+    {
+      "id": "PROMO-20260612-KB-SEED-WRITING",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/writing/reader-rich-report.md",
+      "source_ids": [
+        "SRC-PROJECT-INTERPRETATION-GUIDE",
+        "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-WRITING-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Seeded paid reader-rich writing rules with second-person voice and process-language ban."
+    },
+    {
+      "id": "PROMO-20260612-INTERPRETATION-GUIDE",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "references/interpretation-guide.md",
+      "source_ids": [
+        "SRC-PROJECT-INTERPRETATION-GUIDE",
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-WRITING-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the interpretation guide as the runtime report-structure and evidence-chain contract for user-facing readings."
+    },
+    {
+      "id": "PROMO-20260612-LONGFORM-TEMPLATE",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "templates/longform-analysis-template.md",
+      "source_ids": [
+        "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-INTERPRETATION-GUIDE",
+        "SRC-PROJECT-WRITING-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the reader-rich longform template as the runtime structure for paid Markdown report generation."
+    },
+    {
+      "id": "PROMO-20260612-CONCISE-REPORT-TEMPLATE",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "templates/concise-report-template.md",
+      "source_ids": [
+        "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-INTERPRETATION-GUIDE",
+        "SRC-PROJECT-WRITING-SYNTHESIS",
+        "SRC-PROJECT-QUALITY-GATE"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted concise report template as a default reader-facing delivery alongside the rich version."
+    },
+    {
+      "id": "PROMO-20260612-LONGFORM-VALIDATOR",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/validate_longform_report.py",
+      "source_ids": [
+        "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-WRITING-SYNTHESIS",
+        "SRC-PROJECT-QUALITY-GATE"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the reader-rich longform validator so opening summary, second-person voice, scenario density and process-language bans are machine checked."
+    },
+    {
+      "id": "PROMO-20260612-LONGFORM-CONSISTENCY-AUDIT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/audit_longform_consistency.py",
+      "source_ids": [
+        "SRC-PROJECT-WRITING-SYNTHESIS",
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-INTERPRETATION-GUIDE"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the longform consistency audit so facts, strong claims and delivery wording are checked before paid report handoff."
+    },
+    {
+      "id": "PROMO-20260612-CASE-RETROSPECTIVE-PROTOCOL",
+      "type": "project_process",
+      "status": "curated",
+      "path": "knowledge/case-retrospectives/promotion-protocol.md",
+      "source_ids": [
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-CASE-RETROSPECTIVE",
+        "SRC-PROJECT-QUALITY-GATE"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added deidentified case-retrospective promotion protocol and machine-audited template to support self-evolution without cross-case leakage."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-CANDIDATE-CREATOR",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/create_case_retrospective_candidate.py",
+      "source_ids": [
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-QUALITY-GATE"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the external retrospective candidate creator so deidentified learning starts outside the project repo with human_approved=false."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-PROMOTER",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/promote_case_retrospective.py",
+      "source_ids": [
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-QUALITY-GATE"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the retrospective promotion gate so approved candidates enter global knowledge as curated or verified entries and candidate files stay external."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-AUDIT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/audit_case_retrospectives.py",
+      "source_ids": [
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-QUALITY-GATE"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the retrospective audit gate so global case learning rejects private data and rejects candidate-status files."
+    },
+    {
+      "id": "PROMO-20260612-KB-SEED-MBTI",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/mbti/behavior-language.md",
+      "source_ids": [
+        "SRC-MBTI-MODERN-TYPOLOGY",
+        "SRC-MBTI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Seeded MBTI as behavior-language supplement only, not fate or diagnosis evidence."
+    },
+    {
+      "id": "PROMO-20260612-MODERN-MBTI-BOUNDARY",
+      "type": "modern_reference",
+      "status": "curated",
+      "path": "knowledge/sources/modern-references.md",
+      "source_ids": [
+        "SRC-MBTI-MODERN-TYPOLOGY",
+        "SRC-MBTI-CRITICAL-BOUNDARY"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Registered MBTI official preference framing and boundary sources; MBTI remains behavior-language only."
+    },
+    {
+      "id": "PROMO-20260612-MODERN-WESTERN-BOUNDARY",
+      "type": "modern_reference",
+      "status": "curated",
+      "path": "knowledge/western/modern-psychological.md",
+      "source_ids": [
+        "SRC-WESTERN-MODERN-PSYCHOLOGICAL",
+        "SRC-WESTERN-SCIENTIFIC-BOUNDARY",
+        "SRC-WESTERN-PROJECT-SYNTHESIS",
+        "SRC-RUNTIME-EPHEM"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Registered modern psychological astrology sources and scientific-boundary sources; Western astrology remains symbolic self-reflection and expression language only."
+    },
+    {
+      "id": "PROMO-20260612-KB-SEED-LIUYAO",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/liuyao/question-reading.md",
+      "source_ids": [
+        "SRC-LIUYAO-YIJING",
+        "SRC-LIUYAO-ZENGSHAN-BU",
+        "SRC-LIUYAO-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Seeded Liuyao as concrete-question reading with explicit scope and major-decision boundaries."
+    },
+    {
+      "id": "PROMO-20260612-KB-SEED-XIAOLIUREN",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/xiaoliuren/quick-timing.md",
+      "source_ids": [
+        "SRC-XIAOLIUREN-TRADITION",
+        "SRC-XIAOLIUREN-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Seeded Xiao Liuren as weak-signal short-term timing only."
+    },
+    {
+      "id": "PROMO-20260612-ONLINE-CLASSICS",
+      "type": "source_register",
+      "status": "curated",
+      "path": "knowledge/sources/online-classics.md",
+      "source_ids": [
+        "SRC-BAZI-ZIPING-ZHENQUAN",
+        "SRC-BAZI-DITIAN-SUI",
+        "SRC-BAZI-QIONGTONG-BAOJIAN",
+        "SRC-BAZI-SANMING-TONGHUI",
+        "SRC-BAZI-YUANHAI-ZIPING",
+        "SRC-ZIWEI-DOUSHU-QUANSHU",
+        "SRC-ZIWEI-FU-TEXTS",
+        "SRC-LIUYAO-ZENGSHAN-BU",
+        "SRC-LIUYAO-BUSHI-ZHENGZONG",
+        "SRC-LIUYAO-HUOZHULIN",
+        "SRC-XIAOLIUREN-DUONENG-BISHI",
+        "SRC-XIAOLIUREN-XIEJI-BIANFANG",
+        "SRC-WESTERN-PTOLEMY-TETRABIBLOS",
+        "SRC-WESTERN-LILLY-CHRISTIAN-ASTROLOGY"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Registered public online source entrances for classics and source-boundary checks; no long source text copied into the project."
+    },
+    {
+      "id": "PROMO-20260612-CLASSICAL-ANCHORS-BAZI",
+      "type": "classical_anchor",
+      "status": "curated",
+      "path": "knowledge/bazi/classical-anchors.md",
+      "source_ids": [
+        "SRC-BAZI-ZIPING-ZHENQUAN",
+        "SRC-BAZI-DITIAN-SUI",
+        "SRC-BAZI-QIONGTONG-BAOJIAN",
+        "SRC-BAZI-SANMING-TONGHUI",
+        "SRC-BAZI-YUANHAI-ZIPING",
+        "SRC-BAZI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Promoted source-bounded Bazi method anchors distilled from registered online classics."
+    },
+    {
+      "id": "PROMO-20260612-BAZI-TEN-GODS-CARD",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/bazi/ten-gods.md",
+      "source_ids": [
+        "SRC-RUNTIME-LUNAR-PYTHON",
+        "SRC-BAZI-PROJECT-SYNTHESIS",
+        "SRC-BAZI-YUANHAI-ZIPING",
+        "SRC-BAZI-SANMING-TONGHUI"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the Bazi ten-god translation card so relationship, work and money language remains source-bounded."
+    },
+    {
+      "id": "PROMO-20260612-BAZI-STRUCTURE-FLOW-CARD",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/bazi/structure-and-flow.md",
+      "source_ids": [
+        "SRC-RUNTIME-LUNAR-PYTHON",
+        "SRC-BAZI-PROJECT-SYNTHESIS",
+        "SRC-BAZI-DITIAN-SUI",
+        "SRC-BAZI-QIONGTONG-BAOJIAN"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the Bazi structure-and-flow card for luck-cycle, flow-year and practical timing interpretation boundaries."
+    },
+    {
+      "id": "PROMO-20260612-CLASSICAL-ANCHORS-SHENFENG",
+      "type": "classical_anchor",
+      "status": "curated",
+      "path": "knowledge/bazi/shenfeng-anchors.md",
+      "source_ids": [
+        "SRC-BAZI-SHENFENG-TONGKAO",
+        "SRC-BAZI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Promoted Shenfeng Tongkao method anchors after finding public scan/text entrances; keeps details as boundaries rather than hard judgments."
+    },
+    {
+      "id": "PROMO-20260612-METHODS-SHENFENG",
+      "type": "classical_method",
+      "status": "curated",
+      "path": "knowledge/bazi/shenfeng-methods.md",
+      "source_ids": [
+        "SRC-BAZI-SHENFENG-TONGKAO",
+        "SRC-BAZI-PROJECT-SYNTHESIS",
+        "SRC-RUNTIME-LUNAR-PYTHON"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Promoted Shenfeng method execution rules for illness-medicine, cover-cut, active-static triggers, system-state wording and counterexample checks."
+    },
+    {
+      "id": "PROMO-20260612-CLASSICAL-ANCHORS-ZIWEI",
+      "type": "classical_anchor",
+      "status": "curated",
+      "path": "knowledge/ziwei/classical-anchors.md",
+      "source_ids": [
+        "SRC-ZIWEI-DOUSHU-QUANSHU",
+        "SRC-ZIWEI-FU-TEXTS",
+        "SRC-ZIWEI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Promoted Ziwei method anchors for body-life palace priority, palace fields, limits and star-symbol translation."
+    },
+    {
+      "id": "PROMO-20260612-ZIWEI-QUANJI-BOUNDARY",
+      "type": "source_boundary",
+      "status": "curated",
+      "path": "knowledge/ziwei/quanshu-vs-quanji-boundary.md",
+      "source_ids": [
+        "SRC-ZIWEI-DOUSHU-QUANSHU",
+        "SRC-ZIWEI-DOUSHU-QUANJI",
+        "SRC-ZIWEI-FU-TEXTS",
+        "SRC-ZIWEI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Registered catalog-only boundary for Ziwei Doushu Quanji after finding scholarly and holding-catalog evidence but no stable public full text."
+    },
+    {
+      "id": "PROMO-20260612-ZIWEI-PALACES-FOUR-TRANSFORMATIONS",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/ziwei/palaces-stars-four-transformations.md",
+      "source_ids": [
+        "SRC-RUNTIME-IZTRO-PY",
+        "SRC-ZIWEI-DOUSHU-QUANSHU",
+        "SRC-ZIWEI-FU-TEXTS",
+        "SRC-ZIWEI-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the Ziwei palace, star and four-transformation translation card for scoped field-level reporting."
+    },
+    {
+      "id": "PROMO-20260612-CLASSICAL-ANCHORS-WESTERN",
+      "type": "classical_anchor",
+      "status": "curated",
+      "path": "knowledge/western/classical-anchors.md",
+      "source_ids": [
+        "SRC-WESTERN-PTOLEMY-TETRABIBLOS",
+        "SRC-WESTERN-LILLY-CHRISTIAN-ASTROLOGY",
+        "SRC-WESTERN-MODERN-PSYCHOLOGICAL",
+        "SRC-WESTERN-SCIENTIFIC-BOUNDARY",
+        "SRC-WESTERN-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Promoted Western astrology source anchors while preserving modern-psychological boundary."
+    },
+    {
+      "id": "PROMO-20260612-WESTERN-PLANETS-ASPECTS-HOUSES",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/western/planets-aspects-houses.md",
+      "source_ids": [
+        "SRC-RUNTIME-EPHEM",
+        "SRC-WESTERN-PTOLEMY-TETRABIBLOS",
+        "SRC-WESTERN-LILLY-CHRISTIAN-ASTROLOGY",
+        "SRC-WESTERN-MODERN-PSYCHOLOGICAL",
+        "SRC-WESTERN-SCIENTIFIC-BOUNDARY",
+        "SRC-WESTERN-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Promoted the Western planets, aspects and houses card with explicit psychological and time-sensitivity boundaries."
+    },
+    {
+      "id": "PROMO-20260612-CLASSICAL-ANCHORS-LIUYAO",
+      "type": "classical_anchor",
+      "status": "curated",
+      "path": "knowledge/liuyao/classical-anchors.md",
+      "source_ids": [
+        "SRC-LIUYAO-YIJING",
+        "SRC-LIUYAO-ZENGSHAN-BU",
+        "SRC-LIUYAO-BUSHI-ZHENGZONG",
+        "SRC-LIUYAO-HUOZHULIN",
+        "SRC-LIUYAO-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Promoted Liuyao anchors around concrete question, yongshen and moving-line boundaries."
+    },
+    {
+      "id": "PROMO-20260612-CLASSICAL-ANCHORS-XIAOLIUREN",
+      "type": "classical_anchor",
+      "status": "curated",
+      "path": "knowledge/xiaoliuren/classical-anchors.md",
+      "source_ids": [
+        "SRC-XIAOLIUREN-DUONENG-BISHI",
+        "SRC-XIAOLIUREN-XIEJI-BIANFANG",
+        "SRC-XIAOLIUREN-TRADITION",
+        "SRC-XIAOLIUREN-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Promoted Xiao Liuren source-boundary anchors as weak-signal short-term timing only."
+    },
+    {
+      "id": "PROMO-20260612-KNOWLEDGE-COMPLETENESS-AUDIT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "knowledge/completeness/coverage-matrix.json",
+      "source_ids": [
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added a machine-audited coverage matrix so goal completion, network source intake and remaining blockers are explicit."
+    },
+    {
+      "id": "PROMO-20260612-COVERAGE-SOURCE-ALIGNMENT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/audit_knowledge_coverage.py",
+      "source_ids": [
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added coverage/source-register alignment checks so promoted source IDs cannot drift out of the coverage matrix."
+    },
+    {
+      "id": "PROMO-20260612-RULE-CARD-AUDIT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/audit_rule_cards.py",
+      "source_ids": [
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added a runtime rule-card audit so source IDs, registered provenance and structured rule fields are checked before client use."
+    },
+    {
+      "id": "PROMO-20260612-SOURCE-REGISTER",
+      "type": "source_register",
+      "status": "curated",
+      "path": "knowledge/sources/source-register.json",
+      "source_ids": [
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added machine-readable provenance for every declared SRC-* source, including evidence mode, URLs or local paths, limits and promotion targets."
+    },
+    {
+      "id": "PROMO-20260612-SOURCE-DOCUMENTATION-AUDIT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/audit_source_documentation.py",
+      "source_ids": [
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added a source documentation audit so registered network sources must be documented in human-readable source notes with matching source IDs and URLs."
+    },
+    {
+      "id": "PROMO-20260612-PROMOTION-MANIFEST-AUDIT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/audit_promotion_manifest.py",
+      "source_ids": [
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added a dedicated promotion manifest audit gate and schema so promoted knowledge artifacts must keep valid paths, source IDs, approval state and non-private notes."
+    },
+    {
+      "id": "PROMO-20260612-CLASSICS-LIVENESS-RECHECK",
+      "type": "source_register",
+      "status": "curated",
+      "path": "knowledge/sources/online-classics.md",
+      "source_ids": [
+        "SRC-BAZI-ZIPING-ZHENQUAN",
+        "SRC-ZIWEI-DOUSHU-QUANSHU",
+        "SRC-PROJECT-SOURCE-REGISTER"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Rechecked online classics entrances, switched large PDF-first Bazi source to a stable Commons file page, added Japan National Archives Ziwei image entrance, and added URL-check filtering for classics research."
+    },
+    {
+      "id": "PROMO-20260612-LIUYAO-CLASSICS-EXPANSION",
+      "type": "classical_anchor",
+      "status": "curated",
+      "path": "knowledge/liuyao/classical-anchors.md",
+      "source_ids": [
+        "SRC-LIUYAO-YIJING",
+        "SRC-LIUYAO-ZENGSHAN-BU",
+        "SRC-LIUYAO-BUSHI-ZHENGZONG",
+        "SRC-LIUYAO-HUOZHULIN",
+        "SRC-LIUYAO-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Added Bushi Zhengzong and Huozhulin as source-bounded Liuyao anchors for yongshen, technical terms, Najia lineage and report limits."
+    },
+    {
+      "id": "PROMO-20260612-SOURCE-LIVENESS-SNAPSHOT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/check_source_urls.py",
+      "source_ids": [
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "approval_status": "user_allowed_network_research",
+      "human_approved": true,
+      "notes": "Added external source_liveness snapshot output so network source verification can be attached to a run without writing artifacts into the project repo."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-DOMAINS",
+      "type": "project_process",
+      "status": "curated",
+      "path": "schemas/case_retrospective.schema.json",
+      "source_ids": [
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added required retrospective domains so human-approved case learning can be counted by knowledge area instead of only by file existence."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-REQUIREMENTS",
+      "type": "project_process",
+      "status": "curated",
+      "path": "knowledge/completeness/retrospective-requirements.json",
+      "source_ids": [
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added machine-readable minimum retrospective evidence thresholds so completion blockers cannot be closed without enough curated or verified deidentified cases."
+    },
+    {
+      "id": "PROMO-20260612-KNOWLEDGE-CONTEXT-BUILDER",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/build_knowledge_context.py",
+      "source_ids": [
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-SOURCE-REGISTER",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added per-case knowledge context generation so required rule cards, source boundaries and blockers are explicit before interpretation."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-COLLECTION-PLAN",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/build_knowledge_context.py",
+      "source_ids": [
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Extended per-case knowledge_context output with retrospective requirements and collection plans so real case feedback can close knowledge blockers without guesswork."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-TARGET-SUGGESTIONS",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/build_knowledge_context.py",
+      "source_ids": [
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-COMPLETENESS-AUDIT",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-SOURCE-REGISTER"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added suggested target artifacts to retrospective collection plans so online classics, reader feedback and rule-card improvements land on explicit project artifacts."
+    },
+    {
+      "id": "PROMO-20260612-RETROSPECTIVE-INTAKE",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/create_retrospective_intake.py",
+      "source_ids": [
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-COMPLETENESS-AUDIT"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added run-local retrospective intake generation so each case can collect deidentified feedback against knowledge_context target artifacts before candidate promotion."
+    },
+    {
+      "id": "PROMO-20260612-FINALIZE-RUNTIME-CONTEXT",
+      "type": "project_process",
+      "status": "curated",
+      "path": "scripts/finalize_case.py",
+      "source_ids": [
+        "SRC-PROJECT-QUALITY-GATE",
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Extended final acceptance so each case must carry passed knowledge_context and retrospective intake artifacts before delivery can be accepted."
+    }
+  ]
+}

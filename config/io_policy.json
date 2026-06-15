@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "project_repo_contains": [
+    "scripts",
+    "templates",
+    "references",
+    "knowledge",
+    "config",
+    "schemas",
+    "service",
+    "agents",
+    "tests"
+  ],
+  "forbidden_root_dirs": [
+    "reports",
+    "output",
+    "inputs",
+    "runs",
+    "delivery",
+    "deliveries",
+    "media",
+    ".playwright-cli"
+  ],
+  "forbidden_dir_names": [
+    "__pycache__",
+    ".pytest_cache"
+  ],
+  "forbidden_artifact_extensions": [
+    ".zip",
+    ".pdf",
+    ".docx",
+    ".html",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".webp"
+  ],
+  "allowed_artifact_roots": [
+    "templates",
+    "references",
+    "knowledge",
+    "service",
+    "docs"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1.0",
+  "required": [
+    "schema_version",
+    "case_id",
+    "run_id",
+    "created_at",
+    "project_root",
+    "paths",
+    "status"
+  ],
+  "paths_required": [
+    "input_dir",
+    "run_dir",
+    "runtime_dir",
+    "data_dir",
+    "drafts_dir",
+    "delivery_dir",
+    "logs_dir",
+    "calibration_dir",
+    "dialogue_dir",
+    "retrospectives_dir"
+  ],
+  "artifacts_required_for_finalize": [
+    "fact_archive_markdown",
+    "longform_markdown",
+    "longform_pdf",
+    "concise_markdown",
+    "concise_pdf",
+    "final_delivery"
+  ],
+  "data_required_for_finalize": [
+    "combo"
+  ],
+  "data_optional_if_combo_contains_module": [
+    "bazi",
+    "ziwei",
+    "western"
+  ],
+  "optional_debug_artifacts": [
+    "main_html"
+  ],
+  "legacy_alias_sunset": "2026-07-31",
+  "legacy_alias_after_sunset": "new runs must emit canonical manifest keys; aliases are for archived run repair only",
+  "artifact_aliases": {
+    "main_html": ["html_report"],
+    "fact_archive_markdown": ["facts_markdown", "fact_archive_md", "data.fact_archive_markdown"],
+    "longform_markdown": ["longform_source_md", "drafts.longform_markdown"],
+    "longform_pdf": ["reader_pdf", "rich_pdf", "delivery.rich_pdf"],
+    "concise_markdown": ["concise_source_md", "delivery.concise_markdown"],
+    "concise_pdf": ["delivery.concise_pdf"],
+    "data.combo": ["data_combo"],
+    "data.bazi": ["data_bazi"],
+    "data.ziwei": ["data_ziwei"],
+    "data.western": ["data_western"]
+  },
+  "status_control": {
+    "final_stage_writer": "scripts/finalize_case.py --write-status",
+    "valid_final_stages": ["finalized"],
+    "failed_stage": "finalize_failed"
+  }
+}
