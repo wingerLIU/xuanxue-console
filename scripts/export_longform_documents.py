@@ -18,6 +18,7 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
@@ -136,12 +137,33 @@ def export_docx(markdown: str, output: Path, subtitle: str) -> None:
 
 
 def register_pdf_fonts() -> tuple[str, str]:
-    body_path = Path(r"C:\Windows\Fonts\simfang.ttf")
-    heading_path = Path(r"C:\Windows\Fonts\simhei.ttf")
     body_font = "XuanxueBody"
     heading_font = "XuanxueHeading"
-    pdfmetrics.registerFont(TTFont(body_font, str(body_path)))
-    pdfmetrics.registerFont(TTFont(heading_font, str(heading_path)))
+    body_candidates = [
+        Path(r"C:\Windows\Fonts\simfang.ttf"),
+        Path(r"C:\Windows\Fonts\simsun.ttc"),
+        Path(r"C:\Windows\Fonts\msyh.ttc"),
+    ]
+    heading_candidates = [
+        Path(r"C:\Windows\Fonts\simhei.ttf"),
+        Path(r"C:\Windows\Fonts\msyhbd.ttc"),
+        Path(r"C:\Windows\Fonts\simsun.ttc"),
+    ]
+
+    for path in body_candidates:
+        if path.exists():
+            pdfmetrics.registerFont(TTFont(body_font, str(path)))
+            break
+    else:
+        body_font = "STSong-Light"
+        pdfmetrics.registerFont(UnicodeCIDFont(body_font))
+
+    for path in heading_candidates:
+        if path.exists():
+            pdfmetrics.registerFont(TTFont(heading_font, str(path)))
+            break
+    else:
+        heading_font = body_font
     return body_font, heading_font
 
 
