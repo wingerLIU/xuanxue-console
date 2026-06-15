@@ -11,6 +11,8 @@
 ### Changed
 
 - README 增加项目动机：把玄学视为古代世界模型，把大模型视为现代世界模型，主线是可复查、可反馈的解释实验。
+- README 增加 MingLi-Bench / Tianfu Agent 相关工作说明，并补充判断强度分级。
+- 新增 `docs/evaluation-roadmap.md`，记录后续评测路线：事实计算、报告一致性、追问 grounding 和真实反馈复盘。
 
 ## 0.1.0 - 2026-06-15
 

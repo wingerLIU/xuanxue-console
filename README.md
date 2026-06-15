@@ -63,6 +63,14 @@ git clone https://github.com/wingerLIU/xuanxue-console.git $env:USERPROFILE\.cod
 
 手机阅读版也尽量克制：暖纸、深字、少色、无卡片，重点只用加粗，不做花哨高亮。
 
+判断会尽量分级：强判断、中等倾向、校准问题和不应断分开写。目标不是变中庸，而是让锋利有证据，边界有原因，后续反馈有入口。
+
+## Related Work
+
+[MingLi-Bench](https://github.com/DestinyLinker/MingLi-Bench) 和它的 [Tianfu Agent 技术报告](https://destinylinker.github.io/MingLi-Bench/) 是很有启发的相关工作：它们把命理选择题做成 benchmark，并强调确定性计算工具、规则化推理经验和生成式叙事能力的结合。
+
+`xuanxue-console` 不复刻它的 benchmark 形态。本项目更关注开放式读者交付、追问上下文、隐私边界和真实反馈复盘。未来评测路线见 [docs/evaluation-roadmap.md](docs/evaluation-roadmap.md)。
+
 ## Project Position
 
 这个项目开源出来主要是为了学习交流和个人研究。它参考、学习了很多公开项目和资料的思路，因此不希望被简单换壳、批量包装成商业算命服务。
@@ -88,6 +96,7 @@ git clone https://github.com/wingerLIU/xuanxue-console.git $env:USERPROFILE\.cod
 - [EXTERNAL_ARTIFACTS.md](EXTERNAL_ARTIFACTS.md): 为什么真实 run 和交付物必须放在仓库外部。
 - [CONTRIBUTING.md](CONTRIBUTING.md): 贡献方式、隐私边界和不应提交的内容。
 - [CHANGELOG.md](CHANGELOG.md): 公开版本和重要更新记录。
+- [docs/evaluation-roadmap.md](docs/evaluation-roadmap.md): 评测路线、相关工作和判断强度分级。
 - [docs/release-process.md](docs/release-process.md): 轻量发布流程。
 - [docs/showcase.md](docs/showcase.md): 公开展示图和样例截图的边界建议。
 - [.github/workflows/verify.yml](.github/workflows/verify.yml): GitHub Actions 验证流程。
