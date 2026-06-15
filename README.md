@@ -1,8 +1,34 @@
-# Xuanxue Console Report Case
+# Xuanxue Console
 
-这个目录是 `xuanxue-console` 的项目仓库：只保留结构化排盘脚本、模板、规则、知识库和服务文档。客户输入、结构化 JSON、HTML、长文、DOCX/PDF/ZIP 等运行产物必须放在项目外部 workspace，避免串 case 和污染后续输出。
+`xuanxue-console` 是一个本地运行的综合玄学结构化排盘与报告生产工作流。它把八字、紫微斗数、西洋占星、MBTI、六爻和小六壬等信息先整理成可复查的 JSON / Markdown 事实档案，再基于知识库、规则卡和质量闸门生成读者能直接阅读的丰富版、简洁版或合盘报告。
 
-## Open Source Boundary
+这个项目不是一个“随便问一句就自由发挥”的聊天模板，而是一个强调证据链、隐私隔离、复盘沉淀和交付质量的本地工作台。
+
+## What It Can Do
+
+- 生成八字、紫微斗数、西洋占星、MBTI、六爻、小六壬等结构化结果。
+- 把排盘结果沉淀为 `<RUN_DIR>/data/*.json` 和 `<RUN_DIR>/data/*-facts.md`，方便后续追问和复查，不需要每次重新手算。
+- 生成单盘丰富版、单盘简洁版、合盘丰富版、合盘简洁版等读者报告。
+- 打包 PDF、手机阅读 HTML、Markdown / DOCX / ZIP 等交付物。
+- 通过 `finalize_case.py`、`audit_longform_consistency.py`、`validate_relationship_report.py` 等脚本检查事实一致性、串案风险、模板感和读者交付完整度。
+- 用去隐私复盘机制把真实反馈沉淀成知识库改进，而不是无限堆写作补丁。
+
+## Use Cases
+
+- 想把传统命理分析做成更稳定、更可复查的 AI 工作流。
+- 想研究八字、紫微、西占、MBTI 等多体系如何交叉校准。
+- 想做付费报告、合盘报告或追问服务，但需要明确的隐私边界和交付 SOP。
+- 想把 AI 输出从“像聊天”推进到“有事实、有规则、有质量闸门的读者版报告”。
+
+## Contact
+
+如果你想交流这个项目、试用报告流程、做定制报告或讨论服务化合作，可以加微信：
+
+```text
+a249256088
+```
+
+## Privacy Boundary
 
 这个仓库可以公开分享，但不展示真实 case。
 
@@ -10,6 +36,17 @@
 - 真实客户资料、出生信息、原始对话、报告正文、截图、PDF、HTML、ZIP 和 run-local JSON 不进入仓库。
 - 去隐私复盘只保留可复用机制，不保留客户姓名、生日、城市、本机路径或交付原文。
 - 传播展示图、报告截图和样例成果应放在单独的 showcase/export 目录或独立仓库中，发布前再人工确认隐私边界。
+
+## Quick Start
+
+```powershell
+python -m pip install -r scripts\requirements.txt
+python scripts\xuanxue_console.py bazi --solar 1991-08-15 --time 01:30 --gender 男 --as-of 2026-06-12
+python scripts\xuanxue_console.py western --solar 1991-08-15 --time 01:30 --tz-offset 8
+python scripts\xuanxue_console.py combo --solar 1991-08-15 --time 01:30 --gender 男 --western
+```
+
+完整交付通常先创建外部 run workspace，再把结构化事实、草稿、交付物和复盘都放到项目外部目录，避免污染仓库。
 
 ## Service Layer
 
