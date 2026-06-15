@@ -77,6 +77,8 @@ git clone https://github.com/wingerLIU/xuanxue-console.git $env:USERPROFILE\.cod
 - [service/](service/): 流程笔记、资料表、SOP、质量闸门和成本核算笔记。
 - [EXTERNAL_ARTIFACTS.md](EXTERNAL_ARTIFACTS.md): 为什么真实 run 和交付物必须放在仓库外部。
 - [CONTRIBUTING.md](CONTRIBUTING.md): 贡献方式、隐私边界和不应提交的内容。
+- [CHANGELOG.md](CHANGELOG.md): 公开版本和重要更新记录。
+- [docs/release-process.md](docs/release-process.md): 轻量发布流程。
 - [docs/showcase.md](docs/showcase.md): 公开展示图和样例截图的边界建议。
 - [.github/workflows/verify.yml](.github/workflows/verify.yml): GitHub Actions 验证流程。
 

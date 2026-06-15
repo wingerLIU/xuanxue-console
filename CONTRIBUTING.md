@@ -24,6 +24,10 @@
 
 如果你新增知识库规则，请优先说明它来自哪次去隐私反馈，而不是只增加写作口径。
 
+## Updating Versions
+
+公开更新前请补 [CHANGELOG.md](CHANGELOG.md)。如果这次变化会影响使用方式、输出契约或默认交付流程，也同步更新 [VERSION](VERSION) 和 [docs/release-process.md](docs/release-process.md)。
+
 ## Project Position
 
 代码采用 MIT License。项目作者不鼓励把它简单换壳、批量包装成商业算命服务；如果你要公开展示、二次发布或商业化尝试，请先认真处理来源、隐私、客户边界和内容风险。
