@@ -82,6 +82,10 @@ python scripts\xuanxue_console.py combo --solar 1991-08-15 --time 01:30 --gender
 a249256088
 ```
 
+## Author
+
+LiuJiang
+
 ## Disclaimer
 
 本项目用于传统文化、自我观察和 AI 工作流研究，不替代医疗、法律、投资、婚恋决定或人生重大决策。
