@@ -33,6 +33,7 @@
 - 新增 `schemas/retrospective_intake.schema.json`，并让 `finalize_case.py` 校验 `domain_question_bank`，防止复盘追问库从 runtime contract 中丢失。
 - 新增 `schemas/knowledge_context.schema.json`，并让 `finalize_case.py` 校验 `selected_modules`、`usage_rules` 和 schema version，防止知识上下文退化成残缺清单。
 - `build_knowledge_context.py` 生成阶段也会按 `schemas/knowledge_context.schema.json` 自检，避免残缺 context 等到最终交付才暴露。
+- `create_retrospective_intake.py` 生成阶段也会按 `schemas/retrospective_intake.schema.json` 自检，确保复盘问题库和人工审批边界没有丢字段。
 
 ## 0.1.0 - 2026-06-15
 

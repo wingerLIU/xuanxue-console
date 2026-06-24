@@ -14,6 +14,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RETRO_REQUIREMENTS_PATH = PROJECT_ROOT / "knowledge" / "completeness" / "retrospective-requirements.json"
 GLOBAL_RETRO_DIR = PROJECT_ROOT / "knowledge" / "case-retrospectives"
+RETROSPECTIVE_INTAKE_SCHEMA = PROJECT_ROOT / "schemas" / "retrospective_intake.schema.json"
 
 
 def parse_args() -> argparse.Namespace:
@@ -30,6 +31,74 @@ def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise SystemExit(f"missing file: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def json_type_matches(value: Any, expected_type: str | list[str]) -> bool:
+    expected = expected_type if isinstance(expected_type, list) else [expected_type]
+    for item in expected:
+        if item == "object" and isinstance(value, dict):
+            return True
+        if item == "array" and isinstance(value, list):
+            return True
+        if item == "string" and isinstance(value, str):
+            return True
+        if item == "boolean" and isinstance(value, bool):
+            return True
+        if item == "integer" and isinstance(value, int) and not isinstance(value, bool):
+            return True
+        if item == "number" and isinstance(value, (int, float)) and not isinstance(value, bool):
+            return True
+        if item == "null" and value is None:
+            return True
+    return False
+
+
+def validate_schema_node(
+    value: Any,
+    rules: dict[str, Any],
+    path_name: str,
+    failures: list[str],
+) -> None:
+    expected_type = rules.get("type")
+    if expected_type is not None and not json_type_matches(value, expected_type):
+        failures.append(f"{path_name} has invalid type")
+        return
+    if "const" in rules and value != rules["const"]:
+        failures.append(f"{path_name} must be {rules['const']!r}")
+    enum = rules.get("enum")
+    if isinstance(enum, list) and value not in enum:
+        failures.append(f"{path_name} must be one of {enum}")
+    minimum = rules.get("minimum")
+    if isinstance(minimum, (int, float)) and isinstance(value, (int, float)) and value < minimum:
+        failures.append(f"{path_name} must be >= {minimum}")
+    if isinstance(value, list):
+        min_items = rules.get("minItems")
+        if isinstance(min_items, int) and len(value) < min_items:
+            failures.append(f"{path_name} must contain at least {min_items} item(s)")
+        item_rules = rules.get("items", {})
+        if isinstance(item_rules, dict):
+            for index, item in enumerate(value):
+                validate_schema_node(item, item_rules, f"{path_name}[{index}]", failures)
+    if isinstance(value, dict):
+        required = rules.get("required", [])
+        if isinstance(required, list):
+            for key in required:
+                if key not in value:
+                    failures.append(f"{path_name} missing schema-required key: {key}")
+        properties = rules.get("properties", {})
+        if isinstance(properties, dict):
+            for key, child_rules in properties.items():
+                if isinstance(child_rules, dict) and key in value:
+                    validate_schema_node(value[key], child_rules, f"{path_name}.{key}", failures)
+
+
+def retrospective_intake_schema_failures(payload: dict[str, Any]) -> list[str]:
+    schema = load_json(RETROSPECTIVE_INTAKE_SCHEMA)
+    failures: list[str] = []
+    if schema.get("schema_version") != "0.1.0":
+        failures.append("retrospective_intake schema file schema_version must be 0.1.0")
+    validate_schema_node(payload, schema, "retrospective_intake", failures)
+    return failures
 
 
 def is_relative_to(child: Path, parent: Path) -> bool:
@@ -796,7 +865,6 @@ def main() -> int:
         [item for item in as_list(context.get("retrospective_requirements")) if isinstance(item, dict)],
         plan,
     )
-    output_md.write_text(build_markdown(manifest, context, retro_dir), encoding="utf-8")
     payload = {
         "schema_version": "0.1.0",
         "case_id": manifest.get("case_id"),
@@ -825,6 +893,21 @@ def main() -> int:
         },
         "do_not_promote_without_human_approval": True,
     }
+    schema_failures = retrospective_intake_schema_failures(payload)
+    if schema_failures:
+        print(
+            json.dumps(
+                {
+                    "passed": False,
+                    "failures": schema_failures,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return 1
+
+    output_md.write_text(build_markdown(manifest, context, retro_dir), encoding="utf-8")
     output_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         json.dumps(

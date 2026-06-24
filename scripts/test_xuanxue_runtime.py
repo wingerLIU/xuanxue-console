@@ -23,6 +23,7 @@ KNOWLEDGE_CONTEXT_SCRIPT = support.KNOWLEDGE_CONTEXT_SCRIPT
 RETRO_INTAKE_SCRIPT = support.RETRO_INTAKE_SCRIPT
 FOLLOWUP_CONTEXT_SCRIPT = support.FOLLOWUP_CONTEXT_SCRIPT
 KNOWLEDGE_CONTEXT_SCHEMA = PROJECT_ROOT / "schemas" / "knowledge_context.schema.json"
+RETROSPECTIVE_INTAKE_SCHEMA = PROJECT_ROOT / "schemas" / "retrospective_intake.schema.json"
 
 
 class RuntimeWorkflowTests(unittest.TestCase):
@@ -41,6 +42,26 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 for item in context[key]:
                     for required_key in item_required:
                         self.assertIn(required_key, item, f"{key} missing {required_key}")
+
+    def assert_retrospective_intake_contract(self, intake: dict) -> None:
+        schema = json.loads(RETROSPECTIVE_INTAKE_SCHEMA.read_text(encoding="utf-8"))
+        self.assertEqual(schema["schema_version"], "0.1.0")
+        self.assertEqual(intake["schema_version"], schema["schema_version"])
+        for key in schema["required"]:
+            self.assertIn(key, intake)
+        self.assertTrue(intake["do_not_promote_without_human_approval"])
+        properties = schema["properties"]
+        for item in intake["retrospective_collection_plan"]:
+            for required_key in properties["retrospective_collection_plan"]["items"]["required"]:
+                self.assertIn(required_key, item, f"retrospective_collection_plan missing {required_key}")
+        for item in intake["domain_question_bank"]:
+            for required_key in properties["domain_question_bank"]["items"]["required"]:
+                self.assertIn(required_key, item, f"domain_question_bank missing {required_key}")
+            self.assertIn(item["domain"], properties["domain_question_bank"]["items"]["properties"]["domain"]["enum"])
+            self.assertIn(item["min_status"], properties["domain_question_bank"]["items"]["properties"]["min_status"]["enum"])
+            self.assertGreaterEqual(item["needed_entries"], 1)
+            self.assertTrue(item["questions"])
+            self.assertTrue(item["suggested_target_artifacts"])
 
     def test_case_workspace_includes_retrospectives_dir(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -944,6 +965,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("<RUN_DIR>\\retrospectives\\CR-20260613-reader-tone.candidate.json", markdown)
             self.assertNotIn(str(candidate_dir), markdown)
             intake = json.loads(json_path.read_text(encoding="utf-8"))
+            self.assert_retrospective_intake_contract(intake)
             self.assertTrue(intake["do_not_promote_without_human_approval"])
             self.assertIn("run_local_candidates", intake)
             self.assertEqual(len(intake["run_local_candidates"]), 1)
@@ -1081,6 +1103,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertTrue(result["passed"])
             markdown = Path(result["markdown"]).read_text(encoding="utf-8")
             intake = json.loads(Path(result["json"]).read_text(encoding="utf-8"))
+            self.assert_retrospective_intake_contract(intake)
             self.assertEqual(intake["run_local_approval_summary"]["ready_for_human_approval"], 2)
             preview = intake["run_local_approval_impact_preview"]
             self.assertEqual(preview["ready_candidate_count"], 2)
