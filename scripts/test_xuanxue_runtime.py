@@ -391,6 +391,13 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 cwd=str(PROJECT_ROOT),
                 encoding="utf-8",
             )
+            knowledge_context_path = Path(manifest["paths"]["runtime_dir"]) / "knowledge_context.json"
+            stale_context = json.loads(knowledge_context_path.read_text(encoding="utf-8"))
+            for item in stale_context["retrospective_collection_plan"]:
+                item["evidence_to_collect"] = item["evidence_to_collect"][:4]
+            for item in stale_context["retrospective_requirements"]:
+                item.pop("evidence_questions", None)
+            knowledge_context_path.write_text(json.dumps(stale_context, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             proc = subprocess.run(
                 [
                     sys.executable,
@@ -893,6 +900,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("可以问读者的问题", markdown)
             self.assertIn("knowledge/bazi/foundations.md", markdown)
             self.assertIn("create_case_retrospective_candidate.py", markdown)
+            self.assertIn("哪个八字结构判断被现实经历验证或推翻", markdown)
             self.assertNotIn("{'domain':", markdown)
             self.assertNotIn("needed ``", markdown)
             self.assertNotIn("--domain <domain>", markdown)
@@ -952,6 +960,10 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 "CR-20260613-reader-tone",
             )
             self.assertTrue(intake["retrospective_collection_plan"])
+            bazi_plan = {
+                item["domain"]: item for item in intake["retrospective_collection_plan"] if isinstance(item, dict)
+            }["bazi"]
+            self.assertIn("哪个八字结构判断被现实经历验证或推翻？", bazi_plan["evidence_to_collect"])
             for item in intake["retrospective_collection_plan"]:
                 self.assertTrue(item["suggested_target_artifacts"])
 

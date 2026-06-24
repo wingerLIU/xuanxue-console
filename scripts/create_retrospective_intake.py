@@ -51,6 +51,69 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def requirements_by_domain() -> dict[str, dict[str, Any]]:
+    data = load_json(RETRO_REQUIREMENTS_PATH)
+    requirements = data.get("requirements", [])
+    if not isinstance(requirements, list):
+        return {}
+    result: dict[str, dict[str, Any]] = {}
+    for item in requirements:
+        if not isinstance(item, dict):
+            continue
+        domain = item.get("domain")
+        if isinstance(domain, str) and domain:
+            result[domain] = item
+    return result
+
+
+def current_evidence_questions(domain: str, requirements: dict[str, dict[str, Any]]) -> list[str]:
+    raw = requirements.get(domain, {}).get("evidence_questions", [])
+    if not isinstance(raw, list):
+        return []
+    return [item.strip() for item in raw if isinstance(item, str) and item.strip()]
+
+
+def append_missing_evidence(plan_item: dict[str, Any], questions: list[str]) -> dict[str, Any]:
+    if not questions:
+        return plan_item
+    evidence = [str(item) for item in as_list(plan_item.get("evidence_to_collect")) if str(item).strip()]
+    seen = set(evidence)
+    for question in questions:
+        if question not in seen:
+            evidence.append(question)
+            seen.add(question)
+    updated = dict(plan_item)
+    updated["evidence_to_collect"] = evidence
+    return updated
+
+
+def hydrate_context_with_current_retrospective_questions(context: dict[str, Any]) -> dict[str, Any]:
+    requirements = requirements_by_domain()
+    if not requirements:
+        return context
+
+    updated = dict(context)
+    plan: list[dict[str, Any]] = []
+    for item in as_list(context.get("retrospective_collection_plan")):
+        if not isinstance(item, dict):
+            continue
+        domain = str(item.get("domain", ""))
+        plan.append(append_missing_evidence(item, current_evidence_questions(domain, requirements)))
+    updated["retrospective_collection_plan"] = plan
+
+    hydrated_requirements: list[dict[str, Any]] = []
+    for item in as_list(context.get("retrospective_requirements")):
+        if not isinstance(item, dict):
+            continue
+        domain = str(item.get("domain", ""))
+        questions = current_evidence_questions(domain, requirements)
+        if questions and not as_list(item.get("evidence_questions")):
+            item = {**item, "evidence_questions": questions}
+        hydrated_requirements.append(item)
+    updated["retrospective_requirements"] = hydrated_requirements
+    return updated
+
+
 def clean_blocker_line(item: Any) -> str:
     if isinstance(item, dict):
         domain = item.get("domain", "")
@@ -619,7 +682,7 @@ def main() -> int:
         if args.knowledge_context
         else runtime_dir / "knowledge_context.json"
     )
-    context = load_json(knowledge_context_path)
+    context = hydrate_context_with_current_retrospective_questions(load_json(knowledge_context_path))
     retro_dir = Path(args.global_retro_dir).resolve() if args.global_retro_dir else GLOBAL_RETRO_DIR
 
     output_md = (
