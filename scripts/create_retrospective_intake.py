@@ -455,6 +455,56 @@ def lines_for_plan(plan: list[dict[str, Any]]) -> list[str]:
     return lines
 
 
+def domain_label(domain: str) -> str:
+    labels = {
+        "bazi": "八字",
+        "ziwei": "紫微",
+        "western": "西占",
+        "liuyao": "六爻",
+        "relationship": "双人合盘",
+        "team_career": "多人事业合盘",
+        "fengshui": "风水方位",
+        "writing": "写作表达",
+        "*": "全局复盘",
+    }
+    return labels.get(domain, domain)
+
+
+def lines_for_domain_question_bank(
+    requirements: list[dict[str, Any]],
+    plan: list[dict[str, Any]],
+) -> list[str]:
+    plan_by_domain = {str(item.get("domain", "")): item for item in plan if isinstance(item, dict)}
+    rows = [
+        item
+        for item in requirements
+        if isinstance(item, dict)
+        and item.get("satisfied") is not True
+        and as_list(item.get("evidence_questions"))
+    ]
+    if not rows:
+        return []
+
+    lines = [
+        "## 按领域追问提示",
+        "",
+        "不要用同一批问题追所有读者；先按本 run 的模块和 blocker 选择领域，再问能验证或推翻判断的问题。",
+        "",
+    ]
+    for item in rows:
+        domain = str(item.get("domain", ""))
+        lines.extend([f"### {domain_label(domain)}", ""])
+        for question in as_list(item.get("evidence_questions")):
+            if isinstance(question, str) and question.strip():
+                lines.append(f"- {question.strip()}")
+        targets = [str(target) for target in as_list(plan_by_domain.get(domain, {}).get("suggested_target_artifacts"))]
+        if targets:
+            lines.append("- 优先落点：")
+            lines.extend(f"  - `{target}`" for target in targets[:3])
+        lines.append("")
+    return lines
+
+
 def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir: Path = GLOBAL_RETRO_DIR) -> str:
     plan = [item for item in as_list(context.get("retrospective_collection_plan")) if isinstance(item, dict)]
     blockers = as_list(context.get("goal_completion_blockers"))
@@ -495,6 +545,7 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
         "- 每条候选复盘必须写清楚建议落点：命理知识、表达模板、验收脚本，还是只保留为案例校准。",
         "",
     ]
+    lines.extend(lines_for_domain_question_bank(requirements, plan))
     if blockers:
         lines.extend(["## 仍然打开的 blocker", ""])
         for blocker in blockers:
