@@ -302,6 +302,8 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("service/multi-person-career-synastry-sop.md", knowledge_paths)
             self.assertIn("templates/team-career-synastry-template.md", knowledge_paths)
             self.assertIn("knowledge/fengshui/README.md", knowledge_paths)
+            self.assertIn("service/client-intake-form.md", knowledge_paths)
+            self.assertIn("templates/concise-report-template.md", knowledge_paths)
             retrospective_requirements = {item["id"]: item for item in context["retrospective_requirements"]}
             self.assertIn("REQ-RETRO-TEAM-CAREER", retrospective_requirements)
             self.assertIn("REQ-RETRO-FENGSHUI", retrospective_requirements)

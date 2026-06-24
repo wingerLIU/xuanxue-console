@@ -342,7 +342,9 @@
         "knowledge/fengshui/README.md",
         "knowledge/bazi/structure-and-flow.md",
         "knowledge/rules/inference-contract.md",
-        "templates/longform-analysis-template.md"
+        "templates/longform-analysis-template.md",
+        "templates/concise-report-template.md",
+        "service/client-intake-form.md"
       ],
       "source_ids": [
         "SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS",

@@ -80,6 +80,8 @@ TARGET_ARTIFACT_PRIORITIES = {
         "knowledge/bazi/structure-and-flow.md",
         "knowledge/rules/inference-contract.md",
         "templates/longform-analysis-template.md",
+        "templates/concise-report-template.md",
+        "service/client-intake-form.md",
     ],
     "source_register": [
         "knowledge/sources/source-register.json",

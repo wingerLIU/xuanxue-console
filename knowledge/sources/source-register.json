@@ -482,10 +482,10 @@
       "evidence_mode": "project_artifact",
       "domains": ["fengshui"],
       "urls": [],
-      "local_paths": ["knowledge/fengshui/README.md"],
-      "used_for": "方位、空间、城市、居住和轻量开运建议的使用边界。",
+      "local_paths": ["knowledge/fengshui/README.md", "service/client-intake-form.md", "templates/longform-analysis-template.md", "templates/concise-report-template.md"],
+      "used_for": "方位、空间、城市、居住、办公和轻量开运建议的资料收集、报告结构和使用边界。",
       "limits": "没有现场勘测、罗盘坐向、户型图和长期反馈时，只能作为低风险空间建议和校准问题，不做传统风水强断。",
-      "promotion_targets": ["knowledge/fengshui/README.md"]
+      "promotion_targets": ["knowledge/fengshui/README.md", "service/client-intake-form.md", "templates/longform-analysis-template.md", "templates/concise-report-template.md"]
     },
     {
       "id": "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
