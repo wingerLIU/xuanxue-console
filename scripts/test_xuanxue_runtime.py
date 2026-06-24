@@ -1187,6 +1187,8 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("未人工批准前不计入全局知识库", markdown)
             self.assertIn("approval_ready: `false`", markdown)
             self.assertIn("target_artifacts imply missing domains: relationship", markdown)
+            self.assertIn("domain_evidence 待补", markdown)
+            self.assertIn("`writing`: `evidence_anchor` / `observed_feedback` / `promotion_limit`", markdown)
             self.assertIn("promote_case_retrospective.py", markdown)
             self.assertIn("人工确认前预览命令", markdown)
             self.assertIn("--dry-run", markdown)
@@ -1204,6 +1206,15 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertFalse(local_candidate["human_approved"])
             self.assertFalse(local_candidate["approval_ready"])
             self.assertTrue(local_candidate["approval_blockers"])
+            self.assertEqual(
+                local_candidate["domain_evidence_required"],
+                [
+                    {
+                        "domain": "writing",
+                        "missing_fields": ["evidence_anchor", "observed_feedback", "promotion_limit"],
+                    }
+                ],
+            )
             self.assertIn("target_artifacts", local_candidate)
             self.assertTrue(any("missing domains: relationship" in item for item in local_candidate["warnings"]))
             self.assertIn("promote_case_retrospective.py", local_candidate["promotion_command"])
@@ -1225,6 +1236,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 ],
             )
             self.assertIn("当前没有 `approval_ready=true` 的候选", markdown)
+            self.assertIn("domains、target_artifacts、domain_evidence 或人工审批状态", markdown)
             self.assertIn("当前没有可形成最小审批建议的 ready 候选", markdown)
             self.assertNotIn("ready 候选批量检查顺序", markdown)
             self.assertNotIn(str(candidate_dir), json.dumps(intake, ensure_ascii=False))

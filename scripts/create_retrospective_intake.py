@@ -323,6 +323,26 @@ def domain_evidence_blockers(data: dict[str, Any]) -> list[str]:
     return blockers
 
 
+def domain_evidence_required_items(data: dict[str, Any]) -> list[dict[str, Any]]:
+    domains = {str(item) for item in as_list(data.get("domains"))}
+    required_domains = sorted(domains & DOMAIN_EVIDENCE_REQUIRED)
+    evidence = data.get("domain_evidence")
+    items: list[dict[str, Any]] = []
+    for domain in required_domains:
+        domain_evidence = evidence.get(domain) if isinstance(evidence, dict) else None
+        if isinstance(domain_evidence, dict):
+            missing_fields = [
+                field
+                for field in DOMAIN_EVIDENCE_REQUIRED_FIELDS
+                if not str(domain_evidence.get(field, "")).strip()
+            ]
+        else:
+            missing_fields = list(DOMAIN_EVIDENCE_REQUIRED_FIELDS)
+        if missing_fields:
+            items.append({"domain": domain, "missing_fields": missing_fields})
+    return items
+
+
 def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     paths = manifest.get("paths", {})
     raw_dir = paths.get("retrospectives_dir") if isinstance(paths, dict) else None
@@ -363,6 +383,7 @@ def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
                 "warnings": warnings,
                 "approval_ready": not approval_blockers,
                 "approval_blockers": approval_blockers,
+                "domain_evidence_required": domain_evidence_required_items(data) if isinstance(data, dict) else [],
                 "promotion_dry_run_command": promotion_dry_run_command_for_candidate(path.name),
                 "promotion_command": promotion_command_for_candidate(path.name),
             }
@@ -751,6 +772,12 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
             lines.append(f"  - approval_ready: `{str(item.get('approval_ready')).lower()}`")
             for blocker in as_list(item.get("approval_blockers")):
                 lines.append(f"  - approval_blocker: {blocker}")
+            required_evidence = [entry for entry in as_list(item.get("domain_evidence_required")) if isinstance(entry, dict)]
+            if required_evidence:
+                lines.append("  - domain_evidence 待补：")
+                for entry in required_evidence:
+                    fields = " / ".join(f"`{field}`" for field in as_list(entry.get("missing_fields")))
+                    lines.append(f"    - `{entry.get('domain', '')}`: {fields}")
             for warning in as_list(item.get("warnings")):
                 lines.append(f"  - warning: {warning}")
             lines.extend(
@@ -791,7 +818,7 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
                     )
                 )
         else:
-            lines.append("当前没有 `approval_ready=true` 的候选；先修复候选 domains、target_artifacts 或人工审批状态。")
+            lines.append("当前没有 `approval_ready=true` 的候选；先修复候选 domains、target_artifacts、domain_evidence 或人工审批状态。")
         lines.append("")
         minimal = minimal_approval_plan(candidates, retro_dir)
         selected_ids = [str(item) for item in as_list(minimal.get("selected_candidate_ids"))]
