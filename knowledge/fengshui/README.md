@@ -1,8 +1,16 @@
 # Fengshui And Direction Knowledge Card
 
 source_id: `SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS`
+classical_source_id: `SRC-FENGSHUI-ZHAIJING`
 
 这个模块用于报告里的方位、空间、城市、办公位置、居住习惯和轻量开运建议。它是辅助层，不是主判断层。
+
+## 来源边界
+
+- `SRC-FENGSHUI-ZHAIJING` 登记《宅经》（旧题《黄帝宅经》）作为风水方位、阴阳宅、二十四路和宅居术语的传统入口。
+- 这个来源当前是 `candidate`，只用于 provenance、术语边界和传统语境说明，不把古宅法直接套到现代住宅、办公室或城市选择。
+- 报告里的风水方位建议仍以 `SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS` 为执行标准：现实目标、空间信息、可撤回调整和复盘指标优先。
+- 没有现场勘测、罗盘坐向、户型图和长期反馈时，不把任何传统方位写成坐向吉凶、发财破财或灾祸定论。
 
 ## 使用范围
 

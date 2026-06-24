@@ -475,6 +475,19 @@
       "promotion_targets": ["knowledge/team-career/README.md", "service/multi-person-career-synastry-sop.md", "templates/team-career-synastry-template.md"]
     },
     {
+      "id": "SRC-FENGSHUI-ZHAIJING",
+      "title": "宅经（旧题黄帝宅经）",
+      "type": "classical_text",
+      "status": "candidate",
+      "evidence_mode": "online_public_entry",
+      "domains": ["fengshui"],
+      "urls": ["https://zh.wikisource.org/wiki/%E5%AE%85%E7%B6%93", "https://ctext.org/wiki.pl?if=gb&res=908557"],
+      "local_paths": [],
+      "used_for": "宅法、阴阳宅、二十四路、宅居方位和传统风水术语边界。",
+      "limits": "旧题黄帝宅经有依托边界；古宅法不能直接套现代住宅、办公位或城市选择。没有现场勘测、罗盘坐向、户型图和长期反馈时，只能作来源边界和低风险空间建议。",
+      "promotion_targets": ["knowledge/fengshui/README.md", "knowledge/sources/online-classics.md"]
+    },
+    {
       "id": "SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS",
       "title": "fengshui and direction synthesis",
       "type": "project_rule",

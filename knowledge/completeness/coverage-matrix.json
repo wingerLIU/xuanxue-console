@@ -347,12 +347,14 @@
         "service/client-intake-form.md"
       ],
       "source_ids": [
+        "SRC-FENGSHUI-ZHAIJING",
         "SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS",
         "SRC-BAZI-PROJECT-SYNTHESIS",
         "SRC-PROJECT-INTERPRETATION-GUIDE",
         "SRC-PROJECT-LONGFORM-TEMPLATE"
       ],
       "claim_levels": [
+        "classical_rule",
         "modern_synthesis",
         "case_calibration",
         "practical_advice"

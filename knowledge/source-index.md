@@ -82,6 +82,13 @@
 | `SRC-XIAOLIUREN-TRADITION` | 小六壬民间起课传统 | candidate | 短期时机、状态和轻量提示 | 作为传统统称使用；强于无来源印象，但仍是弱信号体系 |
 | `SRC-XIAOLIUREN-PROJECT-SYNTHESIS` | 本项目小六壬规则卡 | curated | 快速问事、当天/短期状态提示 | 仅作弱信号，优先级低于六爻和出生盘 |
 
+## 风水方位来源
+
+| source_id | 来源 | 状态 | 适用范围 | 使用边界 |
+| --- | --- | --- | --- | --- |
+| `SRC-FENGSHUI-ZHAIJING` | 《宅经》（旧题《黄帝宅经》） | candidate | 阴阳宅、二十四路、宅居方位和传统宅法术语 | 只作来源和术语边界，不直接支撑现代住宅、办公位、城市选择的坐向吉凶强断 |
+| `SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS` | 本项目风水方位规则卡 | curated | 方位、空间、城市、居住、办公和轻量开运建议 | 没有现场勘测、罗盘坐向、户型图和长期反馈时，只能作为低风险空间建议和校准问题 |
+
 ## 写作和服务来源
 
 | source_id | 来源 | 状态 | 适用范围 | 使用边界 |
@@ -91,7 +98,6 @@
 | `SRC-PROJECT-QUALITY-GATE` | `service/quality-gate.md`; `scripts/build_fact_archive.py`; `scripts/finalize_case.py`; `scripts/validate_longform_report.py`; `scripts/audit_longform_consistency.py` | curated | 交付前检查、事实复查档案、runtime knowledge context、串案风险、高风险边界 | 质量控制，不产生命理事实 |
 | `SRC-PROJECT-WRITING-SYNTHESIS` | `knowledge/writing/reader-rich-report.md`; `templates/concise-report-template.md`; `scripts/validate_longform_report.py` | curated | 付费报告的读者口吻、摘要、场景、简洁版和可读性 | 写作规则必须服务证据，不替代证据 |
 | `SRC-PROJECT-TEAM-CAREER-SYNTHESIS` | `knowledge/team-career/README.md`; `service/multi-person-career-synastry-sop.md`; `templates/team-career-synastry-template.md` | curated | 多人事业合盘的团队级 run、商业结构、城市判断、流年流月和复盘采集边界 | 团队判断必须先落到单盘 facts、两两 relationship facts 和现实商业资料，不产生命理事实 |
-| `SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS` | `knowledge/fengshui/README.md`; `service/client-intake-form.md`; `templates/longform-analysis-template.md`; `templates/concise-report-template.md` | curated | 方位、空间、城市、居住、办公和轻量开运建议的资料收集、报告结构和使用边界 | 没有现场勘测、罗盘坐向、户型图和长期反馈时，只能作为低风险空间建议和校准问题 |
 | `SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL` | `knowledge/case-retrospectives/promotion-protocol.md`; `schemas/case_retrospective.schema.json`; `schemas/knowledge_context.schema.json`; `schemas/retrospective_intake.schema.json`; `scripts/create_retrospective_intake.py`; `scripts/create_case_retrospective_candidate.py`; `scripts/promote_case_retrospective.py`; `scripts/audit_case_retrospectives.py` | curated | 案例复盘去隐私、反馈 intake、反例、人工确认和晋升流程 | 只规定自进化流程，不直接产生命理判断 |
 | `SRC-PROJECT-CASE-RETROSPECTIVE` | `knowledge/case-retrospectives/` | candidate | 可复用经验、常见误读、客户反馈校准 | 必须去隐私且人工确认后才可晋升 |
 | `SRC-PROJECT-COMPLETENESS-AUDIT` | `knowledge/completeness/coverage-matrix.json`; `schemas/knowledge_context.schema.json`; `scripts/audit_source_documentation.py` | curated | 覆盖度、阻塞项、联网资料准入和 goal_complete 判断 | 只做审计和状态控制，不产生命理判断 |

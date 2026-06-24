@@ -47,6 +47,12 @@ last_checked: `2026-06-12`
 | `SRC-XIAOLIUREN-DUONENG-BISHI` | Wikisource `多能鄙事/卷之八`: https://zh.wikisource.org/zh-hans/%E5%A4%9A%E8%83%BD%E9%84%99%E4%BA%8B/%E5%8D%B7%E4%B9%8B%E5%85%AB | 目录明确列出“小六壬课”，正文内容多以图像/扫描呈现 | 小六壬作为轻量课法的古籍入口 | 只登记存在性和目录层级；不从图像页强提细断规则 |
 | `SRC-XIAOLIUREN-XIEJI-BIANFANG` | Wikisource `欽定協紀辨方書`: https://zh.wikisource.org/wiki/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_%28%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC%29 ; Wikimedia Commons scan: https://upload.wikimedia.org/wikipedia/commons/0/04/NLC892-GBZX0301011955-284762_%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_%E4%B8%89%E5%8D%81%E5%85%AD%E5%8D%B7_%E7%AC%AC1%E5%86%8A.pdf | 找到公开总入口和扫描件线索，扫描检索提示“乃俗传小六壬之留连赤口日”等源流信息 | 留连、赤口、小吉等短期择日/状态词的源流边界 | 只作源流线索；现代道传课、商品页、网盘资料不晋升 |
 
+## 风水方位
+
+| source_id | 在线入口 | 核验结果 | 可提炼主题 | 使用边界 |
+| --- | --- | --- | --- | --- |
+| `SRC-FENGSHUI-ZHAIJING` | Wikisource `宅经`: https://zh.wikisource.org/wiki/%E5%AE%85%E7%B6%93 ; ctext: https://ctext.org/wiki.pl?if=gb&res=908557 | 找到公开文本入口；题名和旧题作者保留版本边界 | 阴阳宅、二十四路、宅居方位、传统宅法术语 | 只作风水方位的来源和术语边界；没有现场勘测、罗盘坐向、户型图和长期反馈时，不直接支撑现代坐向吉凶强断 |
+
 ## 西洋占星
 
 | source_id | 在线入口 | 核验结果 | 可提炼主题 | 使用边界 |
