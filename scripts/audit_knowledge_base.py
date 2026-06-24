@@ -187,6 +187,18 @@ REQUIRED_MARKERS = {
         "SRC-ZIWEI-DOUSHU-QUANSHU",
         "SRC-ZIWEI-FU-TEXTS",
     ],
+    "knowledge/ziwei/foundations.md": [
+        "ZW-F001",
+        "结论强度",
+        "领域证据链",
+        "常见误读",
+        "复盘采集点",
+    ],
+    "knowledge/ziwei/palaces-stars-four-transformations.md": [
+        "星曜置信度",
+        "四化写作步骤",
+        "领域校准问题",
+    ],
     "knowledge/ziwei/quanshu-vs-quanji-boundary.md": [
         "ZW-QJ001",
         "SRC-ZIWEI-DOUSHU-QUANJI",
