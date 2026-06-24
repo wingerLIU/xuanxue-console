@@ -16,6 +16,7 @@ SOURCE_REGISTER = PROJECT_ROOT / "knowledge" / "sources" / "source-register.json
 COVERAGE_MATRIX = PROJECT_ROOT / "knowledge" / "completeness" / "coverage-matrix.json"
 RETRO_REQUIREMENTS = PROJECT_ROOT / "knowledge" / "completeness" / "retrospective-requirements.json"
 RETRO_DIR = PROJECT_ROOT / "knowledge" / "case-retrospectives"
+KNOWLEDGE_CONTEXT_SCHEMA = PROJECT_ROOT / "schemas" / "knowledge_context.schema.json"
 
 COMBO_MODULES = ["bazi", "ziwei", "western", "mbti", "liuyao", "xiaoliuren"]
 ALWAYS_CONTEXT_MODULES = ["writing", "source_register", "completeness"]
@@ -132,6 +133,74 @@ def parse_args() -> argparse.Namespace:
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def json_type_matches(value: Any, expected_type: str | list[str]) -> bool:
+    expected = expected_type if isinstance(expected_type, list) else [expected_type]
+    for item in expected:
+        if item == "object" and isinstance(value, dict):
+            return True
+        if item == "array" and isinstance(value, list):
+            return True
+        if item == "string" and isinstance(value, str):
+            return True
+        if item == "boolean" and isinstance(value, bool):
+            return True
+        if item == "integer" and isinstance(value, int) and not isinstance(value, bool):
+            return True
+        if item == "number" and isinstance(value, (int, float)) and not isinstance(value, bool):
+            return True
+        if item == "null" and value is None:
+            return True
+    return False
+
+
+def knowledge_context_schema_failures(context: dict[str, Any]) -> list[str]:
+    schema = load_json(KNOWLEDGE_CONTEXT_SCHEMA)
+    failures: list[str] = []
+    if schema.get("schema_version") != "0.1.0":
+        failures.append("knowledge_context schema file schema_version must be 0.1.0")
+
+    required = schema.get("required", [])
+    if not isinstance(required, list) or not required:
+        failures.append("knowledge_context schema required must be a non-empty list")
+        required = []
+    for key in required:
+        if key not in context:
+            failures.append(f"knowledge_context missing schema-required key: {key}")
+
+    properties = schema.get("properties", {})
+    if not isinstance(properties, dict):
+        failures.append("knowledge_context schema properties must be an object")
+        return failures
+
+    for key, rules in properties.items():
+        if not isinstance(rules, dict) or key not in context:
+            continue
+        value = context[key]
+        expected_type = rules.get("type")
+        if expected_type is not None and not json_type_matches(value, expected_type):
+            failures.append(f"knowledge_context.{key} has invalid type")
+            continue
+        if isinstance(value, list):
+            min_items = rules.get("minItems")
+            if isinstance(min_items, int) and len(value) < min_items:
+                failures.append(f"knowledge_context.{key} must contain at least {min_items} item(s)")
+            item_rules = rules.get("items", {})
+            if isinstance(item_rules, dict):
+                item_type = item_rules.get("type")
+                item_required = item_rules.get("required", [])
+                for index, item in enumerate(value):
+                    if item_type is not None and not json_type_matches(item, item_type):
+                        failures.append(f"knowledge_context.{key}[{index}] has invalid type")
+                        continue
+                    if isinstance(item, dict) and isinstance(item_required, list):
+                        for required_key in item_required:
+                            if required_key not in item:
+                                failures.append(
+                                    f"knowledge_context.{key}[{index}] missing schema-required key: {required_key}"
+                                )
+    return failures
 
 
 def is_relative_to(child: Path, parent: Path) -> bool:
@@ -439,12 +508,14 @@ def main() -> int:
             "New online classics must enter source-register, online-classics and promoted rule cards before report use.",
             "Case feedback must enter via external retrospectives candidate and human approval.",
         ],
-        "passed": not missing_files and not missing_sources,
+        "passed": False,
         "failures": [
             *(f"missing knowledge file: {item}" for item in missing_files),
             *(f"missing source register entry: {item}" for item in missing_sources),
         ],
     }
+    result["failures"].extend(knowledge_context_schema_failures(result))
+    result["passed"] = not result["failures"]
 
     text = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if output_path:

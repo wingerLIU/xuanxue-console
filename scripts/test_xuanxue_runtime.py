@@ -22,9 +22,26 @@ AUDIT_WORKSPACE_SCRIPT = support.AUDIT_WORKSPACE_SCRIPT
 KNOWLEDGE_CONTEXT_SCRIPT = support.KNOWLEDGE_CONTEXT_SCRIPT
 RETRO_INTAKE_SCRIPT = support.RETRO_INTAKE_SCRIPT
 FOLLOWUP_CONTEXT_SCRIPT = support.FOLLOWUP_CONTEXT_SCRIPT
+KNOWLEDGE_CONTEXT_SCHEMA = PROJECT_ROOT / "schemas" / "knowledge_context.schema.json"
 
 
 class RuntimeWorkflowTests(unittest.TestCase):
+    def assert_knowledge_context_contract(self, context: dict) -> None:
+        schema = json.loads(KNOWLEDGE_CONTEXT_SCHEMA.read_text(encoding="utf-8"))
+        self.assertEqual(schema["schema_version"], "0.1.0")
+        self.assertEqual(context["schema_version"], schema["schema_version"])
+        for key in schema["required"]:
+            self.assertIn(key, context)
+        for key, rules in schema["properties"].items():
+            if "minItems" in rules:
+                self.assertGreaterEqual(len(context[key]), rules["minItems"], key)
+            item_rules = rules.get("items", {})
+            item_required = item_rules.get("required", []) if isinstance(item_rules, dict) else []
+            if item_required:
+                for item in context[key]:
+                    for required_key in item_required:
+                        self.assertIn(required_key, item, f"{key} missing {required_key}")
+
     def test_case_workspace_includes_retrospectives_dir(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             proc = subprocess.run(
@@ -140,6 +157,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertFalse(output.resolve().is_relative_to(PROJECT_ROOT.resolve()))
             context = json.loads(output.read_text(encoding="utf-8"))
             self.assertTrue(context["passed"])
+            self.assert_knowledge_context_contract(context)
             self.assertIn("bazi", context["selected_modules"])
             self.assertIn("ziwei", context["selected_modules"])
             self.assertIn("writing", context["selected_modules"])
@@ -228,6 +246,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
             output = Path(json.loads(proc.stdout)["output"])
             context = json.loads(output.read_text(encoding="utf-8"))
             self.assertTrue(context["passed"])
+            self.assert_knowledge_context_contract(context)
             self.assertIn("relationship", context["selected_modules"])
             knowledge_paths = {item["path"] for item in context["knowledge_files"]}
             self.assertIn("templates/relationship-rich-template.md", knowledge_paths)
@@ -295,6 +314,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
             output = Path(json.loads(proc.stdout)["output"])
             context = json.loads(output.read_text(encoding="utf-8"))
             self.assertTrue(context["passed"])
+            self.assert_knowledge_context_contract(context)
             self.assertIn("team_career", context["selected_modules"])
             self.assertIn("fengshui", context["selected_modules"])
             knowledge_paths = {item["path"] for item in context["knowledge_files"]}
