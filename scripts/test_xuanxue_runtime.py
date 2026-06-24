@@ -960,6 +960,14 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 intake["knowledge_growth_priority"]["decision_labels"],
                 ["knowledge_rule", "expression_template", "validation_gate", "counterexample_only"],
             )
+            question_bank = {item["domain"]: item for item in intake["domain_question_bank"]}
+            self.assertIn("bazi", question_bank)
+            self.assertIn("ziwei", question_bank)
+            self.assertEqual(question_bank["bazi"]["label"], "八字")
+            self.assertIn("REQ-RETRO-BAZI", question_bank["bazi"]["requirement_id"])
+            self.assertIn("哪个八字结构判断被现实经历验证或推翻？", question_bank["bazi"]["questions"])
+            self.assertIn("knowledge/bazi/foundations.md", question_bank["bazi"]["suggested_target_artifacts"])
+            self.assertEqual(question_bank["ziwei"]["label"], "紫微")
             self.assertEqual(
                 intake["run_local_candidate_warnings"][0]["id"],
                 "CR-20260613-reader-tone",

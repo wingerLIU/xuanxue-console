@@ -470,19 +470,45 @@ def domain_label(domain: str) -> str:
     return labels.get(domain, domain)
 
 
+def domain_question_bank(
+    requirements: list[dict[str, Any]],
+    plan: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    plan_by_domain = {str(item.get("domain", "")): item for item in plan if isinstance(item, dict)}
+    bank: list[dict[str, Any]] = []
+    for item in requirements:
+        if not isinstance(item, dict):
+            continue
+        if item.get("satisfied") is True:
+            continue
+        questions = [str(question).strip() for question in as_list(item.get("evidence_questions")) if str(question).strip()]
+        if not questions:
+            continue
+        domain = str(item.get("domain", ""))
+        plan_item = plan_by_domain.get(domain, {})
+        bank.append(
+            {
+                "domain": domain,
+                "label": domain_label(domain),
+                "requirement_id": item.get("id"),
+                "gap_id": item.get("gap_id"),
+                "needed_entries": requirement_number(item, "needed_entries", "min_entries", "needed"),
+                "min_status": item.get("min_status", ""),
+                "questions": questions,
+                "suggested_target_artifacts": [
+                    str(target) for target in as_list(plan_item.get("suggested_target_artifacts"))
+                ],
+            }
+        )
+    return bank
+
+
 def lines_for_domain_question_bank(
     requirements: list[dict[str, Any]],
     plan: list[dict[str, Any]],
 ) -> list[str]:
-    plan_by_domain = {str(item.get("domain", "")): item for item in plan if isinstance(item, dict)}
-    rows = [
-        item
-        for item in requirements
-        if isinstance(item, dict)
-        and item.get("satisfied") is not True
-        and as_list(item.get("evidence_questions"))
-    ]
-    if not rows:
+    bank = domain_question_bank(requirements, plan)
+    if not bank:
         return []
 
     lines = [
@@ -491,13 +517,10 @@ def lines_for_domain_question_bank(
         "不要用同一批问题追所有读者；先按本 run 的模块和 blocker 选择领域，再问能验证或推翻判断的问题。",
         "",
     ]
-    for item in rows:
-        domain = str(item.get("domain", ""))
-        lines.extend([f"### {domain_label(domain)}", ""])
-        for question in as_list(item.get("evidence_questions")):
-            if isinstance(question, str) and question.strip():
-                lines.append(f"- {question.strip()}")
-        targets = [str(target) for target in as_list(plan_by_domain.get(domain, {}).get("suggested_target_artifacts"))]
+    for item in bank:
+        lines.extend([f"### {item['label']}", ""])
+        lines.extend(f"- {question}" for question in item["questions"])
+        targets = [str(target) for target in as_list(item.get("suggested_target_artifacts"))]
         if targets:
             lines.append("- 优先落点：")
             lines.extend(f"  - `{target}`" for target in targets[:3])
@@ -769,6 +792,10 @@ def main() -> int:
         return 1
 
     candidates = run_local_candidates(manifest)
+    question_bank = domain_question_bank(
+        [item for item in as_list(context.get("retrospective_requirements")) if isinstance(item, dict)],
+        plan,
+    )
     output_md.write_text(build_markdown(manifest, context, retro_dir), encoding="utf-8")
     payload = {
         "schema_version": "0.1.0",
@@ -776,6 +803,7 @@ def main() -> int:
         "run_id": manifest.get("run_id"),
         "knowledge_context": "runtime/knowledge_context.json",
         "retrospective_collection_plan": plan,
+        "domain_question_bank": question_bank,
         "run_local_candidates": candidates,
         "run_local_approval_summary": approval_summary(candidates),
         "run_local_approval_impact_preview": approval_impact_preview(candidates, retro_dir),
