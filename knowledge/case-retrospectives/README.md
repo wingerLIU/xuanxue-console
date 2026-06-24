@@ -5,7 +5,7 @@
 复盘进入本目录前必须满足：
 
 - `human_approved=true`
-- `domains` 非空，写清这个复盘覆盖的知识域，例如 `bazi`、`ziwei`、`western`、`liuyao`、`writing` 或 `quality`。
+- `domains` 非空，写清这个复盘覆盖的知识域，例如 `bazi`、`ziwei`、`western`、`liuyao`、`relationship`、`team_career`、`fengshui`、`writing` 或 `quality`。
 - 已去除客户姓名、截图、出生地细节和私密经历。
 - 写清它要提升的对象：写作模板、知识规则、校验脚本、服务 SOP 或风险边界。
 - 至少包含一个反例或限制，避免把一次经验误升为通用规则。
@@ -42,4 +42,4 @@ python -B -X utf8 scripts\promote_case_retrospective.py --candidate <RUN_DIR>\re
 
 ## 当前状态
 
-当前目录允许没有任何真实复盘条目。没有人工确认前，不要为了填充知识库而制造案例。
+当前已有少量 `writing` / `relationship` curated 复盘；八字、紫微、西占、六爻、多人事业合盘和风水方位仍缺真实去隐私反馈。没有人工确认前，不要为了填充知识库而制造案例。

@@ -11,7 +11,7 @@ source_id: `SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL`
 1. `human_approved=true`，并说明是谁在业务上确认了这个复盘可以沉淀。
 2. 已去除姓名、昵称、出生年月日时、出生地细节、截图路径、客户行业细节和私密经历。
 3. 有明确 `target_artifacts`，说明它要改进哪类对象：规则卡、写作模板、校验脚本、服务 SOP 或风险边界。
-4. 有明确 `domains`，说明它覆盖的是 `bazi`、`ziwei`、`western`、`liuyao`、`writing` 等哪个知识域，便于 coverage 层判断缺口是否被真实复盘支持。
+4. 有明确 `domains`，说明它覆盖的是 `bazi`、`ziwei`、`western`、`liuyao`、`relationship`、`team_career`、`fengshui`、`writing` 等哪个知识域，便于 coverage 层判断缺口是否被真实复盘支持。
 5. 有 `counterexamples` 或 `limits`，说明这个经验什么时候不适用。
 6. 有 `evidence_summary`，但只能写抽象证据，不写原始案例事实。
 7. 通过 `scripts/audit_case_retrospectives.py`。
@@ -36,6 +36,8 @@ source_id: `SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL`
 
 - 写作模板：摘要怎么更像付费报告，行动建议如何减少过程话。
 - 规则卡：某个命理判断在哪些现实场景更容易误读。
+- 合盘/团队：关系张力、合伙分工、城市商业判断或新增成员影响是否被现实反馈验证。
+- 风水方位：空间、城市、座位、居住或开运建议执行后是否可观察，哪些必须降级。
 - 校验脚本：新增过程语言、强断语、路径泄漏、客户信息泄漏的检查。
 - 服务 SOP：新 case 输入输出边界、复盘提交流程、人工确认节点。
 

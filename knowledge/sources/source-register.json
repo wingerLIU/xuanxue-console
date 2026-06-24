@@ -510,7 +510,7 @@
       "urls": [],
       "local_paths": ["knowledge/case-retrospectives/"],
       "used_for": "可复用经验、常见误读和客户反馈校准。",
-      "limits": "必须去隐私且人工确认后才可晋升；当前还没有真实复盘条目。",
+      "limits": "必须去隐私且人工确认后才可晋升；当前已有少量 writing/relationship curated 复盘，八字、紫微、西占、六爻、团队事业合盘和风水方位仍需真实反馈。",
       "promotion_targets": ["knowledge/case-retrospectives/"]
     },
     {

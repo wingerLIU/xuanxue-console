@@ -8,7 +8,7 @@
 - `status`: `candidate`
 - `human_approved`: `false`
 - `approved_by`: ``
-- `domains`: `bazi` / `ziwei` / `western` / `mbti` / `liuyao` / `xiaoliuren` / `writing` / `relationship` / `source_register` / `quality` / `case_retrospectives` / `completeness`
+- `domains`: `bazi` / `ziwei` / `western` / `mbti` / `liuyao` / `xiaoliuren` / `writing` / `relationship` / `team_career` / `fengshui` / `source_register` / `quality` / `case_retrospectives` / `completeness`
 - `target_artifacts`: 规则卡 / 写作模板 / 校验脚本 / 服务 SOP / 风险边界
 
 ## 去隐私摘要
@@ -25,6 +25,15 @@
 这个复盘真正要沉淀的机制是什么？
 它适用于哪类盘面、哪类报告段落、哪类客户问题？
 ```
+
+## 领域选择提示
+
+- 八字、紫微、西占、六爻、小六壬：只有读者反馈能验证或推翻具体判断层时才选；单纯觉得文笔好，不算命理域复盘。
+- `relationship`: 双人合盘、亲密/合作张力、现实关系边界和读者共读体验。
+- `team_career`: 三人及以上事业合盘、合伙分工、权责机制、城市商业判断和新增成员影响。
+- `fengshui`: 方位、城市、办公/居住空间、轻量开运建议和执行后反馈；没有现场勘测或执行反馈时，通常只保留为待验证。
+- `writing`: 读者是否愿意读、是否像模板、是否太中庸/太冲、简洁版是否好转发。
+- `quality`: 校验脚本、交付流程、隐私边界、路径泄漏或验收门槛。
 
 ## 反例和限制
 
