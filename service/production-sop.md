@@ -255,3 +255,5 @@ python -X utf8 scripts\promote_case_retrospective.py --candidate <RUN_DIR>\retro
 python -X utf8 scripts\audit_case_retrospectives.py
 python -X utf8 scripts\audit_knowledge_coverage.py
 ```
+
+`audit_knowledge_coverage.py` 会输出 `run_local_candidate_summary`，用于提示外部 run 里已有的 ready 候选和它们可能关闭的未满足门槛。这个摘要只是人工审批队列，不把候选当成 curated 复盘，也不关闭 `goal_complete`。

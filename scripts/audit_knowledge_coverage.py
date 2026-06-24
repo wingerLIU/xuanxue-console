@@ -17,8 +17,20 @@ RETRO_REQUIREMENTS_PATH = PROJECT_ROOT / "knowledge" / "completeness" / "retrosp
 KNOWLEDGE_MAP_PATH = PROJECT_ROOT / "knowledge" / "knowledge_map.json"
 SOURCE_REGISTER_PATH = PROJECT_ROOT / "knowledge" / "sources" / "source-register.json"
 SOURCE_INDEX_PATH = PROJECT_ROOT / "knowledge" / "source-index.md"
+RUNTIME_PROFILE_PATH = PROJECT_ROOT / "config" / "runtime_profile.json"
 RETRO_DIR = PROJECT_ROOT / "knowledge" / "case-retrospectives"
 SOURCE_ID_RE = re.compile(r"SRC-[A-Z0-9-]+")
+FORBIDDEN_CANDIDATE_PATTERNS = [
+    r"C:\\Users\\",
+    r"wxid_",
+    r"run_20\d{6}_",
+    r"\.jpg\b",
+    r"\.jpeg\b",
+    r"\.png\b",
+    r"\.webp\b",
+    r"\b\d{4}-\d{1,2}-\d{1,2}\b",
+    r"\b\d{1,2}:\d{2}\b",
+]
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -33,6 +45,13 @@ def parse_args() -> argparse.Namespace:
         "--retro-dir",
         default=str(RETRO_DIR),
         help="Retrospective directory to count. Defaults to knowledge/case-retrospectives; use a temp dir for approval previews.",
+    )
+    parser.add_argument(
+        "--runs-root",
+        help=(
+            "Optional external root to scan for run-local retrospective candidates. "
+            "Defaults to XUANXUE_RUNS_ROOT or config/runtime_profile.json when available."
+        ),
     )
     return parser.parse_args()
 
@@ -53,6 +72,30 @@ def load_json(path: Path, failures: list[str]) -> dict[str, Any]:
     except json.JSONDecodeError as exc:
         failures.append(f"{rel(path)} invalid JSON: {exc}")
         return {}
+
+
+def default_runs_root(explicit_root: str | None = None) -> Path | None:
+    if explicit_root:
+        return Path(explicit_root).expanduser().resolve()
+    import os
+
+    env_key = "XUANXUE_RUNS_ROOT"
+    profile: dict[str, Any] = {}
+    if RUNTIME_PROFILE_PATH.exists():
+        try:
+            profile = json.loads(RUNTIME_PROFILE_PATH.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            profile = {}
+    if isinstance(profile.get("external_root_env"), str):
+        env_key = str(profile["external_root_env"])
+    env_value = os.environ.get(env_key)
+    if env_value:
+        return Path(env_value).expanduser().resolve()
+    default_value = profile.get("default_external_root")
+    if isinstance(default_value, str) and default_value.strip():
+        expanded = default_value.replace("%USERPROFILE%", str(Path.home()))
+        return Path(expanded).expanduser().resolve()
+    return None
 
 
 def declared_source_ids() -> set[str]:
@@ -303,6 +346,138 @@ def retrospective_next_actions(
     return actions
 
 
+def candidate_has_private_text(candidate: dict[str, Any]) -> bool:
+    serialized = json.dumps(candidate, ensure_ascii=False)
+    return any(re.search(pattern, serialized, flags=re.IGNORECASE) for pattern in FORBIDDEN_CANDIDATE_PATTERNS)
+
+
+def candidate_approval_ready(candidate: dict[str, Any]) -> bool:
+    if candidate.get("status") != "candidate":
+        return False
+    if candidate.get("human_approved") is True:
+        return False
+    domains = candidate.get("domains", [])
+    target_artifacts = candidate.get("target_artifacts", [])
+    if not isinstance(domains, list) or not domains:
+        return False
+    if not isinstance(target_artifacts, list) or not target_artifacts:
+        return False
+    privacy = candidate.get("privacy")
+    if isinstance(privacy, dict):
+        if privacy.get("deidentified") is not True:
+            return False
+        if privacy.get("contains_client_name") is not False:
+            return False
+        if privacy.get("contains_local_paths") is not False:
+            return False
+        if privacy.get("contains_delivery_text") is not False:
+            return False
+    if candidate_has_private_text(candidate):
+        return False
+    return True
+
+
+def requirement_ids_for_candidate(
+    candidate: dict[str, Any],
+    requirement_results: list[dict[str, Any]],
+) -> list[str]:
+    domains = candidate.get("domains", [])
+    domain_set = {str(item) for item in domains} if isinstance(domains, list) else set()
+    requirement_ids: list[str] = []
+    for requirement in requirement_results:
+        if requirement.get("satisfied") is True:
+            continue
+        domain = str(requirement.get("domain", ""))
+        if domain == "*" or domain in domain_set:
+            req_id = str(requirement.get("id", ""))
+            if req_id:
+                requirement_ids.append(req_id)
+    return requirement_ids
+
+
+def scan_run_local_candidates(
+    runs_root: Path | None,
+    requirement_results: list[dict[str, Any]],
+    warnings: list[str],
+) -> dict[str, Any]:
+    """Summarize external run-local retrospective candidates without exposing paths.
+
+    Candidates remain external and do not count toward completion. This output is
+    only an approval queue hint for humans.
+    """
+
+    if runs_root is None:
+        return {
+            "enabled": False,
+            "reason": "no runs_root configured",
+            "candidate_count": 0,
+            "ready_for_human_approval": 0,
+            "items": [],
+        }
+    if not runs_root.exists():
+        return {
+            "enabled": False,
+            "reason": "runs_root does not exist",
+            "candidate_count": 0,
+            "ready_for_human_approval": 0,
+            "items": [],
+        }
+    if runs_root.resolve().is_relative_to(PROJECT_ROOT.resolve()):
+        warnings.append("run-local candidate scan skipped because runs_root is inside the project repo")
+        return {
+            "enabled": False,
+            "reason": "runs_root inside project repo",
+            "candidate_count": 0,
+            "ready_for_human_approval": 0,
+            "items": [],
+        }
+    runs_dir = runs_root / "runs"
+    if not runs_dir.exists():
+        return {
+            "enabled": True,
+            "reason": "runs directory missing",
+            "candidate_count": 0,
+            "ready_for_human_approval": 0,
+            "items": [],
+        }
+
+    items: list[dict[str, Any]] = []
+    candidate_count = 0
+    for path in sorted(runs_dir.glob("*/*/retrospectives/*.candidate.json")):
+        candidate_count += 1
+        try:
+            candidate = json.loads(path.read_text(encoding="utf-8-sig"))
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(candidate, dict) or not candidate_approval_ready(candidate):
+            continue
+        matched_requirements = requirement_ids_for_candidate(candidate, requirement_results)
+        items.append(
+            {
+                "id": str(candidate.get("id") or path.stem),
+                "title": str(candidate.get("title") or ""),
+                "domains": [str(item) for item in candidate.get("domains", [])],
+                "target_artifacts": [str(item) for item in candidate.get("target_artifacts", [])],
+                "matched_unsatisfied_requirements": matched_requirements,
+                "approval_ready": True,
+                "location": "external_run_retrospectives",
+                "dry_run_command": (
+                    "python scripts/promote_case_retrospective.py "
+                    f"--candidate <RUN_DIR>\\retrospectives\\{path.name} --approved-by <APPROVER> --dry-run"
+                ),
+            }
+        )
+
+    return {
+        "enabled": True,
+        "reason": "",
+        "candidate_count": candidate_count,
+        "ready_for_human_approval": len(items),
+        "items": items[:20],
+        "items_truncated": max(0, len(items) - 20),
+    }
+
+
 def validate_domain(
     domain: dict[str, Any],
     declared_sources: set[str],
@@ -465,6 +640,11 @@ def main() -> int:
         failures,
         warnings,
     )
+    run_local_candidate_summary = scan_run_local_candidates(
+        default_runs_root(args.runs_root),
+        retrospective_requirement_results,
+        warnings,
+    )
     goal_complete_expected = not goal_completion_blockers
     if coverage.get("goal_complete") is not goal_complete_expected:
         failures.append(
@@ -481,6 +661,7 @@ def main() -> int:
         "retrospective_files": len(retrospective_files),
         "retrospective_domain_counts": retro_domain_counts,
         "retrospective_requirements": retrospective_requirement_results,
+        "run_local_candidate_summary": run_local_candidate_summary,
         "next_actions": retrospective_next_actions(retrospective_requirement_results, knowledge_map),
         "goal_completion_blockers": goal_completion_blockers,
         "failures": failures,

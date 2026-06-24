@@ -293,6 +293,62 @@ class RetrospectivePromotionTests(unittest.TestCase):
             self.assertIn("缺现场勘测、罗盘坐向或户型图", fengshui_questions)
             self.assertFalse(result["goal_complete"])
 
+    def test_knowledge_coverage_reports_external_ready_candidates_without_completing_goal(self) -> None:
+        candidate = candidate_base(
+            retro_id="CR-20990101-team-career-ready",
+            domains=["team_career", "writing"],
+            target_artifacts=["knowledge/team-career/README.md"],
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            retro_dir = Path(tmp) / "retrospectives"
+            write_retrospective_control_files(retro_dir)
+            for idx in [1, 2]:
+                item = candidate_base(
+                    retro_id=f"CR-20990101-relationship-preview-{idx}",
+                    domains=["relationship", "writing"],
+                    target_artifacts=["templates/relationship-rich-template.md"],
+                )
+                item["status"] = "curated"
+                item["human_approved"] = True
+                item["approved_by"] = "unit-test"
+                (retro_dir / f"{item['id']}.json").write_text(json.dumps(item, ensure_ascii=False), encoding="utf-8")
+            runs_root = Path(tmp) / "external-runs"
+            candidate_dir = runs_root / "runs" / "case-redacted" / "run_redacted" / "retrospectives"
+            candidate_dir.mkdir(parents=True)
+            (candidate_dir / "CR-20990101-team-career-ready.candidate.json").write_text(
+                json.dumps(candidate, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(AUDIT_KNOWLEDGE_COVERAGE_SCRIPT),
+                    "--retro-dir",
+                    str(retro_dir),
+                    "--runs-root",
+                    str(runs_root),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            result = json.loads(proc.stdout)
+            self.assertTrue(result["passed"])
+            self.assertFalse(result["goal_complete"])
+            summary = result["run_local_candidate_summary"]
+            self.assertTrue(summary["enabled"])
+            self.assertEqual(summary["candidate_count"], 1)
+            self.assertEqual(summary["ready_for_human_approval"], 1)
+            item = summary["items"][0]
+            self.assertEqual(item["id"], "CR-20990101-team-career-ready")
+            self.assertEqual(item["location"], "external_run_retrospectives")
+            self.assertIn("REQ-RETRO-TEAM-CAREER", item["matched_unsatisfied_requirements"])
+            self.assertNotIn("REQ-RETRO-ANY", item["matched_unsatisfied_requirements"])
+            self.assertIn("<RUN_DIR>\\retrospectives\\CR-20990101-team-career-ready.candidate.json", item["dry_run_command"])
+            self.assertNotIn(str(runs_root), json.dumps(summary, ensure_ascii=False))
+
     def test_global_retrospective_rejects_candidate_status(self) -> None:
         bad = candidate_base(
             retro_id="CR-20990101-unit-retro-candidate",
