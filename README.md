@@ -23,7 +23,7 @@
 
 - 生成八字、紫微斗数、西洋占星、MBTI、六爻、小六壬等结构化结果。
 - 把排盘结果保存成可复查的 facts，方便后续追问，不需要每次重新手算。
-- 支持单盘、合盘、丰富版、简洁版等长文生成流程。
+- 支持单盘、双人合盘、多人事业合盘、丰富版、简洁版等长文生成流程。
 - 用知识库、模板和质量检查减少“凭感觉写”“串案”“车轱辘话”。
 - 把真实反馈先做去隐私复盘，再决定是否进入知识库。
 
@@ -58,7 +58,7 @@ git clone https://github.com/wingerLIU/xuanxue-console.git $env:USERPROFILE\.cod
 - 四柱、大运、紫微、西占和卦象都由脚本生成，模型不手算。
 - 脚本路径、JSON 路径、坐标口径、验证命令等内部过程不写进正文。
 - 出生时间不确定时，会把稳定项和敏感项分开写。
-- 合盘会新建独立 relationship run，不直接在旧稿上续写。
+- 双人合盘会新建独立 relationship run；多人事业合盘会用单盘 facts、两两 relationship facts 和团队级现实校准生成独立团队 run，不直接在旧稿上续写。
 - 反馈先做去隐私复盘，确认有复用价值后再进入知识库。
 
 手机阅读版也尽量克制：暖纸、深字、少色、无卡片，重点只用加粗，不做花哨高亮。
@@ -91,8 +91,10 @@ git clone https://github.com/wingerLIU/xuanxue-console.git $env:USERPROFILE\.cod
 - [SKILL.md](SKILL.md): Codex Skill 入口和完整 agent 工作流。
 - [scripts/](scripts/): 排盘、长文生成、打包、校验和复盘脚本。
 - [knowledge/](knowledge/): 来源索引、规则卡、推断合同和写作规则。
-- [templates/](templates/): 单盘、合盘、丰富版和简洁版模板。
+- [templates/](templates/): 单盘、双人合盘、多人事业合盘、丰富版和简洁版模板。
 - [service/](service/): 流程笔记、资料表、SOP、质量闸门和成本核算笔记。
+- [service/multi-person-career-synastry-sop.md](service/multi-person-career-synastry-sop.md): 多人事业合盘和团队级 run 的生产 SOP。
+- [templates/team-career-synastry-template.md](templates/team-career-synastry-template.md): 多人事业/合伙团队总评模板。
 - [EXTERNAL_ARTIFACTS.md](EXTERNAL_ARTIFACTS.md): 为什么真实 run 和交付物必须放在仓库外部。
 - [CONTRIBUTING.md](CONTRIBUTING.md): 贡献方式、隐私边界和不应提交的内容。
 - [CHANGELOG.md](CHANGELOG.md): 公开版本和重要更新记录。

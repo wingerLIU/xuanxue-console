@@ -8,6 +8,11 @@
 
 ## Unreleased
 
+### Added
+
+- 新增多人事业合盘流程和模板：`service/multi-person-career-synastry-sop.md`、`templates/team-career-synastry-template.md`。
+- 客户资料表、生产 SOP、SKILL 和 README 增加多人事业合盘入口，明确单盘 facts、两两 relationship facts、团队级 run、城市商业判断和流年流月窗口。
+
 ### Changed
 
 - README 增加项目动机：把玄学视为古代世界模型，把大模型视为现代世界模型，主线是可复查、可反馈的解释实验。

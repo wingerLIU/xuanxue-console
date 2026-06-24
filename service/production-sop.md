@@ -113,6 +113,20 @@ python -X utf8 scripts\audit_birth_time_sensitivity.py --solar <yyyy-mm-dd> --ti
 
 如果敏感性检查显示八字四柱、紫微命身或西占上升/天顶变化，正文第 03/04 章必须写清楚：稳定项正常解释，敏感项只写倾向和校准问题。
 
+## 3.4 多人事业合盘
+
+三人及以上的事业合作、合伙创业或组织关键人协同分析，使用 `service/multi-person-career-synastry-sop.md`，不要把双人 relationship 稿直接扩写成多人结论。
+
+核心流程：
+
+- 每个人先完成单盘 facts。
+- 每两个人生成独立 relationship run，三人团队需要 3 组 pair，四人团队需要 6 组 pair。
+- 团队总评另建团队级外部 run，集中保存 `team-source-summary.json`、现实角色校准、城市商业判断和流年流月窗口。
+- 正文使用 `templates/team-career-synastry-template.md`，默认面向事业协作，不写恋爱/私密语言。
+- 城市、合伙、投入和迁移判断必须商业优先、命理开运辅助；如果两者冲突，以商业条件为主。
+- 读者正文不得出现“你确认自己……”“这一点与盘面吻合”“前稿判断相符”等主观确认句。
+- 新增成员时只补新增成员的单盘 facts 和其与既有成员的 pair relationship facts，再更新团队矩阵和交付版本。
+
 ## 4. 长文写作
 
 先生成脚本草稿作为证据：
