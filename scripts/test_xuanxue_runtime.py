@@ -175,6 +175,10 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 "--target-artifact knowledge/bazi/foundations.md",
                 collection_plan["bazi"]["candidate_command"],
             )
+            bazi_evidence = "\n".join(collection_plan["bazi"]["evidence_to_collect"])
+            self.assertIn("哪个八字结构判断被现实经历验证或推翻", bazi_evidence)
+            writing_evidence = "\n".join(collection_plan["writing"]["evidence_to_collect"])
+            self.assertIn("哪段让读者愿意继续读", writing_evidence)
             usage_rules = "\n".join(context["usage_rules"])
             self.assertIn("Reader-rich is the default paid delivery", usage_rules)
             self.assertIn("Missing Ziwei, Western, MBTI or divination inputs", usage_rules)
@@ -241,6 +245,9 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 "--target-artifact templates/relationship-rich-template.md",
                 relationship_plan["candidate_command"],
             )
+            relationship_evidence = "\n".join(relationship_plan["evidence_to_collect"])
+            self.assertIn("哪个吸引或互补判断准", relationship_evidence)
+            self.assertIn("现实关系细节误写成命理事实", relationship_evidence)
 
     def test_team_career_and_fengshui_context_have_retrospective_targets(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -309,6 +316,9 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 "--target-artifact knowledge/team-career/README.md",
                 team_plan["candidate_command"],
             )
+            team_evidence = "\n".join(team_plan["evidence_to_collect"])
+            self.assertIn("哪个角色判断被团队现实验证", team_evidence)
+            self.assertIn("城市判断里哪个商业变量", team_evidence)
             fengshui_plan = collection_plan["fengshui"]
             self.assertIn("knowledge/fengshui/README.md", fengshui_plan["suggested_target_artifacts"])
             self.assertIn("--domain fengshui", fengshui_plan["candidate_command"])
@@ -316,6 +326,9 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 "--target-artifact knowledge/fengshui/README.md",
                 fengshui_plan["candidate_command"],
             )
+            fengshui_evidence = "\n".join(fengshui_plan["evidence_to_collect"])
+            self.assertIn("哪条空间、方位或城市建议执行后可观察", fengshui_evidence)
+            self.assertIn("缺现场勘测、罗盘坐向或户型图", fengshui_evidence)
 
     def test_followup_context_requires_facts_and_knowledge(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

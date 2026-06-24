@@ -255,6 +255,20 @@ def retrospective_candidate_command(domain: str, target_artifact: str) -> str:
     )
 
 
+def evidence_questions(requirement: dict[str, Any]) -> list[str]:
+    raw = requirement.get("evidence_questions", [])
+    if not isinstance(raw, list):
+        return []
+    questions: list[str] = []
+    for item in raw:
+        if not isinstance(item, str):
+            continue
+        text = item.strip()
+        if text:
+            questions.append(text)
+    return questions
+
+
 def retrospective_context(
     selected_modules: list[str], modules_map: dict[str, Any], retro_dir: Path
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -294,6 +308,7 @@ def retrospective_context(
         if needed:
             targets = suggested_target_artifacts(domain, modules_map)
             command_targets = targets or ["<project-relative-artifact>"]
+            requirement_questions = evidence_questions(requirement)
             collection_plan.append(
                 {
                     "domain": domain,
@@ -304,6 +319,7 @@ def retrospective_context(
                         "至少一个反例或适用限制。",
                         "要改进的 target_artifacts，例如规则卡、写作模板、校验脚本或 SOP。",
                         "只保留抽象机制，不保留姓名、出生资料、截图路径、报告原文或本机路径。",
+                        *requirement_questions,
                     ],
                     "candidate_command": retrospective_candidate_command(domain, command_targets[0]),
                     "candidate_commands": [

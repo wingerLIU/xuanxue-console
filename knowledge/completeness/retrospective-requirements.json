@@ -13,7 +13,12 @@
       "gap_id": "GAP-BAZI-VERIFIED-CASES",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Bazi interpretation rules need more than one deidentified human-approved case before stronger claims are considered calibrated."
+      "rationale": "Bazi interpretation rules need more than one deidentified human-approved case before stronger claims are considered calibrated.",
+      "evidence_questions": [
+        "哪个八字结构判断被现实经历验证或推翻？",
+        "日主、月令、十神、大运流年里，哪一层最容易导致误读？",
+        "哪个判断需要从强断降级为倾向或校准问题？"
+      ]
     },
     {
       "id": "REQ-RETRO-ZIWEI",
@@ -21,7 +26,12 @@
       "gap_id": "GAP-ZIWEI-VERIFIED-CASES",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Ziwei palace/star interpretation needs repeated deidentified calibration before single-star or palace patterns can be treated as stable."
+      "rationale": "Ziwei palace/star interpretation needs repeated deidentified calibration before single-star or palace patterns can be treated as stable.",
+      "evidence_questions": [
+        "哪个宫位、四化或大限判断贴近现实？",
+        "哪个单星象意被放大成了过度判断？",
+        "命宫、官禄、财帛、迁移、夫妻或福德里，哪个宫位最需要重写解释边界？"
+      ]
     },
     {
       "id": "REQ-RETRO-WESTERN",
@@ -29,7 +39,12 @@
       "gap_id": "GAP-WESTERN-VERIFIED-CASES",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Western astrology language is symbolic and time-sensitive, so reader feedback must be checked before it influences reusable wording."
+      "rationale": "Western astrology language is symbolic and time-sensitive, so reader feedback must be checked before it influences reusable wording.",
+      "evidence_questions": [
+        "哪个落座、相位或宫位语言对读者有帮助？",
+        "哪段像泛心理描述，缺少本盘特异性？",
+        "出生时间敏感项有没有导致上升、宫位或轴线误读？"
+      ]
     },
     {
       "id": "REQ-RETRO-LIUYAO",
@@ -37,7 +52,12 @@
       "gap_id": "GAP-LIUYAO-VERIFIED-QUESTIONS",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Liuyao question reading needs repeated deidentified question outcomes before short-term judgment patterns can be considered calibrated."
+      "rationale": "Liuyao question reading needs repeated deidentified question outcomes before short-term judgment patterns can be considered calibrated.",
+      "evidence_questions": [
+        "问题后来实际结果如何，原判断哪一层准确或误导？",
+        "用神、世应、动爻、月日、旬空、六亲里哪一层需要调权重？",
+        "短期问事有没有被写成过度长期化结论？"
+      ]
     },
     {
       "id": "REQ-RETRO-WRITING",
@@ -45,7 +65,12 @@
       "gap_id": "GAP-WRITING-LIVE-CLIENT-RETROSPECTIVES",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Reader-rich paid-report writing rules require repeated deidentified reader feedback, not just internal taste."
+      "rationale": "Reader-rich paid-report writing rules require repeated deidentified reader feedback, not just internal taste.",
+      "evidence_questions": [
+        "哪段让读者愿意继续读，哪段像模板话？",
+        "哪类表达太中庸、太冲或太流程感？",
+        "结论、证据、边界和行动建议的顺序哪里需要调整？"
+      ]
     },
     {
       "id": "REQ-RETRO-RELATIONSHIP",
@@ -53,7 +78,12 @@
       "gap_id": "GAP-RELATIONSHIP-VERIFIED-CASES",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Relationship reports combine two individual charts, deterministic cross facts and delicate reader positioning, so real deidentified feedback is required before reusable relationship claims are treated as calibrated."
+      "rationale": "Relationship reports combine two individual charts, deterministic cross facts and delicate reader positioning, so real deidentified feedback is required before reusable relationship claims are treated as calibrated.",
+      "evidence_questions": [
+        "哪个吸引或互补判断准，哪个张力被写成了劝退？",
+        "事业、家庭、财富、精力、亲近边界里，哪个生活域最需要调整？",
+        "报告有没有把现实关系细节误写成命理事实？"
+      ]
     },
     {
       "id": "REQ-RETRO-TEAM-CAREER",
@@ -61,7 +91,12 @@
       "gap_id": "GAP-TEAM-CAREER-VERIFIED-CASES",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Multi-person career synastry combines individual facts, pair relationship facts, team business context and city/timing judgment, so repeated deidentified team feedback is required before reusable team-level claims are treated as calibrated."
+      "rationale": "Multi-person career synastry combines individual facts, pair relationship facts, team business context and city/timing judgment, so repeated deidentified team feedback is required before reusable team-level claims are treated as calibrated.",
+      "evidence_questions": [
+        "哪个角色判断被团队现实验证，哪个其实是权责、钱账或组织机制问题？",
+        "城市判断里哪个商业变量比命理象意更关键？",
+        "新成员加入后是补短板、放大冲突，还是改变权力结构？"
+      ]
     },
     {
       "id": "REQ-RETRO-FENGSHUI",
@@ -69,7 +104,12 @@
       "gap_id": "GAP-FENGSHUI-VERIFIED-FEEDBACK",
       "min_entries": 2,
       "min_status": "curated",
-      "rationale": "Fengshui and direction guidance is low-risk auxiliary advice unless repeated deidentified feedback shows which space, direction or city suggestions actually help or mislead readers."
+      "rationale": "Fengshui and direction guidance is low-risk auxiliary advice unless repeated deidentified feedback shows which space, direction or city suggestions actually help or mislead readers.",
+      "evidence_questions": [
+        "哪条空间、方位或城市建议执行后可观察，哪条太玄或无法执行？",
+        "变化更像来自环境调整、生活习惯、商业资源，还是现实行动变化？",
+        "有没有因为缺现场勘测、罗盘坐向或户型图，导致建议必须降级？"
+      ]
     },
     {
       "id": "REQ-RETRO-ANY",
@@ -77,7 +117,12 @@
       "gap_id": "GAP-CASE-RETROSPECTIVES-VERIFIED",
       "min_entries": 1,
       "min_status": "curated",
-      "rationale": "The global retrospective layer is not complete until at least one audited human-approved retrospective has been promoted."
+      "rationale": "The global retrospective layer is not complete until at least one audited human-approved retrospective has been promoted.",
+      "evidence_questions": [
+        "这条复盘能改进哪个 artifact？",
+        "有没有反例、适用限制或不能推广的地方？",
+        "是否已经去隐私并经过人工确认？"
+      ]
     }
   ]
 }
