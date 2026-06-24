@@ -384,6 +384,21 @@ class RetrospectivePromotionTests(unittest.TestCase):
             self.assertEqual(blocked["id"], "CR-20990101-team-career-needs-evidence")
             self.assertFalse(blocked["approval_ready"])
             self.assertTrue(any("missing domain_evidence" in reason for reason in blocked["approval_blockers"]))
+            self.assertIn("domain_evidence_required", blocked)
+            required_domains = {item["domain"]: item for item in blocked["domain_evidence_required"]}
+            self.assertIn("team_career", required_domains)
+            self.assertIn("writing", required_domains)
+            self.assertIn("evidence_anchor", required_domains["team_career"]["missing_fields"])
+            self.assertTrue(any("哪个角色判断被团队现实验证" in question for question in required_domains["team_career"]["evidence_questions"]))
+            self.assertTrue(any("补齐 domain_evidence" in action for action in blocked["repair_actions"]))
+            self.assertIn("create_retrospective_intake.py", blocked["intake_recheck_command"])
+            self.assertIn("--dry-run", blocked["promotion_dry_run_command_after_fix"])
+            self.assertIn("repair_plan", summary)
+            self.assertEqual(summary["repair_plan"][0]["id"], "CR-20990101-team-career-needs-evidence")
+            self.assertEqual(
+                summary["repair_plan"][0]["candidate_path"],
+                "<RUN_DIR>\\retrospectives\\CR-20990101-team-career-needs-evidence.candidate.json",
+            )
             self.assertNotIn(str(runs_root), json.dumps(summary, ensure_ascii=False))
 
     def test_global_retrospective_rejects_candidate_status(self) -> None:

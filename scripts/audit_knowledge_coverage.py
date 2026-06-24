@@ -430,6 +430,106 @@ def candidate_approval_ready(candidate: dict[str, Any]) -> bool:
     return not candidate_approval_blockers(candidate)
 
 
+def evidence_questions_for_domain(domain: str, requirement_results: list[dict[str, Any]]) -> list[str]:
+    for requirement in requirement_results:
+        if str(requirement.get("domain", "")) == domain:
+            questions = requirement.get("evidence_questions", [])
+            return [str(item) for item in questions] if isinstance(questions, list) else []
+    return []
+
+
+def domain_evidence_required_items(
+    candidate: dict[str, Any],
+    requirement_results: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    domains = candidate.get("domains", [])
+    required_domains = sorted({str(item) for item in domains} & DOMAIN_EVIDENCE_REQUIRED) if isinstance(domains, list) else []
+    evidence = candidate.get("domain_evidence")
+    items: list[dict[str, Any]] = []
+    for domain in required_domains:
+        domain_evidence = evidence.get(domain) if isinstance(evidence, dict) else None
+        if isinstance(domain_evidence, dict):
+            missing_fields = [
+                field
+                for field in DOMAIN_EVIDENCE_REQUIRED_FIELDS
+                if not str(domain_evidence.get(field, "")).strip()
+            ]
+        else:
+            missing_fields = list(DOMAIN_EVIDENCE_REQUIRED_FIELDS)
+        if missing_fields:
+            items.append(
+                {
+                    "domain": domain,
+                    "missing_fields": missing_fields,
+                    "evidence_questions": evidence_questions_for_domain(domain, requirement_results),
+                }
+            )
+    return items
+
+
+def repair_actions_for_candidate(candidate: dict[str, Any], warnings: list[str]) -> list[str]:
+    actions: list[str] = []
+    domains = candidate.get("domains", [])
+    target_artifacts = candidate.get("target_artifacts", [])
+    if not isinstance(domains, list) or not domains:
+        actions.append("补齐 domains；只能填写候选真实覆盖的知识域。")
+    if not isinstance(target_artifacts, list) or not target_artifacts:
+        actions.append("补齐 target_artifacts；必须指向这条复盘实际要改进的项目文件。")
+    if domain_evidence_required_items(candidate, []):
+        actions.append("补齐 domain_evidence；必须来自去隐私真实反馈，不要用模型推测代替证据。")
+    if candidate_has_private_text(candidate):
+        actions.append("删除候选中的姓名、本机路径、图片路径、时间戳等隐私或本地信息。")
+    if candidate.get("human_approved") is True:
+        actions.append("候选已标记 human_approved；不要重复审批，先晋升或规范化 status。")
+    for warning in warnings:
+        if "target_artifacts imply missing domains" in str(warning):
+            actions.append("复核 target_artifacts 推断出的 domain；若确实覆盖该领域，补进 domains，否则调整 target_artifacts。")
+    return actions
+
+
+def blocked_candidate_repair_item(
+    candidate: dict[str, Any],
+    path_name: str,
+    approval_blockers: list[str],
+    requirement_results: list[dict[str, Any]],
+) -> dict[str, Any]:
+    warnings = []
+    domains = candidate.get("domains", [])
+    target_artifacts = candidate.get("target_artifacts", [])
+    # Keep this local and conservative; audit output must not expose real paths.
+    inferred = set()
+    if isinstance(target_artifacts, list):
+        for artifact in target_artifacts:
+            normalized = str(artifact).replace("\\", "/")
+            if normalized.startswith("templates/relationship-"):
+                inferred.add("relationship")
+            if normalized.startswith("knowledge/team-career/"):
+                inferred.add("team_career")
+            if normalized.startswith("knowledge/fengshui/"):
+                inferred.add("fengshui")
+            if normalized.startswith("templates/") or normalized.startswith("service/") or normalized.startswith("knowledge/writing/"):
+                inferred.add("writing")
+    domain_set = {str(item) for item in domains} if isinstance(domains, list) else set()
+    missing_domains = sorted(inferred - domain_set)
+    if missing_domains:
+        warnings.append("target_artifacts imply missing domains: " + ", ".join(missing_domains))
+    required_items = domain_evidence_required_items(candidate, requirement_results)
+    return {
+        "id": str(candidate.get("id") or Path(path_name).stem),
+        "file": path_name,
+        "candidate_path": f"<RUN_DIR>\\retrospectives\\{path_name}",
+        "approval_blockers": approval_blockers,
+        "domain_evidence_required": required_items,
+        "repair_actions": repair_actions_for_candidate(candidate, warnings),
+        "recheck_command": "python scripts/audit_knowledge_coverage.py",
+        "intake_recheck_command": "python scripts/create_retrospective_intake.py --manifest <RUN_DIR>\\case_manifest.json",
+        "promotion_dry_run_command_after_fix": (
+            "python scripts/promote_case_retrospective.py "
+            f"--candidate <RUN_DIR>\\retrospectives\\{path_name} --approved-by <APPROVER> --dry-run"
+        ),
+    }
+
+
 def requirement_ids_for_candidate(
     candidate: dict[str, Any],
     requirement_results: list[dict[str, Any]],
@@ -504,6 +604,7 @@ def scan_run_local_candidates(
 
     items: list[dict[str, Any]] = []
     blocked_items: list[dict[str, Any]] = []
+    repair_plan: list[dict[str, Any]] = []
     candidate_count = 0
     for path in sorted(runs_dir.glob("*/*/retrospectives/*.candidate.json")):
         candidate_count += 1
@@ -515,6 +616,13 @@ def scan_run_local_candidates(
             continue
         approval_blockers = candidate_approval_blockers(candidate)
         if approval_blockers:
+            repair_item = blocked_candidate_repair_item(
+                candidate,
+                path.name,
+                approval_blockers,
+                requirement_results,
+            )
+            repair_plan.append(repair_item)
             blocked_items.append(
                 {
                     "id": str(candidate.get("id") or path.stem),
@@ -527,6 +635,10 @@ def scan_run_local_candidates(
                     else [],
                     "approval_ready": False,
                     "approval_blockers": approval_blockers,
+                    "domain_evidence_required": repair_item["domain_evidence_required"],
+                    "repair_actions": repair_item["repair_actions"],
+                    "intake_recheck_command": repair_item["intake_recheck_command"],
+                    "promotion_dry_run_command_after_fix": repair_item["promotion_dry_run_command_after_fix"],
                     "location": "external_run_retrospectives",
                 }
             )
@@ -558,6 +670,8 @@ def scan_run_local_candidates(
         "items_truncated": max(0, len(items) - 20),
         "blocked_items": blocked_items[:20],
         "blocked_items_truncated": max(0, len(blocked_items) - 20),
+        "repair_plan": repair_plan[:20],
+        "repair_plan_truncated": max(0, len(repair_plan) - 20),
     }
 
 

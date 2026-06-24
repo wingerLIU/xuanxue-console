@@ -20,6 +20,7 @@
 - README 增加项目动机：把玄学视为古代世界模型，把大模型视为现代世界模型，主线是可复查、可反馈的解释实验。
 - run-local 候选复盘新增 `domain_evidence` 审批门槛；缺少证据锚点、可观察反馈和推广边界的候选会进入待补证据队列，不再算作 ready。
 - `retrospective_intake.json` 新增 `run_local_blocked_candidate_repair_plan`，把 blocked 候选的补证据字段、重跑命令和 dry-run 顺序做成机器可读修复计划。
+- `audit_knowledge_coverage.py` 的 run-local 候选总览现在也输出 blocked 候选的 `domain_evidence_required`、`repair_actions` 和修复后 dry-run 命令，让项目级 coverage 审计能直接指向下一步真实反馈补证据。
 - `build_knowledge_context.py` 生成的候选复盘命令同步带上 `--domain-evidence` 占位，避免新 run 的 intake 文档继续教旧流程。
 - `create_retrospective_intake.py` 会在 blocked 候选下列出每个 domain 待补的 `domain_evidence` 字段，方便人工补证据但不自动生成证据。
 - blocked 候选的 `domain_evidence_required` 现在带上对应领域的追问问题，让人工补证据能直接回到真实反馈，而不是只看到字段名。
