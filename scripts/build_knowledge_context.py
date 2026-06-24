@@ -66,6 +66,21 @@ TARGET_ARTIFACT_PRIORITIES = {
         "scripts/create_followup_context.py",
         "scripts/package_mobile_html.py",
     ],
+    "team_career": [
+        "knowledge/team-career/README.md",
+        "service/multi-person-career-synastry-sop.md",
+        "templates/team-career-synastry-template.md",
+        "templates/relationship-rich-template.md",
+        "scripts/create_relationship_workspace.py",
+        "scripts/build_knowledge_context.py",
+        "scripts/create_retrospective_intake.py",
+    ],
+    "fengshui": [
+        "knowledge/fengshui/README.md",
+        "knowledge/bazi/structure-and-flow.md",
+        "knowledge/rules/inference-contract.md",
+        "templates/longform-analysis-template.md",
+    ],
     "source_register": [
         "knowledge/sources/source-register.json",
         "knowledge/sources/online-classics.md",

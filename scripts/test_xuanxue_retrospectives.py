@@ -195,6 +195,43 @@ class RetrospectivePromotionTests(unittest.TestCase):
             self.assertEqual(item["status"], "curated")
             self.assertTrue(item["human_approved"])
 
+    def test_promote_team_career_and_fengshui_domains_pass_audit(self) -> None:
+        candidate = candidate_base(
+            retro_id="CR-20990101-team-fengshui-domain-promote",
+            domains=["team_career", "fengshui", "writing"],
+            target_artifacts=["knowledge/team-career/README.md", "knowledge/fengshui/README.md"],
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            retro_dir = Path(tmp) / "retrospectives"
+            write_retrospective_control_files(retro_dir)
+            candidate_path = Path(tmp) / "candidate.json"
+            candidate_path.write_text(json.dumps(candidate, ensure_ascii=False), encoding="utf-8")
+            promoted = retro_dir / "CR-20990101-team-fengshui-domain-promote.json"
+
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(PROMOTE_RETRO_SCRIPT),
+                    "--candidate",
+                    str(candidate_path),
+                    "--approved-by",
+                    "unit-test",
+                    "--retro-dir",
+                    str(retro_dir),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            result = json.loads(proc.stdout)
+            self.assertTrue(result["passed"])
+            item = json.loads(promoted.read_text(encoding="utf-8"))
+            self.assertEqual(item["domains"], ["team_career", "fengshui", "writing"])
+            self.assertEqual(item["status"], "curated")
+            self.assertTrue(item["human_approved"])
+
     def test_knowledge_coverage_can_preview_with_temp_retrospective_dir(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             retro_dir = Path(tmp) / "retrospectives"

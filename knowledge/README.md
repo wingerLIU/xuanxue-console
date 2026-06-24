@@ -16,6 +16,8 @@
 - `liuyao/`: 六爻问事规则卡；用于具体问题，不覆盖出生盘。
 - `xiaoliuren/`: 小六壬短期提示规则卡；只作弱信号和校准入口。
 - `writing/`: 付费 reader-rich 报告与简洁版的摘要、口吻、可读性和禁用过程话规则。
+- `team-career/`: 多人事业合盘的团队级证据层、商业判断顺序、城市判断边界和复盘采集点。
+- `fengshui/`: 方位、空间、城市、居住和轻量开运建议的使用边界；没有现场勘测时不做传统风水强断。
 - `rules/`: 跨体系推断合同、联网吸收、知识晋升、强断语限制和高风险领域边界。
 - `promotion/`: 知识晋升 manifest，记录哪些规则卡已进入运行时知识库、来源是什么。
 - `case-retrospectives/`: 去 case 化复盘。只有人工确认、可复用、无隐私的信息才能进入。
@@ -48,3 +50,5 @@
 - `liuyao/classical-anchors.md`: 从《增删卜易》等入口提炼出的六爻方法锚点。
 - `xiaoliuren/quick-timing.md`: 小六壬短期提示的弱信号边界。
 - `writing/reader-rich-report.md`: 付费报告写法、第二人称、丰富版与简洁版规则。
+- `team-career/README.md`: 多人事业合盘的团队级 run、商业结构优先和去隐私复盘规则。
+- `fengshui/README.md`: 方位、空间、城市和轻量开运建议的低风险边界。

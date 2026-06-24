@@ -462,6 +462,32 @@
       "promotion_targets": ["knowledge/writing/reader-rich-report.md", "templates/concise-report-template.md", "scripts/validate_longform_report.py"]
     },
     {
+      "id": "SRC-PROJECT-TEAM-CAREER-SYNTHESIS",
+      "title": "team career synastry synthesis",
+      "type": "project_rule",
+      "status": "curated",
+      "evidence_mode": "project_artifact",
+      "domains": ["team_career"],
+      "urls": [],
+      "local_paths": ["knowledge/team-career/README.md", "service/multi-person-career-synastry-sop.md", "templates/team-career-synastry-template.md"],
+      "used_for": "多人事业合盘的团队级 run、商业结构、城市判断、流年流月和复盘采集边界。",
+      "limits": "团队判断必须先落到单盘 facts、两两 relationship facts 和现实商业资料；命理只作辅助解释，不替代商业验证。",
+      "promotion_targets": ["knowledge/team-career/README.md", "service/multi-person-career-synastry-sop.md", "templates/team-career-synastry-template.md"]
+    },
+    {
+      "id": "SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS",
+      "title": "fengshui and direction synthesis",
+      "type": "project_rule",
+      "status": "curated",
+      "evidence_mode": "project_artifact",
+      "domains": ["fengshui"],
+      "urls": [],
+      "local_paths": ["knowledge/fengshui/README.md"],
+      "used_for": "方位、空间、城市、居住和轻量开运建议的使用边界。",
+      "limits": "没有现场勘测、罗盘坐向、户型图和长期反馈时，只能作为低风险空间建议和校准问题，不做传统风水强断。",
+      "promotion_targets": ["knowledge/fengshui/README.md"]
+    },
+    {
       "id": "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL",
       "title": "case retrospective promotion protocol",
       "type": "project_rule",

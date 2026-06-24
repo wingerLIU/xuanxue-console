@@ -23,6 +23,8 @@ ALLOWED_DOMAINS = {
     "xiaoliuren",
     "writing",
     "relationship",
+    "team_career",
+    "fengshui",
     "source_register",
     "quality",
     "case_retrospectives",
@@ -136,6 +138,13 @@ def infer_domains(target_artifacts: list[str]) -> list[str]:
             "scripts/validate_relationship_report.py",
         }:
             domains.add("relationship")
+        if normalized.startswith("knowledge/team-career/") or normalized in {
+            "service/multi-person-career-synastry-sop.md",
+            "templates/team-career-synastry-template.md",
+        }:
+            domains.add("team_career")
+        if normalized.startswith("knowledge/fengshui/"):
+            domains.add("fengshui")
         if normalized.startswith("scripts/audit_") or normalized.startswith("scripts/validate_"):
             domains.add("quality")
         if normalized.startswith("knowledge/sources/"):

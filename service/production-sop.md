@@ -127,6 +127,16 @@ python -X utf8 scripts\audit_birth_time_sensitivity.py --solar <yyyy-mm-dd> --ti
 - 读者正文不得出现“你确认自己……”“这一点与盘面吻合”“前稿判断相符”等主观确认句。
 - 新增成员时只补新增成员的单盘 facts 和其与既有成员的 pair relationship facts，再更新团队矩阵和交付版本。
 
+## 3.5 方位、空间和开运辅助
+
+只有当用户明确关心城市、方位、办公位置、居住环境或开运辅助时，才在 knowledge context 里加入 `fengshui`：
+
+```powershell
+python -X utf8 scripts\build_knowledge_context.py --manifest <RUN_DIR>\case_manifest.json --module combo --module fengshui
+```
+
+读取 `knowledge/fengshui/README.md` 后再写建议。没有现场勘测、罗盘坐向、户型图和长期执行反馈时，只能写低风险、可撤回、可观察的空间建议；不能写“必发财”“必破财”“某方一定有灾”这类传统风水强断。城市选择仍然先看客户、成本、行业、家庭生活和现金流，命理象意只作辅助。
+
 ## 4. 长文写作
 
 先生成脚本草稿作为证据：

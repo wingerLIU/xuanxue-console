@@ -126,6 +126,38 @@
         "practical_advice"
       ]
     },
+    "team_career": {
+      "files": [
+        "knowledge/team-career/README.md",
+        "service/multi-person-career-synastry-sop.md",
+        "templates/team-career-synastry-template.md",
+        "templates/relationship-rich-template.md",
+        "scripts/create_relationship_workspace.py",
+        "scripts/build_knowledge_context.py",
+        "scripts/create_retrospective_intake.py"
+      ],
+      "runtime_role": "Multi-person career synastry, partnership-team roles, city/business judgment, team-level run boundaries and retrospective collection.",
+      "claim_levels": [
+        "calculated_fact",
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ]
+    },
+    "fengshui": {
+      "files": [
+        "knowledge/fengshui/README.md",
+        "knowledge/bazi/structure-and-flow.md",
+        "knowledge/rules/inference-contract.md",
+        "templates/longform-analysis-template.md"
+      ],
+      "runtime_role": "Fengshui, direction, space, city and low-risk practical remedy boundaries.",
+      "claim_levels": [
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ]
+    },
     "case_retrospectives": {
       "files": [
         "knowledge/case-retrospectives/README.md",

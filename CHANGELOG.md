@@ -12,12 +12,15 @@
 
 - 新增多人事业合盘流程和模板：`service/multi-person-career-synastry-sop.md`、`templates/team-career-synastry-template.md`。
 - 客户资料表、生产 SOP、SKILL 和 README 增加多人事业合盘入口，明确单盘 facts、两两 relationship facts、团队级 run、城市商业判断和流年流月窗口。
+- 新增 `knowledge/team-career/README.md`，把多人事业合盘纳入 knowledge context、coverage matrix、promotion manifest 和复盘 domain。
+- 新增 `knowledge/fengshui/README.md`，用于方位、空间、城市、居住和轻量开运建议；没有现场勘测、罗盘坐向、户型图和执行反馈时只写低风险建议。
 
 ### Changed
 
 - README 增加项目动机：把玄学视为古代世界模型，把大模型视为现代世界模型，主线是可复查、可反馈的解释实验。
 - README 增加 MingLi-Bench / Tianfu Agent 相关工作说明，并补充判断强度分级。
 - 新增 `docs/evaluation-roadmap.md`，记录后续评测路线：事实计算、报告一致性、追问 grounding 和真实反馈复盘。
+- coverage matrix 根据已有 curated 去隐私复盘，关闭 writing、relationship 和全局复盘层的旧 blocker；八字、紫微、西占、六爻、团队事业合盘和风水方位仍保留真实反馈缺口。
 
 ## 0.1.0 - 2026-06-15
 

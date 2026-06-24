@@ -23,7 +23,7 @@
 
 - 生成八字、紫微斗数、西洋占星、MBTI、六爻、小六壬等结构化结果。
 - 把排盘结果保存成可复查的 facts，方便后续追问，不需要每次重新手算。
-- 支持单盘、双人合盘、多人事业合盘、丰富版、简洁版等长文生成流程。
+- 支持单盘、双人合盘、多人事业合盘、风水方位辅助、丰富版、简洁版等长文生成流程。
 - 用知识库、模板和质量检查减少“凭感觉写”“串案”“车轱辘话”。
 - 把真实反馈先做去隐私复盘，再决定是否进入知识库。
 
@@ -91,6 +91,8 @@ git clone https://github.com/wingerLIU/xuanxue-console.git $env:USERPROFILE\.cod
 - [SKILL.md](SKILL.md): Codex Skill 入口和完整 agent 工作流。
 - [scripts/](scripts/): 排盘、长文生成、打包、校验和复盘脚本。
 - [knowledge/](knowledge/): 来源索引、规则卡、推断合同和写作规则。
+- [knowledge/fengshui/README.md](knowledge/fengshui/README.md): 方位、空间、城市和轻量开运建议的低风险边界。
+- [knowledge/team-career/README.md](knowledge/team-career/README.md): 多人事业合盘的团队级证据、商业判断和复盘采集点。
 - [templates/](templates/): 单盘、双人合盘、多人事业合盘、丰富版和简洁版模板。
 - [service/](service/): 流程笔记、资料表、SOP、质量闸门和成本核算笔记。
 - [service/multi-person-career-synastry-sop.md](service/multi-person-career-synastry-sop.md): 多人事业合盘和团队级 run 的生产 SOP。

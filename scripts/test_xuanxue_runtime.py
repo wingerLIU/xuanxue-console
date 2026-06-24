@@ -242,6 +242,81 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 relationship_plan["candidate_command"],
             )
 
+    def test_team_career_and_fengshui_context_have_retrospective_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            created = subprocess.run(
+                [
+                    sys.executable,
+                    str(CREATE_WORKSPACE_SCRIPT),
+                    "--case-id",
+                    "team-career-case",
+                    "--reader-name",
+                    "reader",
+                    "--external-root",
+                    tmp,
+                    "--run-id",
+                    "run_demo",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            manifest_path = Path(json.loads(created.stdout)["manifest"])
+            retro_dir = Path(tmp) / "empty-retrospectives"
+            retro_dir.mkdir()
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(KNOWLEDGE_CONTEXT_SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--module",
+                    "team_career",
+                    "--module",
+                    "fengshui",
+                    "--retro-dir",
+                    str(retro_dir),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            output = Path(json.loads(proc.stdout)["output"])
+            context = json.loads(output.read_text(encoding="utf-8"))
+            self.assertTrue(context["passed"])
+            self.assertIn("team_career", context["selected_modules"])
+            self.assertIn("fengshui", context["selected_modules"])
+            knowledge_paths = {item["path"] for item in context["knowledge_files"]}
+            self.assertIn("knowledge/team-career/README.md", knowledge_paths)
+            self.assertIn("service/multi-person-career-synastry-sop.md", knowledge_paths)
+            self.assertIn("templates/team-career-synastry-template.md", knowledge_paths)
+            self.assertIn("knowledge/fengshui/README.md", knowledge_paths)
+            retrospective_requirements = {item["id"]: item for item in context["retrospective_requirements"]}
+            self.assertIn("REQ-RETRO-TEAM-CAREER", retrospective_requirements)
+            self.assertIn("REQ-RETRO-FENGSHUI", retrospective_requirements)
+            collection_plan = {item["domain"]: item for item in context["retrospective_collection_plan"]}
+            self.assertIn("team_career", collection_plan)
+            self.assertIn("fengshui", collection_plan)
+            team_plan = collection_plan["team_career"]
+            self.assertIn("knowledge/team-career/README.md", team_plan["suggested_target_artifacts"])
+            self.assertIn("templates/team-career-synastry-template.md", team_plan["suggested_target_artifacts"])
+            self.assertIn("--domain team_career", team_plan["candidate_command"])
+            self.assertIn(
+                "--target-artifact knowledge/team-career/README.md",
+                team_plan["candidate_command"],
+            )
+            fengshui_plan = collection_plan["fengshui"]
+            self.assertIn("knowledge/fengshui/README.md", fengshui_plan["suggested_target_artifacts"])
+            self.assertIn("--domain fengshui", fengshui_plan["candidate_command"])
+            self.assertIn(
+                "--target-artifact knowledge/fengshui/README.md",
+                fengshui_plan["candidate_command"],
+            )
+
     def test_followup_context_requires_facts_and_knowledge(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             created = subprocess.run(

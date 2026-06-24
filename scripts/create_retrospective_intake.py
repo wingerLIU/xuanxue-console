@@ -96,6 +96,13 @@ def inferred_domains_from_targets(target_artifacts: list[Any]) -> list[str]:
             "scripts/validate_relationship_report.py",
         }:
             domains.add("relationship")
+        if normalized.startswith("knowledge/team-career/") or normalized in {
+            "service/multi-person-career-synastry-sop.md",
+            "templates/team-career-synastry-template.md",
+        }:
+            domains.add("team_career")
+        if normalized.startswith("knowledge/fengshui/"):
+            domains.add("fengshui")
         if normalized.startswith("templates/") or normalized.startswith("service/") or normalized.startswith(
             "knowledge/writing/"
         ):

@@ -56,6 +56,22 @@
       "rationale": "Relationship reports combine two individual charts, deterministic cross facts and delicate reader positioning, so real deidentified feedback is required before reusable relationship claims are treated as calibrated."
     },
     {
+      "id": "REQ-RETRO-TEAM-CAREER",
+      "domain": "team_career",
+      "gap_id": "GAP-TEAM-CAREER-VERIFIED-CASES",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Multi-person career synastry combines individual facts, pair relationship facts, team business context and city/timing judgment, so repeated deidentified team feedback is required before reusable team-level claims are treated as calibrated."
+    },
+    {
+      "id": "REQ-RETRO-FENGSHUI",
+      "domain": "fengshui",
+      "gap_id": "GAP-FENGSHUI-VERIFIED-FEEDBACK",
+      "min_entries": 2,
+      "min_status": "curated",
+      "rationale": "Fengshui and direction guidance is low-risk auxiliary advice unless repeated deidentified feedback shows which space, direction or city suggestions actually help or mislead readers."
+    },
+    {
       "id": "REQ-RETRO-ANY",
       "domain": "*",
       "gap_id": "GAP-CASE-RETROSPECTIVES-VERIFIED",

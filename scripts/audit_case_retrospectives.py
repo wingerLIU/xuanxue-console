@@ -39,6 +39,8 @@ ALLOWED_DOMAINS = {
     "xiaoliuren",
     "writing",
     "relationship",
+    "team_career",
+    "fengshui",
     "source_register",
     "quality",
     "case_retrospectives",

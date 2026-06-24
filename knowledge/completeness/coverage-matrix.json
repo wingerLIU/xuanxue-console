@@ -55,7 +55,7 @@
     },
     {
       "id": "bazi",
-      "status": "runtime_curated",
+      "status": "runtime_curated_with_case_feedback",
       "runtime_files": [
         "knowledge/bazi/foundations.md",
         "knowledge/bazi/classical-anchors.md",
@@ -263,15 +263,15 @@
       "remaining_gaps": [
         {
           "id": "GAP-WRITING-LIVE-CLIENT-RETROSPECTIVES",
-          "description": "Reader-rich writing rules exist, but no deidentified verified reader feedback loop has been promoted yet.",
-          "blocks_goal_completion": true,
-          "blocked_by": "requires human-approved deidentified retrospectives"
+          "description": "Reader-rich writing rules have at least two curated deidentified retrospectives; broader verified replication is still useful but no longer blocks the current self-evolution layer.",
+          "blocks_goal_completion": false,
+          "blocked_by": "requires more human-approved deidentified retrospectives before status can be considered verified"
         }
       ]
     },
     {
       "id": "relationship",
-      "status": "runtime_curated_no_verified_cases",
+      "status": "runtime_curated_with_case_feedback",
       "runtime_files": [
         "templates/relationship-rich-template.md",
         "templates/relationship-concise-template.md",
@@ -296,15 +296,77 @@
       "remaining_gaps": [
         {
           "id": "GAP-RELATIONSHIP-VERIFIED-CASES",
-          "description": "Relationship workflow, facts and templates exist, but no deidentified human-approved relationship retrospective has been promoted yet.",
+          "description": "Relationship workflow, facts and templates have at least two curated deidentified retrospectives; broader verified replication is still useful but no longer blocks the current self-evolution layer.",
+          "blocks_goal_completion": false,
+          "blocked_by": "requires more human-approved deidentified relationship retrospectives before status can be considered verified"
+        }
+      ]
+    },
+    {
+      "id": "team_career",
+      "status": "runtime_curated_no_verified_cases",
+      "runtime_files": [
+        "knowledge/team-career/README.md",
+        "service/multi-person-career-synastry-sop.md",
+        "templates/team-career-synastry-template.md",
+        "templates/relationship-rich-template.md",
+        "scripts/create_relationship_workspace.py",
+        "scripts/build_knowledge_context.py",
+        "scripts/create_retrospective_intake.py"
+      ],
+      "source_ids": [
+        "SRC-PROJECT-TEAM-CAREER-SYNTHESIS",
+        "SRC-PROJECT-KNOWLEDGE-CONTEXT",
+        "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "claim_levels": [
+        "calculated_fact",
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-TEAM-CAREER-VERIFIED-CASES",
+          "description": "Team career synastry workflow, SOP and template exist, but no deidentified human-approved team retrospective has been promoted yet.",
           "blocks_goal_completion": true,
-          "blocked_by": "requires human-approved deidentified relationship retrospectives"
+          "blocked_by": "requires human-approved deidentified team career retrospectives"
+        }
+      ]
+    },
+    {
+      "id": "fengshui",
+      "status": "boundary_curated_no_verified_cases",
+      "runtime_files": [
+        "knowledge/fengshui/README.md",
+        "knowledge/bazi/structure-and-flow.md",
+        "knowledge/rules/inference-contract.md",
+        "templates/longform-analysis-template.md"
+      ],
+      "source_ids": [
+        "SRC-PROJECT-FENGSHUI-DIRECTION-SYNTHESIS",
+        "SRC-BAZI-PROJECT-SYNTHESIS",
+        "SRC-PROJECT-INTERPRETATION-GUIDE",
+        "SRC-PROJECT-LONGFORM-TEMPLATE"
+      ],
+      "claim_levels": [
+        "modern_synthesis",
+        "case_calibration",
+        "practical_advice"
+      ],
+      "remaining_gaps": [
+        {
+          "id": "GAP-FENGSHUI-VERIFIED-FEEDBACK",
+          "description": "Fengshui/direction guidance has a boundary card, but no deidentified feedback has been promoted for space, direction or city-remedy suggestions.",
+          "blocks_goal_completion": true,
+          "blocked_by": "requires human-approved deidentified fengshui/direction retrospectives"
         }
       ]
     },
     {
       "id": "case_retrospectives",
-      "status": "protocol_curated_no_entries",
+      "status": "protocol_curated_with_entries",
       "runtime_files": [
         "knowledge/case-retrospectives/README.md",
         "knowledge/case-retrospectives/promotion-protocol.md",
@@ -327,9 +389,9 @@
       "remaining_gaps": [
         {
           "id": "GAP-CASE-RETROSPECTIVES-VERIFIED",
-          "description": "No real human-approved deidentified retrospective JSON entries exist yet.",
-          "blocks_goal_completion": true,
-          "blocked_by": "requires audited retrospective JSON entries promoted according to policy"
+          "description": "The global retrospective layer has curated deidentified entries; additional domain-specific retrospectives are still required for unsatisfied domains.",
+          "blocks_goal_completion": false,
+          "blocked_by": "requires each blocking domain requirement to be closed by human-approved deidentified retrospectives"
         }
       ]
     },
@@ -370,8 +432,8 @@
   "global_blockers": [
     {
       "id": "GAP-CASE-RETROSPECTIVES-VERIFIED",
-      "description": "No real human-approved deidentified retrospective JSON entries exist yet.",
-      "blocks_goal_completion": true,
+      "description": "The global retrospective layer has curated entries; keep this row as non-blocking evidence of the self-evolution threshold.",
+      "blocks_goal_completion": false,
       "required_evidence": "At least one audited retrospective JSON entry promoted to verified or curated according to policy."
     }
   ]
