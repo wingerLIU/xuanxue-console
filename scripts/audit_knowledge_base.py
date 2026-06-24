@@ -208,6 +208,18 @@ REQUIRED_MARKERS = {
         "不作为科学人格测评",
         "禁止",
     ],
+    "knowledge/western/foundations.md": [
+        "WS-F001",
+        "结论强度",
+        "特异性要求",
+        "时间敏感处理",
+        "复盘采集点",
+    ],
+    "knowledge/western/planets-aspects-houses.md": [
+        "相位置信度",
+        "宫位置信度",
+        "防泛化写法",
+    ],
     "knowledge/liuyao/classical-anchors.md": [
         "LY-C001",
         "SRC-LIUYAO-ZENGSHAN-BU",

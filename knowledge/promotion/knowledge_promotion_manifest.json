@@ -478,6 +478,39 @@
       "notes": "Promoted the Western planets, aspects and houses card with explicit psychological and time-sensitivity boundaries."
     },
     {
+      "id": "PROMO-20260624-WESTERN-SPECIFICITY-BOUNDARY",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/western/foundations.md",
+      "source_ids": [
+        "SRC-RUNTIME-EPHEM",
+        "SRC-WESTERN-MODERN-PSYCHOLOGICAL",
+        "SRC-WESTERN-SCIENTIFIC-BOUNDARY",
+        "SRC-WESTERN-PROJECT-SYNTHESIS",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Expanded Western astrology report boundaries with conclusion strength, specificity requirements, time-sensitive handling and feedback fields to reduce generic psychological wording."
+    },
+    {
+      "id": "PROMO-20260624-WESTERN-ASPECT-HOUSE-CONFIDENCE",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/western/planets-aspects-houses.md",
+      "source_ids": [
+        "SRC-RUNTIME-EPHEM",
+        "SRC-WESTERN-PTOLEMY-TETRABIBLOS",
+        "SRC-WESTERN-LILLY-CHRISTIAN-ASTROLOGY",
+        "SRC-WESTERN-MODERN-PSYCHOLOGICAL",
+        "SRC-WESTERN-SCIENTIFIC-BOUNDARY",
+        "SRC-WESTERN-PROJECT-SYNTHESIS"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Added aspect confidence, house confidence and anti-generic examples so report prose ties Western symbols to concrete functions and verified birth-time confidence."
+    },
+    {
       "id": "PROMO-20260612-CLASSICAL-ANCHORS-LIUYAO",
       "type": "classical_anchor",
       "status": "curated",
