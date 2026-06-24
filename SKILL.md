@@ -84,6 +84,7 @@ python scripts/xuanxue_console.py combo --solar 1991-08-15 --time 01:30 --gender
 - 除非出现硬错误或用户明确批准，不新增 gate 脚本；先复用 `finalize_case.py`、`audit_longform_consistency.py`、`create_followup_context.py`、`create_retrospective_intake.py`。
 - 2026-07-31 后，新 run 必须写 canonical manifest keys；legacy aliases 只用于历史 run 修复。
 - 知识库优先补真实去隐私复盘：哪段准、哪段不准、为什么误读、怎么改。没有案例证据时，不新增泛化写作规则。`audit_knowledge_coverage.py` 里的 `run_local_candidate_summary.repair_plan` 和 `repair_priority_queue` 只提供 blocked 候选补证据路线与优先级；不能把 repair plan 当作证据本身。
+- 复盘优先级计算共用 import-only `scripts/retrospective_priority.py`；它只是 runtime helper，不是新的 gate、命令入口或人工审批替代。
 - 追加问题和读者反馈先进入 `<RUN_DIR>/calibration/dialogue`；原始对话只留在 run-local，只有去隐私、人工确认过的候选复盘才晋升知识库。
 - 长文 Markdown 渲染已拆到 `scripts/xuanxue_longform.py`，西占计算已拆到 `scripts/xuanxue_western.py`，runtime/workflow 测试已拆到 `scripts/test_xuanxue_runtime.py`，合盘测试已拆到 `scripts/test_xuanxue_relationship.py`，交付阅读器测试已拆到 `scripts/test_xuanxue_delivery.py`；大文件继续增长时，优先拆 CLI、八字、紫微和剩余测试模块，而不是继续向 `xuanxue_console.py` 和 `test_xuanxue_console.py` 加逻辑。
 

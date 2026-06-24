@@ -10,6 +10,19 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+try:
+    from .retrospective_priority import (
+        repair_priority_for_requirements,
+        requirement_ids_for_candidate,
+        sort_repair_priority_queue,
+    )
+except ImportError:  # pragma: no cover - direct script execution
+    from retrospective_priority import (
+        repair_priority_for_requirements,
+        requirement_ids_for_candidate,
+        sort_repair_priority_queue,
+    )
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RETRO_REQUIREMENTS_PATH = PROJECT_ROOT / "knowledge" / "completeness" / "retrospective-requirements.json"
@@ -497,11 +510,7 @@ def blocked_candidate_repair_plan(candidates: list[dict[str, Any]]) -> list[dict
 
 
 def repair_priority_queue(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    repair_plan = blocked_candidate_repair_plan(candidates)
-    return sorted(
-        repair_plan,
-        key=lambda item: (-int(item.get("repair_priority_score", 0) or 0), str(item.get("id", ""))),
-    )
+    return sort_repair_priority_queue(blocked_candidate_repair_plan(candidates))
 
 
 def global_retrospective_items(retro_dir: Path = GLOBAL_RETRO_DIR) -> list[dict[str, Any]]:
@@ -564,41 +573,6 @@ def unsatisfied_requirement_results(retro_dir: Path = GLOBAL_RETRO_DIR) -> list[
             }
         )
     return results
-
-
-def requirement_ids_for_candidate(
-    candidate: dict[str, Any],
-    unsatisfied_requirements: list[dict[str, Any]],
-) -> list[str]:
-    domains = candidate.get("domains", [])
-    domain_set = {str(item) for item in domains} if isinstance(domains, list) else set()
-    requirement_ids: list[str] = []
-    for requirement in unsatisfied_requirements:
-        domain = str(requirement.get("domain", ""))
-        if domain == "*" or domain in domain_set:
-            req_id = str(requirement.get("id", ""))
-            if req_id:
-                requirement_ids.append(req_id)
-    return requirement_ids
-
-
-def repair_priority_for_requirements(
-    requirement_ids: list[str],
-    unsatisfied_requirements: list[dict[str, Any]],
-) -> dict[str, Any]:
-    requirement_domains = {str(item.get("id", "")): str(item.get("domain", "")) for item in unsatisfied_requirements}
-    specific_requirements = [
-        req_id for req_id in requirement_ids if requirement_domains.get(req_id) and requirement_domains.get(req_id) != "*"
-    ]
-    wildcard_requirements = [req_id for req_id in requirement_ids if requirement_domains.get(req_id) == "*"]
-    score = len(specific_requirements) * 10 + len(wildcard_requirements)
-    if specific_requirements:
-        reason = "修复后可推进未满足领域门槛：" + ", ".join(specific_requirements)
-    elif wildcard_requirements:
-        reason = "修复后只推进通用复盘门槛：" + ", ".join(wildcard_requirements)
-    else:
-        reason = "修复后暂不直接推进当前未满足门槛，低优先级。"
-    return {"score": score, "reason": reason}
 
 
 def ready_candidate_preview_items(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
