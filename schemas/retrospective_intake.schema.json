@@ -11,6 +11,7 @@
     "run_local_candidates",
     "run_local_approval_summary",
     "run_local_blocked_candidate_repair_plan",
+    "run_local_repair_priority_queue",
     "run_local_ready_candidate_commands",
     "knowledge_growth_priority"
   ],
@@ -121,6 +122,9 @@
           "approval_ready",
           "approval_blockers",
           "domain_evidence_required",
+          "matched_unsatisfied_requirements_after_repair",
+          "repair_priority_score",
+          "repair_priority_reason",
           "promotion_dry_run_command",
           "promotion_command"
         ]
@@ -148,6 +152,28 @@
           "approval_blockers",
           "repair_actions",
           "domain_evidence_templates",
+          "matched_unsatisfied_requirements_after_repair",
+          "repair_priority_score",
+          "repair_priority_reason",
+          "recheck_command",
+          "promotion_dry_run_command_after_fix"
+        ]
+      }
+    },
+    "run_local_repair_priority_queue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "file",
+          "candidate_path",
+          "approval_blockers",
+          "repair_actions",
+          "domain_evidence_templates",
+          "matched_unsatisfied_requirements_after_repair",
+          "repair_priority_score",
+          "repair_priority_reason",
           "recheck_command",
           "promotion_dry_run_command_after_fix"
         ]

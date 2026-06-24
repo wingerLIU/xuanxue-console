@@ -352,17 +352,18 @@ def domain_evidence_required_items(
     return items
 
 
-def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+def run_local_candidates(manifest: dict[str, Any], global_retro_dir: Path = GLOBAL_RETRO_DIR) -> list[dict[str, Any]]:
     paths = manifest.get("paths", {})
     raw_dir = paths.get("retrospectives_dir") if isinstance(paths, dict) else None
     if not raw_dir:
         return []
-    retro_dir = Path(raw_dir)
-    if not retro_dir.exists() or is_relative_to(retro_dir.resolve(), PROJECT_ROOT):
+    candidate_dir = Path(raw_dir)
+    if not candidate_dir.exists() or is_relative_to(candidate_dir.resolve(), PROJECT_ROOT):
         return []
     candidates: list[dict[str, Any]] = []
     requirements = requirements_by_domain()
-    for path in sorted(retro_dir.glob("*.candidate.json")):
+    unsatisfied_requirements = unsatisfied_requirement_results(global_retro_dir)
+    for path in sorted(candidate_dir.glob("*.candidate.json")):
         try:
             data = load_json(path)
         except (json.JSONDecodeError, SystemExit):
@@ -381,6 +382,8 @@ def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
             approval_blockers.extend(domain_evidence_blockers(data))
         if data.get("human_approved") is True:
             approval_blockers.append("candidate is already marked human_approved; promote or normalize status instead of re-approving.")
+        matched_requirements = requirement_ids_for_candidate(data, unsatisfied_requirements) if isinstance(data, dict) else []
+        priority = repair_priority_for_requirements(matched_requirements, unsatisfied_requirements)
         candidates.append(
             {
                 "file": path.name,
@@ -394,6 +397,9 @@ def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
                 "approval_ready": not approval_blockers,
                 "approval_blockers": approval_blockers,
                 "domain_evidence_required": domain_evidence_required_items(data, requirements) if isinstance(data, dict) else [],
+                "matched_unsatisfied_requirements_after_repair": matched_requirements,
+                "repair_priority_score": priority["score"],
+                "repair_priority_reason": priority["reason"],
                 "promotion_dry_run_command": promotion_dry_run_command_for_candidate(path.name),
                 "promotion_command": promotion_command_for_candidate(path.name),
             }
@@ -478,11 +484,24 @@ def blocked_candidate_repair_plan(candidates: list[dict[str, Any]]) -> list[dict
                 "approval_blockers": candidate.get("approval_blockers", []),
                 "repair_actions": repair_actions,
                 "domain_evidence_templates": evidence_templates,
+                "matched_unsatisfied_requirements_after_repair": candidate.get(
+                    "matched_unsatisfied_requirements_after_repair", []
+                ),
+                "repair_priority_score": candidate.get("repair_priority_score", 0),
+                "repair_priority_reason": candidate.get("repair_priority_reason", ""),
                 "recheck_command": "python scripts/create_retrospective_intake.py --manifest <RUN_DIR>\\case_manifest.json",
                 "promotion_dry_run_command_after_fix": candidate.get("promotion_dry_run_command"),
             }
         )
     return plan
+
+
+def repair_priority_queue(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    repair_plan = blocked_candidate_repair_plan(candidates)
+    return sorted(
+        repair_plan,
+        key=lambda item: (-int(item.get("repair_priority_score", 0) or 0), str(item.get("id", ""))),
+    )
 
 
 def global_retrospective_items(retro_dir: Path = GLOBAL_RETRO_DIR) -> list[dict[str, Any]]:
@@ -516,6 +535,70 @@ def count_items_for_requirement(
         if domain == "*" or (isinstance(domains, list) and domain in domains):
             count += 1
     return count
+
+
+def unsatisfied_requirement_results(retro_dir: Path = GLOBAL_RETRO_DIR) -> list[dict[str, Any]]:
+    requirements_data = load_json(RETRO_REQUIREMENTS_PATH)
+    status_rank = requirements_data.get("status_rank", {})
+    requirements = requirements_data.get("requirements", [])
+    if not isinstance(status_rank, dict) or not isinstance(requirements, list):
+        return []
+
+    current_items = global_retrospective_items(retro_dir)
+    results: list[dict[str, Any]] = []
+    for requirement in requirements:
+        if not isinstance(requirement, dict):
+            continue
+        min_entries = int(requirement.get("min_entries", 0) or 0)
+        current = count_items_for_requirement(current_items, requirement, status_rank)
+        if current >= min_entries:
+            continue
+        results.append(
+            {
+                "id": requirement.get("id"),
+                "domain": requirement.get("domain"),
+                "gap_id": requirement.get("gap_id"),
+                "min_entries": min_entries,
+                "current_entries": current,
+                "needed_entries": max(0, min_entries - current),
+            }
+        )
+    return results
+
+
+def requirement_ids_for_candidate(
+    candidate: dict[str, Any],
+    unsatisfied_requirements: list[dict[str, Any]],
+) -> list[str]:
+    domains = candidate.get("domains", [])
+    domain_set = {str(item) for item in domains} if isinstance(domains, list) else set()
+    requirement_ids: list[str] = []
+    for requirement in unsatisfied_requirements:
+        domain = str(requirement.get("domain", ""))
+        if domain == "*" or domain in domain_set:
+            req_id = str(requirement.get("id", ""))
+            if req_id:
+                requirement_ids.append(req_id)
+    return requirement_ids
+
+
+def repair_priority_for_requirements(
+    requirement_ids: list[str],
+    unsatisfied_requirements: list[dict[str, Any]],
+) -> dict[str, Any]:
+    requirement_domains = {str(item.get("id", "")): str(item.get("domain", "")) for item in unsatisfied_requirements}
+    specific_requirements = [
+        req_id for req_id in requirement_ids if requirement_domains.get(req_id) and requirement_domains.get(req_id) != "*"
+    ]
+    wildcard_requirements = [req_id for req_id in requirement_ids if requirement_domains.get(req_id) == "*"]
+    score = len(specific_requirements) * 10 + len(wildcard_requirements)
+    if specific_requirements:
+        reason = "修复后可推进未满足领域门槛：" + ", ".join(specific_requirements)
+    elif wildcard_requirements:
+        reason = "修复后只推进通用复盘门槛：" + ", ".join(wildcard_requirements)
+    else:
+        reason = "修复后暂不直接推进当前未满足门槛，低优先级。"
+    return {"score": score, "reason": reason}
 
 
 def ready_candidate_preview_items(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -806,7 +889,7 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
                 )
             )
         lines.append("")
-    candidates = run_local_candidates(manifest)
+    candidates = run_local_candidates(manifest, retro_dir)
     if candidates:
         summary = approval_summary(candidates)
         lines.extend(
@@ -838,6 +921,11 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
             if item.get("title"):
                 lines.append(f"  - title: {item['title']}")
             lines.append(f"  - approval_ready: `{str(item.get('approval_ready')).lower()}`")
+            matched = [str(req_id) for req_id in as_list(item.get("matched_unsatisfied_requirements_after_repair"))]
+            if matched:
+                lines.append(f"  - 修复或批准后可推进：`{', '.join(matched)}`")
+            if item.get("repair_priority_reason"):
+                lines.append(f"  - repair_priority: `{item.get('repair_priority_score', 0)}` / {item['repair_priority_reason']}")
             for blocker in as_list(item.get("approval_blockers")):
                 lines.append(f"  - approval_blocker: {blocker}")
             required_evidence = [entry for entry in as_list(item.get("domain_evidence_required")) if isinstance(entry, dict)]
@@ -871,8 +959,23 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
             lines.extend(["## blocked 候选修复计划", ""])
             lines.append("这里只给人工修复路径，不自动补证据；`domain_evidence` 必须来自去隐私真实反馈。")
             lines.append("")
+            queue = repair_priority_queue(candidates)
+            if queue:
+                lines.append("优先修复顺序：")
+                for entry in queue:
+                    matched = [str(req_id) for req_id in as_list(entry.get("matched_unsatisfied_requirements_after_repair"))]
+                    matched_text = f" / 可推进 `{', '.join(matched)}`" if matched else ""
+                    lines.append(
+                        f"- `{entry.get('id', '')}`: priority `{entry.get('repair_priority_score', 0)}` / {entry.get('repair_priority_reason', '')}{matched_text}"
+                    )
+                lines.append("")
             for item in repair_plan:
                 lines.append(f"- `{item.get('id', '')}` / file `{item.get('file', '')}`")
+                matched = [str(req_id) for req_id in as_list(item.get("matched_unsatisfied_requirements_after_repair"))]
+                if matched:
+                    lines.append(f"  - 修复后可推进：`{', '.join(matched)}`")
+                if item.get("repair_priority_reason"):
+                    lines.append(f"  - repair_priority: `{item.get('repair_priority_score', 0)}` / {item['repair_priority_reason']}")
                 for action in as_list(item.get("repair_actions")):
                     lines.append(f"  - repair_action: {action}")
                 templates = [entry for entry in as_list(item.get("domain_evidence_templates")) if isinstance(entry, dict)]
@@ -1045,7 +1148,7 @@ def main() -> int:
         )
         return 1
 
-    candidates = run_local_candidates(manifest)
+    candidates = run_local_candidates(manifest, retro_dir)
     question_bank = domain_question_bank(
         [item for item in as_list(context.get("retrospective_requirements")) if isinstance(item, dict)],
         plan,
@@ -1063,6 +1166,7 @@ def main() -> int:
         "run_local_minimal_approval_plan": minimal_approval_plan(candidates, retro_dir),
         "run_local_ready_candidate_commands": ready_candidate_commands(candidates),
         "run_local_blocked_candidate_repair_plan": blocked_candidate_repair_plan(candidates),
+        "run_local_repair_priority_queue": repair_priority_queue(candidates),
         "run_local_candidate_warnings": [
             {
                 "id": item.get("id"),
