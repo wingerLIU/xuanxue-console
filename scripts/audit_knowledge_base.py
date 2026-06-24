@@ -345,6 +345,9 @@ REQUIRED_MARKERS = {
         "具体问题",
         "世应",
         "用神",
+        "结论等级",
+        "问题类型映射",
+        "复盘字段",
     ],
     "knowledge/xiaoliuren/classical-anchors.md": [
         "XLR-C001",

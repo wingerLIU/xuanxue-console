@@ -245,6 +245,22 @@
       "notes": "Seeded Liuyao as concrete-question reading with explicit scope and major-decision boundaries."
     },
     {
+      "id": "PROMO-20260624-LIUYAO-QUESTION-BOUNDARY",
+      "type": "project_seed",
+      "status": "curated",
+      "path": "knowledge/liuyao/question-reading.md",
+      "source_ids": [
+        "SRC-LIUYAO-YIJING",
+        "SRC-LIUYAO-ZENGSHAN-BU",
+        "SRC-LIUYAO-BUSHI-ZHENGZONG",
+        "SRC-LIUYAO-PROJECT-SYNTHESIS",
+        "SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL"
+      ],
+      "approval_status": "user_requested_project_update",
+      "human_approved": true,
+      "notes": "Expanded Liuyao question reading with conclusion levels, question-type mapping, contradiction handling and feedback fields so short-term questions do not become long-term fate claims."
+    },
+    {
       "id": "PROMO-20260612-KB-SEED-XIAOLIUREN",
       "type": "project_seed",
       "status": "curated",
