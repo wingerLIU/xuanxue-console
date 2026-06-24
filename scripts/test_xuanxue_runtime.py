@@ -1150,6 +1150,95 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("python scripts/audit_case_retrospectives.py", markdown)
             self.assertIn("python scripts/audit_knowledge_coverage.py", markdown)
 
+    def test_retrospective_intake_normalizes_team_career_target_domain(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            created = subprocess.run(
+                [
+                    sys.executable,
+                    str(CREATE_WORKSPACE_SCRIPT),
+                    "--case-id",
+                    "team-career-case",
+                    "--reader-name",
+                    "reader",
+                    "--external-root",
+                    tmp,
+                    "--run-id",
+                    "run_demo",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            manifest_path = Path(json.loads(created.stdout)["manifest"])
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            candidate_dir = Path(manifest["paths"]["retrospectives_dir"])
+            candidate_dir.mkdir(parents=True, exist_ok=True)
+            (candidate_dir / "CR-20260624-team-career-ready.candidate.json").write_text(
+                json.dumps(
+                    {
+                        "id": "CR-20260624-team-career-ready",
+                        "title": "去隐私团队事业合盘复盘",
+                        "status": "candidate",
+                        "human_approved": False,
+                        "domains": ["team_career", "writing"],
+                        "target_artifacts": [
+                            "knowledge/team-career/README.md",
+                            "service/multi-person-career-synastry-sop.md",
+                            "templates/team-career-synastry-template.md",
+                        ],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            retro_dir = Path(tmp) / "empty-retrospectives"
+            retro_dir.mkdir()
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(KNOWLEDGE_CONTEXT_SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--module",
+                    "team_career",
+                    "--retro-dir",
+                    str(retro_dir),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(RETRO_INTAKE_SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--global-retro-dir",
+                    str(retro_dir),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            result = json.loads(proc.stdout)
+            self.assertTrue(result["passed"])
+            markdown = Path(result["markdown"]).read_text(encoding="utf-8")
+            intake = json.loads(Path(result["json"]).read_text(encoding="utf-8"))
+            self.assert_retrospective_intake_contract(intake)
+            self.assertEqual(intake["run_local_approval_summary"]["ready_for_human_approval"], 1)
+            local_candidate = intake["run_local_candidates"][0]
+            self.assertTrue(local_candidate["approval_ready"])
+            self.assertEqual(local_candidate["warnings"], [])
+            self.assertNotIn("missing domains: team-career", markdown)
+
 
 if __name__ == "__main__":
     unittest.main()

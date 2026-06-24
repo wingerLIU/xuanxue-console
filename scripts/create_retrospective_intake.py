@@ -15,6 +15,27 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RETRO_REQUIREMENTS_PATH = PROJECT_ROOT / "knowledge" / "completeness" / "retrospective-requirements.json"
 GLOBAL_RETRO_DIR = PROJECT_ROOT / "knowledge" / "case-retrospectives"
 RETROSPECTIVE_INTAKE_SCHEMA = PROJECT_ROOT / "schemas" / "retrospective_intake.schema.json"
+ALLOWED_RETROSPECTIVE_DOMAINS = {
+    "bazi",
+    "ziwei",
+    "western",
+    "mbti",
+    "liuyao",
+    "xiaoliuren",
+    "writing",
+    "relationship",
+    "team_career",
+    "fengshui",
+    "source_register",
+    "quality",
+    "case_retrospectives",
+    "completeness",
+}
+KNOWLEDGE_PATH_DOMAIN_ALIASES = {
+    "team-career": "team_career",
+    "sources": "source_register",
+    "case-retrospectives": "case_retrospectives",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -222,6 +243,7 @@ def inferred_domains_from_targets(target_artifacts: list[Any]) -> list[str]:
     domains: set[str] = set()
     for artifact in target_artifacts:
         normalized = str(artifact).replace("\\", "/")
+        parts = normalized.split("/")
         if normalized.startswith("templates/relationship-") or normalized in {
             "scripts/build_relationship_facts.py",
             "scripts/create_relationship_workspace.py",
@@ -239,10 +261,10 @@ def inferred_domains_from_targets(target_artifacts: list[Any]) -> list[str]:
             "knowledge/writing/"
         ):
             domains.add("writing")
-        if normalized.startswith("knowledge/"):
-            parts = normalized.split("/")
-            if len(parts) >= 2:
-                domains.add(parts[1])
+        if len(parts) >= 2 and parts[0] == "knowledge":
+            domain = KNOWLEDGE_PATH_DOMAIN_ALIASES.get(parts[1], parts[1])
+            if domain in ALLOWED_RETROSPECTIVE_DOMAINS:
+                domains.add(domain)
         if normalized.startswith("scripts/audit_") or normalized.startswith("scripts/validate_"):
             domains.add("quality")
     return sorted(domains)
