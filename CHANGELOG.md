@@ -21,6 +21,8 @@
 - README 增加 MingLi-Bench / Tianfu Agent 相关工作说明，并补充判断强度分级。
 - 新增 `docs/evaluation-roadmap.md`，记录后续评测路线：事实计算、报告一致性、追问 grounding 和真实反馈复盘。
 - coverage matrix 根据已有 curated 去隐私复盘，关闭 writing、relationship 和全局复盘层的旧 blocker；八字、紫微、西占、六爻、团队事业合盘和风水方位仍保留真实反馈缺口。
+- coverage audit 的复盘 next actions 现在会给出具体 `suggested_target_artifacts`，候选命令不再只留下泛化占位。
+- 风水方位知识卡补充证据等级、城市/办公/居住/出行/开运主题、常见降级和报告写法；客户资料表补充方位信息、优先空间和可观察指标。
 
 ## 0.1.0 - 2026-06-15
 
