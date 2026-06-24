@@ -566,6 +566,16 @@ class XuanxueConsoleTests(unittest.TestCase):
                     "python scripts/create_case_retrospective_candidate.py --manifest <RUN_DIR>/case_manifest.json --domain writing --slug demo --title \"去隐私复盘标题\" --evidence-summary \"抽象证据\" --target-artifact knowledge/writing/reader-rich-report.md"
                 ],
             }
+            question_bank_item = {
+                "domain": "writing",
+                "label": "写作",
+                "requirement_id": "REQ-RETRO-WRITING",
+                "gap_id": "GAP-WRITING-LIVE-CLIENT-RETROSPECTIVES",
+                "needed_entries": 1,
+                "min_status": "curated",
+                "questions": ["哪段让读者愿意继续读，哪段像模板话？"],
+                "suggested_target_artifacts": ["knowledge/writing/reader-rich-report.md"],
+            }
             (runtime_dir / "knowledge_context.json").write_text(
                 json.dumps(
                     {
@@ -589,6 +599,7 @@ class XuanxueConsoleTests(unittest.TestCase):
                         "run_id": "run_demo",
                         "do_not_promote_without_human_approval": True,
                         "retrospective_collection_plan": [plan_item],
+                        "domain_question_bank": [question_bank_item],
                     },
                     ensure_ascii=False,
                     indent=2,
@@ -603,6 +614,7 @@ class XuanxueConsoleTests(unittest.TestCase):
             info = finalize_case.check_runtime_context(manifest, failures)
             self.assertEqual(failures, [])
             self.assertEqual(info["collection_plan_items"], 1)
+            self.assertEqual(info["domain_question_bank_items"], 1)
             (runtime_dir / "retrospective_intake.json").write_text(
                 json.dumps(
                     {
@@ -610,6 +622,7 @@ class XuanxueConsoleTests(unittest.TestCase):
                         "run_id": "run_demo",
                         "do_not_promote_without_human_approval": False,
                         "retrospective_collection_plan": [plan_item],
+                        "domain_question_bank": [question_bank_item],
                     },
                     ensure_ascii=False,
                     indent=2,
@@ -619,6 +632,22 @@ class XuanxueConsoleTests(unittest.TestCase):
             failures = []
             finalize_case.check_runtime_context(manifest, failures)
             self.assertTrue(any("without human approval" in item for item in failures))
+            (runtime_dir / "retrospective_intake.json").write_text(
+                json.dumps(
+                    {
+                        "case_id": "case-a",
+                        "run_id": "run_demo",
+                        "do_not_promote_without_human_approval": True,
+                        "retrospective_collection_plan": [plan_item],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            failures = []
+            finalize_case.check_runtime_context(manifest, failures)
+            self.assertTrue(any("domain_question_bank" in item for item in failures))
 
     def test_case_manifest_contract_normalizes_legacy_artifacts(self) -> None:
         contract = load_manifest_contract()

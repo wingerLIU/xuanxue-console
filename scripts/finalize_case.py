@@ -417,6 +417,7 @@ def check_runtime_context(manifest: dict[str, Any], failures: list[str]) -> dict
         "retrospective_intake_json": "",
         "retrospective_intake_markdown": "",
         "collection_plan_items": 0,
+        "domain_question_bank_items": 0,
     }
     if runtime_dir is None or calibration_dir is None:
         return info
@@ -466,15 +467,45 @@ def check_runtime_context(manifest: dict[str, Any], failures: list[str]) -> dict
 
     if intake:
         require(intake.get("do_not_promote_without_human_approval") is True, failures, "retrospective_intake allows promotion without human approval")
-        require(isinstance(intake.get("retrospective_collection_plan"), list), failures, "retrospective_intake missing collection plan")
+        intake_plan = intake.get("retrospective_collection_plan")
+        require(isinstance(intake_plan, list), failures, "retrospective_intake missing collection plan")
+        question_bank = intake.get("domain_question_bank")
+        require(isinstance(question_bank, list), failures, "retrospective_intake missing domain_question_bank")
+        if isinstance(question_bank, list):
+            info["domain_question_bank_items"] = len(question_bank)
+            for idx, item in enumerate(question_bank):
+                if not isinstance(item, dict):
+                    failures.append(f"retrospective_intake domain_question_bank item {idx} is not an object")
+                    continue
+                require(isinstance(item.get("domain"), str) and bool(item.get("domain")), failures, f"retrospective_intake domain_question_bank item {idx} missing domain")
+                require(isinstance(item.get("requirement_id"), str) and bool(item.get("requirement_id")), failures, f"retrospective_intake domain_question_bank item {idx} missing requirement_id")
+                require(isinstance(item.get("questions"), list) and bool(item.get("questions")), failures, f"retrospective_intake domain_question_bank item {idx} missing questions")
+                require(
+                    isinstance(item.get("suggested_target_artifacts"), list) and bool(item.get("suggested_target_artifacts")),
+                    failures,
+                    f"retrospective_intake domain_question_bank item {idx} missing suggested_target_artifacts",
+                )
         for key in ["case_id", "run_id"]:
             require(intake.get(key) == manifest.get(key), failures, f"retrospective_intake {key} does not match manifest")
         if context and isinstance(context.get("retrospective_collection_plan"), list):
             require(
-                len(intake.get("retrospective_collection_plan", [])) == len(context.get("retrospective_collection_plan", [])),
+                isinstance(intake_plan, list)
+                and len(intake_plan) == len(context.get("retrospective_collection_plan", [])),
                 failures,
                 "retrospective_intake collection plan length does not match knowledge_context",
             )
+            if isinstance(question_bank, list):
+                context_domains = {
+                    item.get("domain")
+                    for item in context.get("retrospective_collection_plan", [])
+                    if isinstance(item, dict) and item.get("domain")
+                }
+                bank_domains = {item.get("domain") for item in question_bank if isinstance(item, dict) and item.get("domain")}
+                require(
+                    context_domains == bank_domains,
+                    failures,
+                    "retrospective_intake domain_question_bank domains do not match knowledge_context collection plan",
+                )
 
     for marker in ["可以问读者的问题", "去隐私整理要求", "create_case_retrospective_candidate.py"]:
         require(marker in intake_md, failures, f"retrospective-intake markdown missing marker: {marker}")

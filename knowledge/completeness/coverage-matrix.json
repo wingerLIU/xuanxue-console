@@ -374,6 +374,7 @@
         "knowledge/case-retrospectives/promotion-protocol.md",
         "knowledge/case-retrospectives/template.md",
         "schemas/case_retrospective.schema.json",
+        "schemas/retrospective_intake.schema.json",
         "scripts/create_retrospective_intake.py",
         "scripts/create_case_retrospective_candidate.py",
         "scripts/promote_case_retrospective.py",

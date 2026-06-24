@@ -1,0 +1,106 @@
+{
+  "schema_version": "0.1.0",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "case_id",
+    "run_id",
+    "do_not_promote_without_human_approval",
+    "retrospective_collection_plan",
+    "domain_question_bank"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "do_not_promote_without_human_approval": {
+      "type": "boolean",
+      "const": true
+    },
+    "retrospective_collection_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain",
+          "needed_entries",
+          "suggested_target_artifacts",
+          "candidate_commands"
+        ]
+      }
+    },
+    "domain_question_bank": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain",
+          "label",
+          "requirement_id",
+          "gap_id",
+          "needed_entries",
+          "min_status",
+          "questions",
+          "suggested_target_artifacts"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "enum": [
+              "bazi",
+              "ziwei",
+              "western",
+              "liuyao",
+              "writing",
+              "relationship",
+              "team_career",
+              "fengshui",
+              "*"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "requirement_id": {
+            "type": "string"
+          },
+          "gap_id": {
+            "type": "string"
+          },
+          "needed_entries": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "min_status": {
+            "type": "string",
+            "enum": [
+              "candidate",
+              "curated",
+              "verified"
+            ]
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "suggested_target_artifacts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        }
+      }
+    }
+  }
+}

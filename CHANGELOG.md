@@ -30,6 +30,7 @@
 - 复盘 intake 现在按未满足领域输出追问提示和优先落点，帮助收集八字、紫微、西占、六爻、团队事业合盘和风水方位的真实反馈。
 - `retrospective_intake.json` 新增机器可读 `domain_question_bank`，让后续工具可以直接读取未满足领域、追问问题和建议落点。
 - 风水方位模块补充八方象意、城市/办公/居住/开运场景写法，并接入资料收集表、长文模板、简洁版模板和 `fengshui` knowledge context。
+- 新增 `schemas/retrospective_intake.schema.json`，并让 `finalize_case.py` 校验 `domain_question_bank`，防止复盘追问库从 runtime contract 中丢失。
 
 ## 0.1.0 - 2026-06-15
 
