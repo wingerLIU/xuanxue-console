@@ -548,6 +548,28 @@ def requirement_ids_for_candidate(
     return requirement_ids
 
 
+def repair_priority_for_requirements(
+    requirement_ids: list[str],
+    requirement_results: list[dict[str, Any]],
+) -> dict[str, Any]:
+    requirement_domains = {str(item.get("id", "")): str(item.get("domain", "")) for item in requirement_results}
+    specific_requirements = [
+        req_id for req_id in requirement_ids if requirement_domains.get(req_id) and requirement_domains.get(req_id) != "*"
+    ]
+    wildcard_requirements = [req_id for req_id in requirement_ids if requirement_domains.get(req_id) == "*"]
+    score = len(specific_requirements) * 10 + len(wildcard_requirements)
+    if specific_requirements:
+        reason = "修复后可推进未满足领域门槛：" + ", ".join(specific_requirements)
+    elif wildcard_requirements:
+        reason = "修复后只推进通用复盘门槛：" + ", ".join(wildcard_requirements)
+    else:
+        reason = "修复后暂不直接推进当前未满足门槛，低优先级。"
+    return {
+        "score": score,
+        "reason": reason,
+    }
+
+
 def scan_run_local_candidates(
     runs_root: Path | None,
     requirement_results: list[dict[str, Any]],
@@ -568,6 +590,8 @@ def scan_run_local_candidates(
             "needs_fix_before_approval": 0,
             "items": [],
             "blocked_items": [],
+            "repair_plan": [],
+            "repair_priority_queue": [],
         }
     if not runs_root.exists():
         return {
@@ -578,6 +602,8 @@ def scan_run_local_candidates(
             "needs_fix_before_approval": 0,
             "items": [],
             "blocked_items": [],
+            "repair_plan": [],
+            "repair_priority_queue": [],
         }
     if runs_root.resolve().is_relative_to(PROJECT_ROOT.resolve()):
         warnings.append("run-local candidate scan skipped because runs_root is inside the project repo")
@@ -589,6 +615,8 @@ def scan_run_local_candidates(
             "needs_fix_before_approval": 0,
             "items": [],
             "blocked_items": [],
+            "repair_plan": [],
+            "repair_priority_queue": [],
         }
     runs_dir = runs_root / "runs"
     if not runs_dir.exists():
@@ -600,6 +628,8 @@ def scan_run_local_candidates(
             "needs_fix_before_approval": 0,
             "items": [],
             "blocked_items": [],
+            "repair_plan": [],
+            "repair_priority_queue": [],
         }
 
     items: list[dict[str, Any]] = []
@@ -616,12 +646,17 @@ def scan_run_local_candidates(
             continue
         approval_blockers = candidate_approval_blockers(candidate)
         if approval_blockers:
+            matched_requirements_after_repair = requirement_ids_for_candidate(candidate, requirement_results)
+            priority = repair_priority_for_requirements(matched_requirements_after_repair, requirement_results)
             repair_item = blocked_candidate_repair_item(
                 candidate,
                 path.name,
                 approval_blockers,
                 requirement_results,
             )
+            repair_item["matched_unsatisfied_requirements_after_repair"] = matched_requirements_after_repair
+            repair_item["repair_priority_score"] = priority["score"]
+            repair_item["repair_priority_reason"] = priority["reason"]
             repair_plan.append(repair_item)
             blocked_items.append(
                 {
@@ -637,6 +672,9 @@ def scan_run_local_candidates(
                     "approval_blockers": approval_blockers,
                     "domain_evidence_required": repair_item["domain_evidence_required"],
                     "repair_actions": repair_item["repair_actions"],
+                    "matched_unsatisfied_requirements_after_repair": matched_requirements_after_repair,
+                    "repair_priority_score": priority["score"],
+                    "repair_priority_reason": priority["reason"],
                     "intake_recheck_command": repair_item["intake_recheck_command"],
                     "promotion_dry_run_command_after_fix": repair_item["promotion_dry_run_command_after_fix"],
                     "location": "external_run_retrospectives",
@@ -660,6 +698,10 @@ def scan_run_local_candidates(
             }
         )
 
+    repair_priority_queue = sorted(
+        repair_plan,
+        key=lambda item: (-int(item.get("repair_priority_score", 0) or 0), str(item.get("id", ""))),
+    )
     return {
         "enabled": True,
         "reason": "",
@@ -672,6 +714,8 @@ def scan_run_local_candidates(
         "blocked_items_truncated": max(0, len(blocked_items) - 20),
         "repair_plan": repair_plan[:20],
         "repair_plan_truncated": max(0, len(repair_plan) - 20),
+        "repair_priority_queue": repair_priority_queue[:20],
+        "repair_priority_queue_truncated": max(0, len(repair_priority_queue) - 20),
     }
 
 

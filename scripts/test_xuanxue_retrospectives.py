@@ -343,8 +343,8 @@ class RetrospectivePromotionTests(unittest.TestCase):
             )
             blocked_candidate = candidate_base(
                 retro_id="CR-20990101-team-career-needs-evidence",
-                domains=["team_career", "writing"],
-                target_artifacts=["knowledge/team-career/README.md"],
+                domains=["team_career", "fengshui", "writing"],
+                target_artifacts=["knowledge/team-career/README.md", "knowledge/fengshui/README.md"],
             )
             blocked_candidate.pop("domain_evidence")
             (candidate_dir / "CR-20990101-team-career-needs-evidence.candidate.json").write_text(
@@ -386,15 +386,27 @@ class RetrospectivePromotionTests(unittest.TestCase):
             self.assertTrue(any("missing domain_evidence" in reason for reason in blocked["approval_blockers"]))
             self.assertIn("domain_evidence_required", blocked)
             required_domains = {item["domain"]: item for item in blocked["domain_evidence_required"]}
+            self.assertIn("fengshui", required_domains)
             self.assertIn("team_career", required_domains)
             self.assertIn("writing", required_domains)
             self.assertIn("evidence_anchor", required_domains["team_career"]["missing_fields"])
             self.assertTrue(any("哪个角色判断被团队现实验证" in question for question in required_domains["team_career"]["evidence_questions"]))
+            self.assertTrue(any("哪条空间、方位或城市建议执行后可观察" in question for question in required_domains["fengshui"]["evidence_questions"]))
             self.assertTrue(any("补齐 domain_evidence" in action for action in blocked["repair_actions"]))
+            self.assertIn("REQ-RETRO-TEAM-CAREER", blocked["matched_unsatisfied_requirements_after_repair"])
+            self.assertIn("REQ-RETRO-FENGSHUI", blocked["matched_unsatisfied_requirements_after_repair"])
+            self.assertNotIn("REQ-RETRO-WRITING", blocked["matched_unsatisfied_requirements_after_repair"])
+            self.assertGreater(blocked["repair_priority_score"], 0)
+            self.assertIn("未满足领域门槛", blocked["repair_priority_reason"])
             self.assertIn("create_retrospective_intake.py", blocked["intake_recheck_command"])
             self.assertIn("--dry-run", blocked["promotion_dry_run_command_after_fix"])
             self.assertIn("repair_plan", summary)
             self.assertEqual(summary["repair_plan"][0]["id"], "CR-20990101-team-career-needs-evidence")
+            self.assertEqual(summary["repair_priority_queue"][0]["id"], "CR-20990101-team-career-needs-evidence")
+            self.assertIn(
+                "REQ-RETRO-FENGSHUI",
+                summary["repair_priority_queue"][0]["matched_unsatisfied_requirements_after_repair"],
+            )
             self.assertEqual(
                 summary["repair_plan"][0]["candidate_path"],
                 "<RUN_DIR>\\retrospectives\\CR-20990101-team-career-needs-evidence.candidate.json",
