@@ -22,6 +22,19 @@ source_id: `SRC-PROJECT-TEAM-CAREER-SYNTHESIS`
 - 流年流月用于安排试点、谈判、上线、复盘和暂停，不用于承诺具体收益。
 - 流日只适合轻量提示和日程选择，不进入主报告强判断。
 
+## 团队事实摘要
+
+`team-source-summary.json` 不是报告附件，而是后续复盘的事实底座。它至少要把以下信息固定下来：
+
+- `members`: 每个成员的现实职责、单盘 manifest、facts JSON 和 facts markdown。
+- `pair_relationship_runs`: 每组 pair 的 relationship manifest、relationship facts 和主要协作主题。
+- `business_context`: 决策结构、否决权、钱账归属、客户入口、城市候选、试点周期和已知限制。
+- `team_hypotheses`: 报告真正下的团队判断，例如谁适合拍板、谁适合对外、谁适合守交付、哪种合伙形态最稳。
+- `validation_plan`: 未来 30/60/90 天怎么验证这些判断；每条判断要对应一个现实观察指标。
+- `do_not_infer`: 用户现实反馈、内部评价和聊天线索里，哪些只能作为现实校准，不能写成命理事实。
+
+没有 `team_hypotheses` 和 `validation_plan` 的团队 run，后续很难自进化：只能知道报告写了什么，不能知道哪些判断后来被验证或推翻。
+
 ## 禁止写法
 
 - 不把“某人很强”“某人能破局”写成主观背书。
@@ -39,5 +52,7 @@ source_id: `SRC-PROJECT-TEAM-CAREER-SYNTHESIS`
 - 城市判断里哪些商业变量比命理象意更关键。
 - 流年流月建议是否帮助安排试点和复盘，还是显得空泛。
 - 新成员加入后，是补短板、放大冲突，还是改变团队权力结构。
+- 60-90 天试点是否真的执行；如果没执行，原因是资源、预算、权责、客户入口还是个人意愿。
+- 报告里的“适合轻试点/不宜重投入”有没有被现实动作验证；若没有动作，不能把未验证判断晋升知识库。
 
 候选复盘只能进入外部 run 的 `retrospectives`。人工确认、去隐私、带反例和限制后，才能晋升到 `knowledge/case-retrospectives/`。

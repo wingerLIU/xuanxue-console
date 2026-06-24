@@ -31,6 +31,7 @@
 - `retrospective_intake.json` 新增机器可读 `domain_question_bank`，让后续工具可以直接读取未满足领域、追问问题和建议落点。
 - 风水方位模块补充八方象意、城市/办公/居住/开运场景写法，并接入资料收集表、长文模板、简洁版模板和 `fengshui` knowledge context。
 - 风水方位来源补充《宅经》（旧题《黄帝宅经》）候选入口，用于术语和传统语境边界；不提升为现代坐向吉凶强断依据。
+- 多人事业合盘补充 `team_hypotheses`、`validation_plan`、读者复盘锚点和 30/60/90 天匿名反馈字段，方便后续用真实反馈校准团队判断。
 - 新增 `schemas/retrospective_intake.schema.json`，并让 `finalize_case.py` 校验 `domain_question_bank`，防止复盘追问库从 runtime contract 中丢失。
 - 新增 `schemas/knowledge_context.schema.json`，并让 `finalize_case.py` 校验 `selected_modules`、`usage_rules` 和 schema version，防止知识上下文退化成残缺清单。
 - `build_knowledge_context.py` 生成阶段也会按 `schemas/knowledge_context.schema.json` 自检，避免残缺 context 等到最终交付才暴露。
