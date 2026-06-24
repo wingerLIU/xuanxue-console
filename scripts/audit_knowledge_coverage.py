@@ -21,6 +21,12 @@ RETRO_DIR = PROJECT_ROOT / "knowledge" / "case-retrospectives"
 SOURCE_ID_RE = re.compile(r"SRC-[A-Z0-9-]+")
 
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit the knowledge coverage matrix and goal-completion blockers.")
     parser.add_argument(
@@ -136,6 +142,21 @@ def count_retrospectives_for_requirement(
     return count
 
 
+def normalized_evidence_questions(requirement: dict[str, Any], failures: list[str]) -> list[str]:
+    req_id = str(requirement.get("id", "<missing-id>"))
+    raw = requirement.get("evidence_questions", [])
+    if not isinstance(raw, list) or not raw:
+        failures.append(f"{req_id} evidence_questions must be a non-empty list")
+        return []
+    questions: list[str] = []
+    for item in raw:
+        if not isinstance(item, str) or not item.strip():
+            failures.append(f"{req_id} evidence_questions entries must be non-empty strings")
+            continue
+        questions.append(item.strip())
+    return questions
+
+
 def evaluate_retrospective_requirements(
     requirements_data: dict[str, Any],
     goal_completion_blockers: list[str],
@@ -165,6 +186,7 @@ def evaluate_retrospective_requirements(
             if key not in requirement:
                 failures.append(f"retrospective requirement missing {key}: {requirement.get('id', '<missing-id>')}")
         req_id = str(requirement.get("id", "<missing-id>"))
+        evidence_questions = normalized_evidence_questions(requirement, failures)
         gap_id = str(requirement.get("gap_id", ""))
         min_entries = requirement.get("min_entries", 0)
         if not isinstance(min_entries, int) or min_entries < 1:
@@ -184,6 +206,7 @@ def evaluate_retrospective_requirements(
                 "min_status": min_status,
                 "current_entries": current,
                 "satisfied": satisfied,
+                "evidence_questions": evidence_questions,
             }
         )
         if not satisfied and gap_id not in blocker_set:
@@ -224,6 +247,7 @@ def retrospective_next_actions(requirement_results: list[dict[str, Any]]) -> lis
                     "Only deidentified run-local candidate retrospectives promoted after "
                     "human approval count toward knowledge completion."
                 ),
+                "evidence_questions": item.get("evidence_questions", []),
                 "commands": [
                     "python scripts/create_retrospective_intake.py --manifest <RUN_DIR>\\case_manifest.json",
                     (
