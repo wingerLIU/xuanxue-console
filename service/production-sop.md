@@ -89,10 +89,11 @@ python -X utf8 scripts\build_fact_archive.py <RUN_DIR>\data\<case>-combo.json --
 读者交付后提出追加问题时，不要只围绕旧长文延伸。先生成 run-local 追问上下文：
 
 ```powershell
-python -X utf8 scripts\create_followup_context.py --manifest <RUN_DIR>\case_manifest.json --question "<追问原文>" --module combo
+python -X utf8 scripts\create_followup_context.py --manifest <RUN_DIR>\case_manifest.json --question "<追问原文>"
 ```
 
 回答前读取生成的 `<RUN_DIR>\runtime\followups\*.json`，并逐项读取其中的 `facts_json`、`knowledge_context` 和 `required_knowledge_files`。旧报告正文只作为表达上下文，不能单独作为新结论来源。
+脚本会按已有 facts 和追问关键词推断模块：单盘会回到 combo/module facts，多人事业 run 会带出 `team_source_summary`、`team_flow_timing_json` 和两两 relationship facts；方位、风水、城市、工位、居住或开运追问会要求 `fengshui` knowledge module。如果脚本提示 `knowledge_context missing requested module: fengshui` 或 `team_career`，先重跑 `build_knowledge_context.py` 补模块，不要绕过上下文直接答。
 脚本会同步生成 `<RUN_DIR>\calibration\dialogue\*.md`，用于记录追问原文、必读证据、回答口径和后续复盘；回答后如用户反馈“太中庸、太冲、像旧稿”，先写回这份 note，再决定是否生成去隐私候选复盘。
 
 追问回答的结构固定为：
@@ -133,6 +134,7 @@ python -X utf8 scripts\audit_birth_time_sensitivity.py --solar <yyyy-mm-dd> --ti
 
 ```powershell
 python -X utf8 scripts\build_knowledge_context.py --manifest <RUN_DIR>\case_manifest.json --module combo --module fengshui
+python -X utf8 scripts\build_knowledge_context.py --manifest <TEAM_RUN_DIR>\case_manifest.json --module team_career --module relationship --module fengshui --module writing
 ```
 
 读取 `knowledge/fengshui/README.md` 后再写建议。没有现场勘测、罗盘坐向、户型图和长期执行反馈时，只能写低风险、可撤回、可观察的空间建议；不能写“必发财”“必破财”“某方一定有灾”这类传统风水强断。城市选择仍然先看客户、成本、行业、家庭生活和现金流，命理象意只作辅助。

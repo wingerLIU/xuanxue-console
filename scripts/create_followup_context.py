@@ -21,14 +21,58 @@ except ModuleNotFoundError:  # pragma: no cover - importlib test fallback
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-FOLLOWUP_MODULES = {"bazi", "ziwei", "western", "mbti", "liuyao", "xiaoliuren", "relationship", "writing"}
+FOLLOWUP_MODULES = {
+    "bazi",
+    "ziwei",
+    "western",
+    "mbti",
+    "liuyao",
+    "xiaoliuren",
+    "relationship",
+    "team_career",
+    "fengshui",
+    "writing",
+}
 DATA_MODULES = {"bazi", "ziwei", "western", "mbti", "liuyao", "xiaoliuren", "relationship"}
 RELATIONSHIP_KNOWLEDGE_MODULES = ["bazi", "ziwei", "western", "mbti"]
+FENGSHUI_QUESTION_KEYWORDS = (
+    "风水",
+    "方位",
+    "方向",
+    "开运",
+    "工位",
+    "办公位",
+    "办公桌",
+    "办公室",
+    "书房",
+    "卧室",
+    "床位",
+    "户型",
+    "罗盘",
+    "坐向",
+    "朝向",
+    "大门",
+    "采光",
+    "通风",
+    "噪音",
+    "潮湿",
+    "居住",
+    "住处",
+    "搬家",
+    "迁移",
+    "选城",
+    "城市",
+)
 RELATIONSHIP_KNOWLEDGE_PATH_PREFIXES = (
     "templates/relationship-",
     "scripts/build_relationship_facts.py",
     "scripts/create_relationship_workspace.py",
     "scripts/validate_relationship_report.py",
+)
+TEAM_CAREER_KNOWLEDGE_PATH_PREFIXES = (
+    "knowledge/team-career/",
+    "templates/team-career-",
+    "service/multi-person-career-synastry-sop.md",
 )
 REQUIRED_RELATIONSHIP_LIFE_DOMAINS = {
     "career": "事业/合作",
@@ -124,7 +168,17 @@ def module_names_from_combo(path: Path) -> list[str]:
     return result
 
 
-def normalize_selected_modules(raw_modules: list[str], manifest: dict[str, Any]) -> list[str]:
+def inferred_modules_from_question(question: str) -> list[str]:
+    text = question.strip().lower()
+    if not text:
+        return []
+    modules: list[str] = []
+    if any(keyword in text for keyword in FENGSHUI_QUESTION_KEYWORDS):
+        modules.append("fengshui")
+    return modules
+
+
+def normalize_selected_modules(raw_modules: list[str], manifest: dict[str, Any], question: str = "") -> list[str]:
     modules = split_modules(raw_modules)
     if not modules:
         artifacts_data = manifest.get("artifacts", {}).get("data", {})
@@ -135,6 +189,9 @@ def normalize_selected_modules(raw_modules: list[str], manifest: dict[str, Any])
             for name in DATA_MODULES:
                 if artifacts_data.get(name):
                     modules.append(name)
+            if artifacts_data.get("team_source_summary"):
+                modules.append("team_career")
+        modules.extend(inferred_modules_from_question(question))
     modules.append("writing")
 
     unknown = sorted({item for item in modules if item not in FOLLOWUP_MODULES})
@@ -164,6 +221,37 @@ def existing_data_paths(manifest: dict[str, Any], modules: list[str]) -> list[di
         raw = artifacts_data.get(module)
         if raw and not any(item["path"] == str(raw) for item in paths):
             paths.append({"module": module, "path": str(raw), "role": "module calculated facts"})
+
+    if "team_career" in modules:
+        team_source_summary = artifacts_data.get("team_source_summary")
+        if team_source_summary:
+            paths.append(
+                {
+                    "module": "team_career",
+                    "path": str(team_source_summary),
+                    "role": "team source summary facts",
+                }
+            )
+        team_flow_timing = artifacts_data.get("team_flow_timing_json")
+        if team_flow_timing:
+            paths.append(
+                {
+                    "module": "team_career",
+                    "path": str(team_flow_timing),
+                    "role": "team flow timing facts",
+                }
+            )
+        source_relationship_facts = manifest.get("artifacts", {}).get("source_relationship_facts", {})
+        if isinstance(source_relationship_facts, dict):
+            for label, value in sorted(source_relationship_facts.items()):
+                if value and not any(item["path"] == str(value) for item in paths):
+                    paths.append(
+                        {
+                            "module": "relationship",
+                            "path": str(value),
+                            "role": f"team pair relationship facts: {label}",
+                        }
+                    )
 
     time_sensitivity = artifacts_data.get("time_sensitivity")
     if time_sensitivity:
@@ -236,6 +324,11 @@ def knowledge_files_for_modules(context: dict[str, Any], modules: list[str]) -> 
         for module in selected:
             if path.startswith(f"knowledge/{module}/") or module == "writing" and (
                 path.startswith("templates/") or path.startswith("knowledge/writing/")
+            ):
+                include = True
+            if module == "team_career" and (
+                path.startswith(TEAM_CAREER_KNOWLEDGE_PATH_PREFIXES)
+                or path in TEAM_CAREER_KNOWLEDGE_PATH_PREFIXES
             ):
                 include = True
             if module == "relationship" and (
@@ -328,7 +421,7 @@ def build_context(manifest_path: Path, question: str, modules_arg: list[str], ou
     failures: list[str] = []
     manifest = load_json(manifest_path)
     manifest, _changes = normalize_manifest(manifest)
-    modules = normalize_selected_modules(modules_arg, manifest)
+    modules = normalize_selected_modules(modules_arg, manifest, question)
 
     paths = manifest.get("paths", {})
     if not isinstance(paths, dict):
@@ -433,6 +526,8 @@ def build_context(manifest_path: Path, question: str, modules_arg: list[str], ou
             "For relationship follow-ups, treat relationship facts as the primary calculated layer and individual-system facts/rules as supporting layers.",
             "For relationship follow-ups about career, family, wealth, health/energy, or intimacy, read relationship_life_domains first and obey allowed_writing, do_not_infer, and writing_boundary.",
             "For relationship follow-ups about attraction, closeness, or private life, read relationship_mode first; only write body-attraction/private romance language when romantic_language_supported is true.",
+            "For team career follow-ups, read team_source_summary and pair relationship facts before using the old final report as wording context.",
+            "For fengshui/direction follow-ups, read knowledge/fengshui/README.md first; keep recommendations low-risk, reversible, and observable unless site survey evidence exists.",
             "If evidence is thin or systems disagree, answer with a bounded tendency and a calibration question.",
         ],
         "passed": not failures,

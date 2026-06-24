@@ -492,6 +492,218 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("客观不等于中庸", note_text)
             self.assertIn("感情部分为什么会这样判断？", note_text)
 
+    def test_followup_context_infers_fengshui_module_from_direction_question(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            created = subprocess.run(
+                [
+                    sys.executable,
+                    str(CREATE_WORKSPACE_SCRIPT),
+                    "--case-id",
+                    "case-a",
+                    "--reader-name",
+                    "reader",
+                    "--external-root",
+                    tmp,
+                    "--run-id",
+                    "run_demo",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            manifest_path = Path(json.loads(created.stdout)["manifest"])
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            data_dir = Path(manifest["paths"]["data_dir"])
+            combo_path = data_dir / "case-a-combo.json"
+            team_source_summary = data_dir / "case-a-team-source-summary.json"
+            team_flow_timing = data_dir / "case-a-team-flow-timing.json"
+            combo_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "0.2.0",
+                        "module": "combo",
+                        "facts": {"modules": [{"module": "bazi"}, {"module": "western"}]},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            team_source_summary.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "0.1.0",
+                        "case_id": "case-a",
+                        "scenario": "去隐私团队事业合盘",
+                        "team_hypotheses": ["客户入口需要现实验证"],
+                        "validation_plan": ["30 天观察客户响应和工位调整后的沟通效率"],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            team_flow_timing.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "0.1.0",
+                        "case_id": "case-a",
+                        "windows": [{"period": "2026-Q3", "focus": "团队试点和空间调整反馈"}],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            manifest.setdefault("artifacts", {}).setdefault("data", {})["team_source_summary"] = str(team_source_summary)
+            manifest["artifacts"]["data"]["team_flow_timing_json"] = str(team_flow_timing)
+            manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            retro_dir = Path(tmp) / "empty-retrospectives"
+            retro_dir.mkdir()
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(KNOWLEDGE_CONTEXT_SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--module",
+                    "bazi",
+                    "--module",
+                    "western",
+                    "--module",
+                    "team_career",
+                    "--module",
+                    "fengshui",
+                    "--retro-dir",
+                    str(retro_dir),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(FOLLOWUP_CONTEXT_SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--question",
+                    "办公室方位和工位怎么调整更适合？",
+                    "--slug",
+                    "fengshui-direction",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            result = json.loads(proc.stdout)
+            self.assertTrue(result["passed"])
+            context = json.loads(Path(result["output"]).read_text(encoding="utf-8"))
+            self.assertIn("bazi", context["selected_modules"])
+            self.assertIn("western", context["selected_modules"])
+            self.assertIn("team_career", context["selected_modules"])
+            self.assertIn("fengshui", context["selected_modules"])
+            self.assertIn("writing", context["selected_modules"])
+            fact_modules = [item["module"] for item in context["facts_json"]]
+            self.assertIn("combo", fact_modules)
+            self.assertIn("team_career", fact_modules)
+            knowledge_paths = {item["path"] for item in context["required_knowledge_files"]}
+            self.assertIn("knowledge/fengshui/README.md", knowledge_paths)
+            self.assertIn("knowledge/team-career/README.md", knowledge_paths)
+            self.assertIn("templates/team-career-synastry-template.md", knowledge_paths)
+            self.assertIn("knowledge/bazi/foundations.md", knowledge_paths)
+            self.assertIn("knowledge/western/foundations.md", knowledge_paths)
+            self.assertTrue(any("team_source_summary" in item for item in context["answer_contract"]))
+            self.assertTrue(any("fengshui/direction follow-ups" in item for item in context["answer_contract"]))
+            note_text = Path(result["dialogue_note"]).read_text(encoding="utf-8")
+            self.assertIn("team_career", note_text)
+            self.assertIn("fengshui", note_text)
+            self.assertIn("办公室方位和工位怎么调整更适合？", note_text)
+
+    def test_followup_context_requires_fengshui_knowledge_for_direction_question(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            created = subprocess.run(
+                [
+                    sys.executable,
+                    str(CREATE_WORKSPACE_SCRIPT),
+                    "--case-id",
+                    "case-a",
+                    "--reader-name",
+                    "reader",
+                    "--external-root",
+                    tmp,
+                    "--run-id",
+                    "run_demo",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            manifest_path = Path(json.loads(created.stdout)["manifest"])
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            data_dir = Path(manifest["paths"]["data_dir"])
+            combo_path = data_dir / "case-a-combo.json"
+            combo_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "0.2.0",
+                        "module": "combo",
+                        "facts": {"modules": [{"module": "bazi"}, {"module": "western"}]},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            retro_dir = Path(tmp) / "empty-retrospectives"
+            retro_dir.mkdir()
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(KNOWLEDGE_CONTEXT_SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--module",
+                    "bazi",
+                    "--module",
+                    "western",
+                    "--retro-dir",
+                    str(retro_dir),
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(FOLLOWUP_CONTEXT_SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--question",
+                    "办公室方位和工位怎么调整更适合？",
+                    "--slug",
+                    "fengshui-direction",
+                ],
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(PROJECT_ROOT),
+                encoding="utf-8",
+            )
+            self.assertNotEqual(proc.returncode, 0)
+            result = json.loads(proc.stdout)
+            self.assertFalse(result["passed"])
+            self.assertTrue(any("knowledge_context missing requested module: fengshui" in item for item in result["failures"]))
+
     def test_relationship_followup_context_uses_relationship_facts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
