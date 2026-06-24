@@ -427,6 +427,64 @@ def ready_candidate_commands(candidates: list[dict[str, Any]]) -> dict[str, list
     }
 
 
+def blocked_candidate_repair_plan(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    plan: list[dict[str, Any]] = []
+    for candidate in candidates:
+        if candidate.get("approval_ready") is True:
+            continue
+        required_evidence = [
+            item for item in as_list(candidate.get("domain_evidence_required")) if isinstance(item, dict)
+        ]
+        evidence_templates = []
+        for item in required_evidence:
+            domain = str(item.get("domain", ""))
+            missing_fields = [str(field) for field in as_list(item.get("missing_fields"))]
+            if not domain or not missing_fields:
+                continue
+            evidence_templates.append(
+                {
+                    "domain": domain,
+                    "missing_fields": missing_fields,
+                    "json_fragment_template": {
+                        domain: {
+                            field: f"<{domain}-{field}-from-deidentified-real-feedback>"
+                            for field in missing_fields
+                        }
+                    },
+                    "evidence_questions": [
+                        str(question)
+                        for question in as_list(item.get("evidence_questions"))
+                        if str(question).strip()
+                    ],
+                }
+            )
+        repair_actions: list[str] = []
+        if not as_list(candidate.get("domains")):
+            repair_actions.append("补齐 domains；只能填写候选真实覆盖的知识域。")
+        if not as_list(candidate.get("target_artifacts")):
+            repair_actions.append("补齐 target_artifacts；必须指向这条复盘实际要改进的项目文件。")
+        if evidence_templates:
+            repair_actions.append("补齐 domain_evidence；必须来自去隐私真实反馈，不要用模型推测代替证据。")
+        for warning in as_list(candidate.get("warnings")):
+            if "target_artifacts imply missing domains" in str(warning):
+                repair_actions.append("复核 target_artifacts 推断出的 domain；若确实覆盖该领域，补进 domains，否则调整 target_artifacts。")
+        if candidate.get("human_approved") is True:
+            repair_actions.append("候选已标记 human_approved；不要重复审批，先晋升或规范化 status。")
+        plan.append(
+            {
+                "id": candidate.get("id"),
+                "file": candidate.get("file"),
+                "candidate_path": f"<RUN_DIR>\\retrospectives\\{candidate.get('file', '')}",
+                "approval_blockers": candidate.get("approval_blockers", []),
+                "repair_actions": repair_actions,
+                "domain_evidence_templates": evidence_templates,
+                "recheck_command": "python scripts/create_retrospective_intake.py --manifest <RUN_DIR>\\case_manifest.json",
+                "promotion_dry_run_command_after_fix": candidate.get("promotion_dry_run_command"),
+            }
+        )
+    return plan
+
+
 def global_retrospective_items(retro_dir: Path = GLOBAL_RETRO_DIR) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for path in sorted(retro_dir.glob("*.json")):
@@ -808,6 +866,30 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
                 ]
             )
         lines.append("")
+        repair_plan = blocked_candidate_repair_plan(candidates)
+        if repair_plan:
+            lines.extend(["## blocked 候选修复计划", ""])
+            lines.append("这里只给人工修复路径，不自动补证据；`domain_evidence` 必须来自去隐私真实反馈。")
+            lines.append("")
+            for item in repair_plan:
+                lines.append(f"- `{item.get('id', '')}` / file `{item.get('file', '')}`")
+                for action in as_list(item.get("repair_actions")):
+                    lines.append(f"  - repair_action: {action}")
+                templates = [entry for entry in as_list(item.get("domain_evidence_templates")) if isinstance(entry, dict)]
+                if templates:
+                    lines.append("  - domain_evidence 模板：")
+                    for entry in templates:
+                        lines.append(f"    - `{entry.get('domain', '')}` missing `{', '.join(as_list(entry.get('missing_fields')))}`")
+                        questions = [str(question) for question in as_list(entry.get("evidence_questions")) if str(question).strip()]
+                        if questions:
+                            lines.append("      - 先回答：")
+                            for question in questions[:3]:
+                                lines.append(f"        - {question}")
+                lines.append("  - 修复后重跑：")
+                lines.extend(["    ```powershell", f"    {item['recheck_command']}", "    ```"])
+                lines.append("  - 通过后再 dry-run：")
+                lines.extend(["    ```powershell", f"    {item['promotion_dry_run_command_after_fix']}", "    ```"])
+            lines.append("")
         impact = approval_impact_preview(candidates, retro_dir)
         lines.extend(["## 批准 ready 候选后的覆盖预览", ""])
         ready_ids = impact.get("ready_candidate_ids", [])
@@ -980,6 +1062,7 @@ def main() -> int:
         "run_local_approval_impact_preview": approval_impact_preview(candidates, retro_dir),
         "run_local_minimal_approval_plan": minimal_approval_plan(candidates, retro_dir),
         "run_local_ready_candidate_commands": ready_candidate_commands(candidates),
+        "run_local_blocked_candidate_repair_plan": blocked_candidate_repair_plan(candidates),
         "run_local_candidate_warnings": [
             {
                 "id": item.get("id"),

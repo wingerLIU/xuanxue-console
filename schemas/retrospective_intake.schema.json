@@ -7,7 +7,12 @@
     "run_id",
     "do_not_promote_without_human_approval",
     "retrospective_collection_plan",
-    "domain_question_bank"
+    "domain_question_bank",
+    "run_local_candidates",
+    "run_local_approval_summary",
+    "run_local_blocked_candidate_repair_plan",
+    "run_local_ready_candidate_commands",
+    "knowledge_growth_priority"
   ],
   "properties": {
     "schema_version": {
@@ -101,6 +106,68 @@
           }
         }
       }
+    },
+    "run_local_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "file",
+          "id",
+          "status",
+          "domains",
+          "human_approved",
+          "target_artifacts",
+          "approval_ready",
+          "approval_blockers",
+          "domain_evidence_required",
+          "promotion_dry_run_command",
+          "promotion_command"
+        ]
+      }
+    },
+    "run_local_approval_summary": {
+      "type": "object",
+      "required": [
+        "candidate_count",
+        "ready_for_human_approval",
+        "needs_fix_before_approval",
+        "already_human_approved",
+        "ready_candidate_ids",
+        "blocked_candidate_ids"
+      ]
+    },
+    "run_local_blocked_candidate_repair_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "file",
+          "candidate_path",
+          "approval_blockers",
+          "repair_actions",
+          "domain_evidence_templates",
+          "recheck_command",
+          "promotion_dry_run_command_after_fix"
+        ]
+      }
+    },
+    "run_local_ready_candidate_commands": {
+      "type": "object",
+      "required": [
+        "dry_run",
+        "promote",
+        "post_promotion_audits"
+      ]
+    },
+    "knowledge_growth_priority": {
+      "type": "object",
+      "required": [
+        "prefer",
+        "avoid",
+        "decision_labels"
+      ]
     }
   }
 }
