@@ -1,6 +1,6 @@
 # Research Backlog
 
-last_updated: `2026-06-12`
+last_updated: `2026-06-24`
 
 这个文件记录尚未晋升为运行时知识的典籍/资料缺口。这里的条目不能支撑客户报告强判断。
 
@@ -26,7 +26,8 @@ last_updated: `2026-06-12`
 - `source_id`: `SRC-ZIWEI-DOUSHU-QUANJI`
 - `status`: `catalog_found_no_public_fulltext`
 - `needed_for`: 星曜组合、四化材料、流派差异对照。
-- `current_state`: 找到成大中文学报/Airiti 对《紫微斗数全集》版本与书目的引用，東洋文庫/KOSTMA 可证馆藏目录；另找到日本国立公文书馆《新鋟希夷陳先生紫微斗数全書》影像入口，已作为 `SRC-ZIWEI-DOUSHU-QUANSHU` 补充来源。私人整理站和 Scribd 可见扫描线索，但不作为机器注册的主来源。目前仍未找到可长期访问、可公开核验的《全集》全文。
+- `current_state`: 找到成大中文学报/Airiti 对《紫微斗数全集》版本与书目的引用，東洋文庫/KOSTMA 可证馆藏目录；另找到日本国立公文书馆《新鋟希夷陳先生紫微斗数全書》影像入口，已作为 `SRC-ZIWEI-DOUSHU-QUANSHU` 补充来源。2026-06-24 复查公开入口，仍未找到可长期访问、可公开核验的《全集》全文；私人整理站、商品页、Scribd、网盘和论坛压缩包仍不作为机器注册主来源。
+- `latest_recheck`: 2026-06-24 只确认“未找到可晋升公开全文”，不新增 source-register URL，不拆新规则卡。
 - `promotion_condition`: 只有找到稳定公开全文、可信公开扫描或馆方授权影像后，才能更新 source register 并拆规则卡；当前只能进入 `quanshu-vs-quanji-boundary.md` 作非晋升边界。
 
 ## RB-003 小六壬可靠古籍来源

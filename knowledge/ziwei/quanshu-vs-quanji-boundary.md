@@ -32,6 +32,15 @@ external_sources: `SRC-ZIWEI-DOUSHU-QUANSHU`, `SRC-ZIWEI-DOUSHU-QUANJI`, `SRC-ZI
 - `modern_translation`: 它是“这本书在哪、是什么形态”的证据，不是“书里怎么断”的证据。
 - `report_usage`: 只在内部 source register / backlog 中出现，不在客户长文正文里展开。
 
+## ZW-QJ004 复查记录不等于来源晋升
+
+- `source`: `SRC-ZIWEI-DOUSHU-QUANJI`
+- `rule`: 后续搜索如果只重复出现概览页、商品页、网盘、Scribd、论坛压缩包或无授权摘段，只能更新 `knowledge/sources/research-backlog.md` 的复查记录，不能更新 source register 的晋升状态。
+- `scope`: 来源复查、知识库维护、紫微规则卡晋升。
+- `limits`: 搜索结果数量多不等于来源可靠；没有稳定公开全文、公开馆藏影像或授权扫描，就仍是 `catalog_found_no_public_fulltext`。
+- `modern_translation`: “又搜到一批资料”不等于“资料可以用”。能追溯、能复查、能说明版本，才进入规则卡。
+- `report_usage`: 客户报告不提《全集》复查过程；只使用已整理的《全书》、赋文和项目紫微规则卡。
+
 ## 晋升条件
 
 《紫微斗数全集》要进入规则卡，必须满足至少一个条件：
