@@ -18,6 +18,13 @@ MODERN_REFERENCES = PROJECT_ROOT / "knowledge" / "sources" / "modern-references.
 RESEARCH_BACKLOG = PROJECT_ROOT / "knowledge" / "sources" / "research-backlog.md"
 
 SOURCE_ID_RE = re.compile(r"SRC-[A-Z0-9-]+")
+BACKLOG_SECTION_RE = re.compile(r"^##\s+(RB-\d+)\s+(.+?)\s*$", re.MULTILINE)
+ACTIVE_BACKLOG_STATUSES = {
+    "catalog_found_no_public_fulltext",
+    "source_not_found",
+    "source_missing",
+    "needs_research",
+}
 
 
 def rel(path: Path) -> str:
@@ -44,6 +51,34 @@ def load_text(path: Path, failures: list[str]) -> str:
 
 def ids_in_text(text: str) -> set[str]:
     return set(SOURCE_ID_RE.findall(text))
+
+
+def parse_research_backlog(text: str) -> list[dict[str, Any]]:
+    sections = list(BACKLOG_SECTION_RE.finditer(text))
+    items: list[dict[str, Any]] = []
+    for index, match in enumerate(sections):
+        start = match.end()
+        end = sections[index + 1].start() if index + 1 < len(sections) else len(text)
+        body = text[start:end]
+        source_ids: list[str] = []
+        status = ""
+        for line in body.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("- `source_id`:"):
+                source_ids = sorted(ids_in_text(stripped))
+            elif stripped.startswith("- `status`:"):
+                status = stripped.split(":", 1)[1].strip().strip("`")
+        active_research = status in ACTIVE_BACKLOG_STATUSES
+        items.append(
+            {
+                "id": match.group(1),
+                "title": match.group(2).strip(),
+                "status": status,
+                "source_ids": source_ids,
+                "active_research": active_research,
+            }
+        )
+    return items
 
 
 def main() -> int:
@@ -87,6 +122,15 @@ def main() -> int:
     documented_classical = 0
     documented_modern = 0
     backlog_ids = ids_in_text(backlog_text)
+    backlog_items = parse_research_backlog(backlog_text)
+    active_backlog_ids = sorted(
+        {source_id for item in backlog_items if item["active_research"] for source_id in item["source_ids"]}
+    )
+    tracked_backlog_ids = sorted(backlog_ids - set(active_backlog_ids))
+    backlog_status_counts: dict[str, int] = {}
+    for item in backlog_items:
+        status = item["status"] or "missing_status"
+        backlog_status_counts[status] = backlog_status_counts.get(status, 0) + 1
     for source_id, entry in sorted(registered.items()):
         source_type = entry.get("type")
         status = entry.get("status")
@@ -123,6 +167,10 @@ def main() -> int:
         "documented_classical_sources": documented_classical,
         "documented_modern_sources": documented_modern,
         "backlog_source_ids": sorted(backlog_ids),
+        "active_backlog_source_ids": active_backlog_ids,
+        "tracked_backlog_source_ids": tracked_backlog_ids,
+        "research_backlog_items": backlog_items,
+        "backlog_status_counts": dict(sorted(backlog_status_counts.items())),
         "failures": failures,
         "warnings": warnings,
     }

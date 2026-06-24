@@ -4,6 +4,15 @@ last_updated: `2026-06-12`
 
 这个文件记录尚未晋升为运行时知识的典籍/资料缺口。这里的条目不能支撑客户报告强判断。
 
+## 状态口径
+
+- `catalog_found_no_public_fulltext`: 仍是主动研究缺口。只找到目录、书目或馆藏线索，未找到稳定公开全文或可信公开影像。
+- `source_found_curated_methods`: 已找到公开入口，并已拆出方法卡；继续留在这里，是因为还缺去隐私案例、反例和人工校准，不能升成 `verified`。
+- `source_found_curated_boundary`: 已找到来源线索或边界资料，并已写入规则卡或来源说明；继续留在这里，是为了提醒它只能作弱边界，不能扩成强判断。
+- `tradition_placeholder` 类来源必须在这里保留边界说明；它强于凭印象写，但弱于可核验典籍或案例复盘。
+
+看审计结果时，优先看 `active_backlog_source_ids`。`tracked_backlog_source_ids` 表示“已登记、已说明边界，但仍需案例或更强来源后才能升级”。
+
 ## RB-001 神峰通考规则卡深加工
 
 - `source_id`: `SRC-BAZI-SHENFENG-TONGKAO`

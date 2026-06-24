@@ -969,6 +969,8 @@ class XuanxueConsoleTests(unittest.TestCase):
             self.assertEqual(result["checked_sources"], snapshot["checked_sources"])
 
     def test_source_documentation_audit_passes(self) -> None:
+        env = os.environ.copy()
+        env["PYTHONIOENCODING"] = "utf-8"
         proc = subprocess.run(
             [sys.executable, str(AUDIT_SOURCE_DOCUMENTATION_SCRIPT)],
             check=True,
@@ -976,11 +978,18 @@ class XuanxueConsoleTests(unittest.TestCase):
             stderr=subprocess.PIPE,
             cwd=str(PROJECT_ROOT),
             encoding="utf-8",
+            env=env,
         )
         result = json.loads(proc.stdout)
         self.assertTrue(result["passed"])
         self.assertGreaterEqual(result["documented_classical_sources"], 18)
         self.assertGreaterEqual(result["documented_modern_sources"], 4)
+        self.assertIn("active_backlog_source_ids", result)
+        self.assertIn("tracked_backlog_source_ids", result)
+        self.assertIn("research_backlog_items", result)
+        self.assertIn("SRC-ZIWEI-DOUSHU-QUANJI", result["active_backlog_source_ids"])
+        self.assertIn("SRC-BAZI-SHENFENG-TONGKAO", result["tracked_backlog_source_ids"])
+        self.assertIn("source_found_curated_boundary", result["backlog_status_counts"])
         self.assertEqual(result["failures"], [])
 
     def test_knowledge_coverage_reports_retrospective_requirements(self) -> None:
