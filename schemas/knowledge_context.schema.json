@@ -1,0 +1,122 @@
+{
+  "schema_version": "0.1.0",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "selected_modules",
+    "case_id",
+    "run_id",
+    "knowledge_files",
+    "source_ids",
+    "source_entries",
+    "goal_completion_blockers",
+    "retrospective_requirements",
+    "retrospective_collection_plan",
+    "global_blockers",
+    "usage_rules",
+    "passed",
+    "failures"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "selected_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "case_id": {
+      "type": ["string", "null"]
+    },
+    "run_id": {
+      "type": ["string", "null"]
+    },
+    "knowledge_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "exists",
+          "absolute_path"
+        ]
+      },
+      "minItems": 1
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "type",
+          "status",
+          "evidence_mode",
+          "used_for",
+          "limits"
+        ]
+      },
+      "minItems": 1
+    },
+    "goal_completion_blockers": {
+      "type": "array"
+    },
+    "retrospective_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "domain",
+          "gap_id",
+          "min_entries",
+          "min_status",
+          "current_entries",
+          "needed_entries",
+          "satisfied"
+        ]
+      },
+      "minItems": 1
+    },
+    "retrospective_collection_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain",
+          "needed_entries",
+          "suggested_target_artifacts",
+          "evidence_to_collect",
+          "candidate_command",
+          "candidate_commands"
+        ]
+      }
+    },
+    "global_blockers": {
+      "type": "array"
+    },
+    "usage_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "failures": {
+      "type": "array"
+    }
+  }
+}

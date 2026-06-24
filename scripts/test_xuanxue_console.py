@@ -576,20 +576,20 @@ class XuanxueConsoleTests(unittest.TestCase):
                 "questions": ["哪段让读者愿意继续读，哪段像模板话？"],
                 "suggested_target_artifacts": ["knowledge/writing/reader-rich-report.md"],
             }
+            knowledge_context = {
+                "schema_version": "0.1.0",
+                "passed": True,
+                "selected_modules": ["writing"],
+                "case_id": "case-a",
+                "run_id": "run_demo",
+                "knowledge_files": [{"path": "knowledge/source-index.md"}],
+                "source_entries": [{"id": "SRC-PROJECT-KNOWLEDGE-CONTEXT"}],
+                "retrospective_requirements": [{"id": "REQ-RETRO-WRITING"}],
+                "retrospective_collection_plan": [plan_item],
+                "usage_rules": ["Read every knowledge_files entry before producing paid longform analysis."],
+            }
             (runtime_dir / "knowledge_context.json").write_text(
-                json.dumps(
-                    {
-                        "passed": True,
-                        "case_id": "case-a",
-                        "run_id": "run_demo",
-                        "knowledge_files": [{"path": "knowledge/source-index.md"}],
-                        "source_entries": [{"id": "SRC-PROJECT-KNOWLEDGE-CONTEXT"}],
-                        "retrospective_requirements": [{"id": "REQ-RETRO-WRITING"}],
-                        "retrospective_collection_plan": [plan_item],
-                    },
-                    ensure_ascii=False,
-                    indent=2,
-                ),
+                json.dumps(knowledge_context, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
             (runtime_dir / "retrospective_intake.json").write_text(
@@ -648,6 +648,29 @@ class XuanxueConsoleTests(unittest.TestCase):
             failures = []
             finalize_case.check_runtime_context(manifest, failures)
             self.assertTrue(any("domain_question_bank" in item for item in failures))
+            broken_context = dict(knowledge_context)
+            broken_context.pop("usage_rules")
+            (runtime_dir / "knowledge_context.json").write_text(
+                json.dumps(broken_context, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            (runtime_dir / "retrospective_intake.json").write_text(
+                json.dumps(
+                    {
+                        "case_id": "case-a",
+                        "run_id": "run_demo",
+                        "do_not_promote_without_human_approval": True,
+                        "retrospective_collection_plan": [plan_item],
+                        "domain_question_bank": [question_bank_item],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            failures = []
+            finalize_case.check_runtime_context(manifest, failures)
+            self.assertTrue(any("knowledge_context missing usage_rules" in item for item in failures))
 
     def test_case_manifest_contract_normalizes_legacy_artifacts(self) -> None:
         contract = load_manifest_contract()

@@ -43,7 +43,7 @@ source_id: `SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL`
 
 ## 最小复盘流程
 
-`schemas/retrospective_intake.schema.json` 约束 run-local `runtime/retrospective_intake.json`，确保反馈采集计划和 `domain_question_bank` 可被后续工具读取；`schemas/case_retrospective.schema.json` 约束最终可晋升的去隐私复盘条目。两者都只是结构契约，不替代人工确认。
+`schemas/knowledge_context.schema.json` 约束 run-local `runtime/knowledge_context.json`，确保每次分析都有可复查的知识文件、来源、blocker 和复盘计划；`schemas/retrospective_intake.schema.json` 约束 run-local `runtime/retrospective_intake.json`，确保反馈采集计划和 `domain_question_bank` 可被后续工具读取；`schemas/case_retrospective.schema.json` 约束最终可晋升的去隐私复盘条目。三者都只是结构契约，不替代人工确认。
 
 ```text
 读者反馈或交付后校准

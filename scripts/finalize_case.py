@@ -441,7 +441,18 @@ def check_runtime_context(manifest: dict[str, Any], failures: list[str]) -> dict
     intake_md = intake_md_path.read_text(encoding="utf-8") if intake_md_path.exists() else ""
 
     if context:
+        require(context.get("schema_version") == "0.1.0", failures, "knowledge_context schema_version must be 0.1.0")
         require(context.get("passed") is True, failures, "knowledge_context did not pass")
+        require(
+            isinstance(context.get("selected_modules"), list) and bool(context.get("selected_modules")),
+            failures,
+            "knowledge_context missing selected_modules",
+        )
+        require(
+            isinstance(context.get("usage_rules"), list) and bool(context.get("usage_rules")),
+            failures,
+            "knowledge_context missing usage_rules",
+        )
         for key in ["knowledge_files", "source_entries", "retrospective_requirements"]:
             require(isinstance(context.get(key), list) and bool(context.get(key)), failures, f"knowledge_context missing {key}")
         plan = context.get("retrospective_collection_plan", [])

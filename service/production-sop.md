@@ -20,7 +20,7 @@ python -X utf8 scripts\audit_source_documentation.py
 python -X utf8 scripts\audit_knowledge_base.py
 ```
 
-`knowledge_context.json` 不是形式文件。开写前要看其中的 `knowledge_files`、`source_entries`、`goal_completion_blockers`、`retrospective_requirements`、`retrospective_collection_plan` 和 `suggested_target_artifacts`。`retrospective_intake.json` 必须保留机器可读 `domain_question_bank`，让后续工具能按未满足领域追问，而不是只读旧报告正文猜测。`retrospective-intake.md` 是交付后反馈收集清单，优先按它收集可去隐私复盘证据，并把新典籍或客户反馈落到明确规则卡。
+`knowledge_context.json` 不是形式文件，结构由 `schemas/knowledge_context.schema.json` 约束。开写前要看其中的 `knowledge_files`、`source_entries`、`goal_completion_blockers`、`retrospective_requirements`、`retrospective_collection_plan` 和 `suggested_target_artifacts`。`retrospective_intake.json` 必须保留机器可读 `domain_question_bank`，结构由 `schemas/retrospective_intake.schema.json` 约束，让后续工具能按未满足领域追问，而不是只读旧报告正文猜测。`retrospective-intake.md` 是交付后反馈收集清单，优先按它收集可去隐私复盘证据，并把新典籍或客户反馈落到明确规则卡。
 
 运行 contract 以 `scripts/case_manifest_contract.py` 为准。除非出现硬错误或用户明确批准，不新增 gate 脚本；先复用 `finalize_case.py`、`audit_longform_consistency.py`、`create_followup_context.py` 和 `create_retrospective_intake.py`。2026-07-31 后，新 run 不再依赖 legacy artifact alias，旧别名只用于修复历史 run。
 

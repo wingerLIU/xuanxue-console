@@ -495,10 +495,10 @@
       "evidence_mode": "case_retrospective_protocol",
       "domains": ["case_retrospectives"],
       "urls": [],
-      "local_paths": ["knowledge/case-retrospectives/promotion-protocol.md", "schemas/case_retrospective.schema.json", "schemas/retrospective_intake.schema.json", "scripts/create_retrospective_intake.py", "scripts/create_case_retrospective_candidate.py", "scripts/promote_case_retrospective.py", "scripts/audit_case_retrospectives.py"],
+      "local_paths": ["knowledge/case-retrospectives/promotion-protocol.md", "schemas/case_retrospective.schema.json", "schemas/knowledge_context.schema.json", "schemas/retrospective_intake.schema.json", "scripts/create_retrospective_intake.py", "scripts/create_case_retrospective_candidate.py", "scripts/promote_case_retrospective.py", "scripts/audit_case_retrospectives.py"],
       "used_for": "案例复盘去隐私、反馈 intake、反例、人工确认和晋升流程。",
       "limits": "只规定自进化流程，不直接产生命理判断。",
-      "promotion_targets": ["knowledge/case-retrospectives/promotion-protocol.md", "schemas/retrospective_intake.schema.json", "scripts/create_retrospective_intake.py", "scripts/create_case_retrospective_candidate.py", "scripts/promote_case_retrospective.py", "scripts/audit_case_retrospectives.py"]
+      "promotion_targets": ["knowledge/case-retrospectives/promotion-protocol.md", "schemas/knowledge_context.schema.json", "schemas/retrospective_intake.schema.json", "scripts/create_retrospective_intake.py", "scripts/create_case_retrospective_candidate.py", "scripts/promote_case_retrospective.py", "scripts/audit_case_retrospectives.py"]
     },
     {
       "id": "SRC-PROJECT-CASE-RETROSPECTIVE",
@@ -521,10 +521,10 @@
       "evidence_mode": "project_artifact",
       "domains": ["completeness", "quality"],
       "urls": [],
-      "local_paths": ["knowledge/completeness/coverage-matrix.json", "knowledge/completeness/retrospective-requirements.json", "scripts/audit_knowledge_coverage.py", "scripts/audit_promotion_manifest.py", "scripts/audit_rule_cards.py", "scripts/audit_source_documentation.py"],
+      "local_paths": ["knowledge/completeness/coverage-matrix.json", "knowledge/completeness/retrospective-requirements.json", "schemas/knowledge_context.schema.json", "scripts/audit_knowledge_coverage.py", "scripts/audit_promotion_manifest.py", "scripts/audit_rule_cards.py", "scripts/audit_source_documentation.py"],
       "used_for": "覆盖度、阻塞项、联网资料准入、规则卡来源审计和 goal_complete 判断。",
       "limits": "只做审计和状态控制，不产生命理判断。",
-      "promotion_targets": ["knowledge/completeness/coverage-matrix.json", "scripts/audit_knowledge_coverage.py", "scripts/audit_rule_cards.py", "scripts/audit_source_documentation.py"]
+      "promotion_targets": ["knowledge/completeness/coverage-matrix.json", "schemas/knowledge_context.schema.json", "scripts/audit_knowledge_coverage.py", "scripts/audit_rule_cards.py", "scripts/audit_source_documentation.py"]
     },
     {
       "id": "SRC-PROJECT-SOURCE-REGISTER",
@@ -547,10 +547,10 @@
       "evidence_mode": "project_artifact",
       "domains": ["source_register", "quality", "writing"],
       "urls": [],
-      "local_paths": ["scripts/build_knowledge_context.py", "scripts/create_followup_context.py", "scripts/create_retrospective_intake.py", "schemas/retrospective_intake.schema.json", "knowledge/knowledge_map.json", "knowledge/completeness/coverage-matrix.json", "knowledge/completeness/retrospective-requirements.json", "knowledge/sources/source-register.json"],
+      "local_paths": ["scripts/build_knowledge_context.py", "scripts/create_followup_context.py", "scripts/create_retrospective_intake.py", "schemas/knowledge_context.schema.json", "schemas/retrospective_intake.schema.json", "knowledge/knowledge_map.json", "knowledge/completeness/coverage-matrix.json", "knowledge/completeness/retrospective-requirements.json", "knowledge/sources/source-register.json"],
       "used_for": "按本次 case 模块生成必须读取的知识文件、来源边界、未完成 blocker、追加问题上下文、复盘需求、复盘采集计划和建议 target_artifacts。",
       "limits": "只生成运行上下文清单，不替代实际阅读规则卡，也不产生命理判断。",
-      "promotion_targets": ["scripts/build_knowledge_context.py", "scripts/create_followup_context.py", "scripts/create_retrospective_intake.py", "schemas/retrospective_intake.schema.json"]
+      "promotion_targets": ["scripts/build_knowledge_context.py", "scripts/create_followup_context.py", "scripts/create_retrospective_intake.py", "schemas/knowledge_context.schema.json", "schemas/retrospective_intake.schema.json"]
     }
   ]
 }

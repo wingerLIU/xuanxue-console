@@ -166,6 +166,7 @@
         "knowledge/case-retrospectives/promotion-protocol.md",
         "knowledge/case-retrospectives/template.md",
         "schemas/case_retrospective.schema.json",
+        "schemas/knowledge_context.schema.json",
         "schemas/retrospective_intake.schema.json",
         "scripts/create_retrospective_intake.py",
         "scripts/create_case_retrospective_candidate.py",
@@ -181,7 +182,8 @@
     "completeness": {
       "files": [
         "knowledge/completeness/README.md",
-        "knowledge/completeness/coverage-matrix.json"
+        "knowledge/completeness/coverage-matrix.json",
+        "schemas/knowledge_context.schema.json"
       ],
       "runtime_role": "Machine-readable coverage and goal-completion audit layer.",
       "claim_levels": [
