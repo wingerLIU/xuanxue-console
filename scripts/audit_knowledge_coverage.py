@@ -216,7 +216,30 @@ def evaluate_retrospective_requirements(
     return results
 
 
-def retrospective_next_actions(requirement_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def suggested_target_artifacts(domain: str, knowledge_map: dict[str, Any]) -> list[str]:
+    modules = knowledge_map.get("modules", {})
+    if not isinstance(modules, dict):
+        return []
+    if domain == "*":
+        candidates = [
+            "knowledge/case-retrospectives/promotion-protocol.md",
+            "knowledge/completeness/retrospective-requirements.json",
+            "knowledge/writing/reader-rich-report.md",
+        ]
+    else:
+        module = modules.get(domain, {})
+        files = module.get("files", []) if isinstance(module, dict) else []
+        candidates = [str(item).replace("\\", "/") for item in files if isinstance(item, str)]
+    result: list[str] = []
+    for item in candidates:
+        if item not in result and (PROJECT_ROOT / item).exists():
+            result.append(item)
+    return result[:6]
+
+
+def retrospective_next_actions(
+    requirement_results: list[dict[str, Any]], knowledge_map: dict[str, Any]
+) -> list[dict[str, Any]]:
     """Return human-actionable steps for unsatisfied retrospective blockers.
 
     These are intentionally templates. The audit can point to the required
@@ -233,6 +256,8 @@ def retrospective_next_actions(requirement_results: list[dict[str, Any]]) -> lis
         needed_entries = max(0, min_entries - current_entries)
         domain = str(item.get("domain", ""))
         command_domain = "<DOMAIN>" if domain == "*" else domain
+        targets = suggested_target_artifacts(domain, knowledge_map)
+        command_target = targets[0] if targets else "<project/artifact/path>"
         actions.append(
             {
                 "type": "promote_human_approved_retrospective",
@@ -248,6 +273,7 @@ def retrospective_next_actions(requirement_results: list[dict[str, Any]]) -> lis
                     "human approval count toward knowledge completion."
                 ),
                 "evidence_questions": item.get("evidence_questions", []),
+                "suggested_target_artifacts": targets,
                 "commands": [
                     "python scripts/create_retrospective_intake.py --manifest <RUN_DIR>\\case_manifest.json",
                     (
@@ -257,7 +283,7 @@ def retrospective_next_actions(requirement_results: list[dict[str, Any]]) -> lis
                         "--title <deidentified-retrospective-title> "
                         f"--domain {command_domain} "
                         "--evidence-summary <deidentified-evidence-summary> "
-                        "--target-artifact <project/artifact/path>"
+                        f"--target-artifact {command_target}"
                     ),
                     (
                         "python scripts/promote_case_retrospective.py "
@@ -455,7 +481,7 @@ def main() -> int:
         "retrospective_files": len(retrospective_files),
         "retrospective_domain_counts": retro_domain_counts,
         "retrospective_requirements": retrospective_requirement_results,
-        "next_actions": retrospective_next_actions(retrospective_requirement_results),
+        "next_actions": retrospective_next_actions(retrospective_requirement_results, knowledge_map),
         "goal_completion_blockers": goal_completion_blockers,
         "failures": failures,
         "warnings": warnings,

@@ -273,8 +273,21 @@ class RetrospectivePromotionTests(unittest.TestCase):
             self.assertIn("REQ-RETRO-BAZI", next_actions)
             self.assertEqual(next_actions["REQ-RETRO-BAZI"]["needed_entries"], 2)
             self.assertTrue(next_actions["REQ-RETRO-BAZI"]["do_not_create_synthetic_retrospectives"])
+            self.assertIn(
+                "knowledge/bazi/foundations.md",
+                next_actions["REQ-RETRO-BAZI"]["suggested_target_artifacts"],
+            )
+            self.assertIn(
+                "--target-artifact knowledge/bazi/foundations.md",
+                next_actions["REQ-RETRO-BAZI"]["commands"][1],
+            )
+            self.assertNotIn("<project/artifact/path>", next_actions["REQ-RETRO-BAZI"]["commands"][1])
             bazi_questions = "\n".join(next_actions["REQ-RETRO-BAZI"]["evidence_questions"])
             self.assertIn("哪个八字结构判断被现实经历验证或推翻", bazi_questions)
+            self.assertIn(
+                "knowledge/fengshui/README.md",
+                next_actions["REQ-RETRO-FENGSHUI"]["suggested_target_artifacts"],
+            )
             fengshui_questions = "\n".join(next_actions["REQ-RETRO-FENGSHUI"]["evidence_questions"])
             self.assertIn("哪条空间、方位或城市建议执行后可观察", fengshui_questions)
             self.assertIn("缺现场勘测、罗盘坐向或户型图", fengshui_questions)
