@@ -6,6 +6,7 @@
 
 - `human_approved=true`
 - `domains` 非空，写清这个复盘覆盖的知识域，例如 `bazi`、`ziwei`、`western`、`liuyao`、`relationship`、`team_career`、`fengshui`、`writing` 或 `quality`。
+- 判断和表达类领域要有 `domain_evidence`，写清证据锚点、可观察反馈和推广边界；缺这个字段的候选只能待补证据，不能算 ready。
 - 已去除客户姓名、截图、出生地细节和私密经历。
 - 写清它要提升的对象：写作模板、知识规则、校验脚本、服务 SOP 或风险边界。
 - 至少包含一个反例或限制，避免把一次经验误升为通用规则。
@@ -27,7 +28,7 @@ python -B -X utf8 scripts\create_retrospective_intake.py --manifest <RUN_DIR>\ca
 候选复盘先放外部 run 目录，不直接进入知识库：
 
 ```powershell
-python -B -X utf8 scripts\create_case_retrospective_candidate.py --manifest <RUN_DIR>\case_manifest.json --slug reader-hook --title "去隐私标题" --domain writing --evidence-summary "抽象证据" --target-artifact knowledge/writing/reader-rich-report.md
+python -B -X utf8 scripts\create_case_retrospective_candidate.py --manifest <RUN_DIR>\case_manifest.json --slug reader-hook --title "去隐私标题" --domain writing --evidence-summary "抽象证据" --domain-evidence "writing|读者指出某类表达太像流程|改成先结论后证据后更愿意读|只适用于读者交付稿" --target-artifact knowledge/writing/reader-rich-report.md
 ```
 
 人工确认后再晋升：

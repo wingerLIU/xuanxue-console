@@ -14,7 +14,8 @@ source_id: `SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL`
 4. 有明确 `domains`，说明它覆盖的是 `bazi`、`ziwei`、`western`、`liuyao`、`relationship`、`team_career`、`fengshui`、`writing` 等哪个知识域，便于 coverage 层判断缺口是否被真实复盘支持。
 5. 有 `counterexamples` 或 `limits`，说明这个经验什么时候不适用。
 6. 有 `evidence_summary`，但只能写抽象证据，不写原始案例事实。
-7. 通过 `scripts/audit_case_retrospectives.py`。
+7. 对 `bazi`、`ziwei`、`western`、`mbti`、`liuyao`、`xiaoliuren`、`relationship`、`team_career`、`fengshui`、`writing` 这类会影响判断或表达的领域，候选 JSON 必须写 `domain_evidence`：每个 domain 至少包含 `evidence_anchor`、`observed_feedback`、`promotion_limit`。
+8. 通过 `scripts/audit_case_retrospectives.py`。
 
 ## 状态定义
 
@@ -58,6 +59,8 @@ source_id: `SRC-PROJECT-CASE-RETROSPECTIVE-PROTOCOL`
 
 跨域复盘可以同时选择多个 domains，但每个 domain 都要满足对应证据门槛。证据只够写作反馈时，就只选 `writing` 或 `quality`，不要为了关闭 blocker 顺手加 `bazi`、`ziwei`、`western`、`liuyao`、`team_career` 或 `fengshui`。
 
+`domain_evidence` 是机器可读的审批自查字段，不替代人工判断。它只回答三件事：这条证据锚在哪个判断层，观察到了什么反馈，以及它不能推广到哪里。缺少这个字段时，`create_retrospective_intake.py` 和 `audit_knowledge_coverage.py` 会把候选列入待补证据，而不是 ready 队列。
+
 ## 最小复盘流程
 
 `schemas/knowledge_context.schema.json` 约束 run-local `runtime/knowledge_context.json`，确保每次分析都有可复查的知识文件、来源、blocker 和复盘计划；`schemas/retrospective_intake.schema.json` 约束 run-local `runtime/retrospective_intake.json`，确保反馈采集计划和 `domain_question_bank` 可被后续工具读取；`schemas/case_retrospective.schema.json` 约束最终可晋升的去隐私复盘条目。三者都只是结构契约，不替代人工确认。
@@ -87,7 +90,7 @@ python -B -X utf8 scripts\create_retrospective_intake.py --manifest <RUN_DIR>\ca
 候选生成必须在外部 run 目录完成，默认 `human_approved=false`：
 
 ```powershell
-python -B -X utf8 scripts\create_case_retrospective_candidate.py --manifest <RUN_DIR>\case_manifest.json --slug reader-hook --title "去隐私复盘标题" --evidence-summary "只写抽象证据" --target-artifact knowledge/writing/reader-rich-report.md --counterexample "不适用于技术复盘型客户" --limit "这是写作机制，不是命理规则"
+python -B -X utf8 scripts\create_case_retrospective_candidate.py --manifest <RUN_DIR>\case_manifest.json --slug reader-hook --title "去隐私复盘标题" --evidence-summary "只写抽象证据" --domain-evidence "writing|读者指出某类标题太像流程说明|改成先下结论后更愿意继续读|只适用于读者交付稿，不适用于工程复盘" --target-artifact knowledge/writing/reader-rich-report.md --counterexample "不适用于技术复盘型客户" --limit "这是写作机制，不是命理规则"
 ```
 
 `--domain` 可以显式指定；如果不写，工具会尽量从 `target_artifact` 推断。例如 `knowledge/bazi/...` 会推断为 `bazi`，`knowledge/writing/...` 会推断为 `writing`。无法推断时必须手动传入。

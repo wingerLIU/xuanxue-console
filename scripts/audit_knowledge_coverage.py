@@ -31,6 +31,22 @@ FORBIDDEN_CANDIDATE_PATTERNS = [
     r"\b\d{4}-\d{1,2}-\d{1,2}\b",
     r"\b\d{1,2}:\d{2}\b",
 ]
+RETROSPECTIVE_DOMAINS = {
+    "bazi",
+    "ziwei",
+    "western",
+    "mbti",
+    "liuyao",
+    "xiaoliuren",
+    "writing",
+    "relationship",
+    "team_career",
+    "fengshui",
+    "source_register",
+    "quality",
+    "case_retrospectives",
+    "completeness",
+}
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -326,6 +342,7 @@ def retrospective_next_actions(
                         "--title <deidentified-retrospective-title> "
                         f"--domain {command_domain} "
                         "--evidence-summary <deidentified-evidence-summary> "
+                        f"--domain-evidence \"{command_domain}|<evidence-anchor>|<observed-feedback>|<promotion-limit>\" "
                         f"--target-artifact {command_target}"
                     ),
                     (
@@ -351,30 +368,66 @@ def candidate_has_private_text(candidate: dict[str, Any]) -> bool:
     return any(re.search(pattern, serialized, flags=re.IGNORECASE) for pattern in FORBIDDEN_CANDIDATE_PATTERNS)
 
 
-def candidate_approval_ready(candidate: dict[str, Any]) -> bool:
+DOMAIN_EVIDENCE_REQUIRED = RETROSPECTIVE_DOMAINS - {
+    "source_register",
+    "quality",
+    "case_retrospectives",
+    "completeness",
+}
+DOMAIN_EVIDENCE_REQUIRED_FIELDS = ("evidence_anchor", "observed_feedback", "promotion_limit")
+
+
+def candidate_approval_blockers(candidate: dict[str, Any]) -> list[str]:
+    blockers: list[str] = []
     if candidate.get("status") != "candidate":
-        return False
+        blockers.append("candidate status must be candidate.")
     if candidate.get("human_approved") is True:
-        return False
+        blockers.append("candidate is already human_approved.")
     domains = candidate.get("domains", [])
     target_artifacts = candidate.get("target_artifacts", [])
     if not isinstance(domains, list) or not domains:
-        return False
+        blockers.append("candidate has no domains.")
     if not isinstance(target_artifacts, list) or not target_artifacts:
-        return False
+        blockers.append("candidate has no target_artifacts.")
     privacy = candidate.get("privacy")
     if isinstance(privacy, dict):
         if privacy.get("deidentified") is not True:
-            return False
+            blockers.append("privacy.deidentified must be true.")
         if privacy.get("contains_client_name") is not False:
-            return False
+            blockers.append("privacy.contains_client_name must be false.")
         if privacy.get("contains_local_paths") is not False:
-            return False
+            blockers.append("privacy.contains_local_paths must be false.")
         if privacy.get("contains_delivery_text") is not False:
-            return False
+            blockers.append("privacy.contains_delivery_text must be false.")
+    required_domains = sorted({str(item) for item in domains} & DOMAIN_EVIDENCE_REQUIRED) if isinstance(domains, list) else []
+    evidence = candidate.get("domain_evidence")
+    if required_domains and not isinstance(evidence, dict):
+        blockers.append(
+            "candidate missing domain_evidence; add evidence_anchor, observed_feedback and promotion_limit for: "
+            + ", ".join(required_domains)
+        )
+    elif required_domains and isinstance(evidence, dict):
+        for domain in required_domains:
+            domain_evidence = evidence.get(domain)
+            if not isinstance(domain_evidence, dict):
+                blockers.append(
+                    f"candidate missing domain_evidence for {domain}; add evidence_anchor, observed_feedback and promotion_limit before approval."
+                )
+                continue
+            missing_fields = [
+                field
+                for field in DOMAIN_EVIDENCE_REQUIRED_FIELDS
+                if not str(domain_evidence.get(field, "")).strip()
+            ]
+            if missing_fields:
+                blockers.append(f"candidate domain_evidence for {domain} missing fields: {', '.join(missing_fields)}.")
     if candidate_has_private_text(candidate):
-        return False
-    return True
+        blockers.append("candidate contains forbidden private/local text.")
+    return blockers
+
+
+def candidate_approval_ready(candidate: dict[str, Any]) -> bool:
+    return not candidate_approval_blockers(candidate)
 
 
 def requirement_ids_for_candidate(
@@ -412,7 +465,9 @@ def scan_run_local_candidates(
             "reason": "no runs_root configured",
             "candidate_count": 0,
             "ready_for_human_approval": 0,
+            "needs_fix_before_approval": 0,
             "items": [],
+            "blocked_items": [],
         }
     if not runs_root.exists():
         return {
@@ -420,7 +475,9 @@ def scan_run_local_candidates(
             "reason": "runs_root does not exist",
             "candidate_count": 0,
             "ready_for_human_approval": 0,
+            "needs_fix_before_approval": 0,
             "items": [],
+            "blocked_items": [],
         }
     if runs_root.resolve().is_relative_to(PROJECT_ROOT.resolve()):
         warnings.append("run-local candidate scan skipped because runs_root is inside the project repo")
@@ -429,7 +486,9 @@ def scan_run_local_candidates(
             "reason": "runs_root inside project repo",
             "candidate_count": 0,
             "ready_for_human_approval": 0,
+            "needs_fix_before_approval": 0,
             "items": [],
+            "blocked_items": [],
         }
     runs_dir = runs_root / "runs"
     if not runs_dir.exists():
@@ -438,10 +497,13 @@ def scan_run_local_candidates(
             "reason": "runs directory missing",
             "candidate_count": 0,
             "ready_for_human_approval": 0,
+            "needs_fix_before_approval": 0,
             "items": [],
+            "blocked_items": [],
         }
 
     items: list[dict[str, Any]] = []
+    blocked_items: list[dict[str, Any]] = []
     candidate_count = 0
     for path in sorted(runs_dir.glob("*/*/retrospectives/*.candidate.json")):
         candidate_count += 1
@@ -449,7 +511,25 @@ def scan_run_local_candidates(
             candidate = json.loads(path.read_text(encoding="utf-8-sig"))
         except json.JSONDecodeError:
             continue
-        if not isinstance(candidate, dict) or not candidate_approval_ready(candidate):
+        if not isinstance(candidate, dict):
+            continue
+        approval_blockers = candidate_approval_blockers(candidate)
+        if approval_blockers:
+            blocked_items.append(
+                {
+                    "id": str(candidate.get("id") or path.stem),
+                    "title": str(candidate.get("title") or ""),
+                    "domains": [str(item) for item in candidate.get("domains", [])]
+                    if isinstance(candidate.get("domains"), list)
+                    else [],
+                    "target_artifacts": [str(item) for item in candidate.get("target_artifacts", [])]
+                    if isinstance(candidate.get("target_artifacts"), list)
+                    else [],
+                    "approval_ready": False,
+                    "approval_blockers": approval_blockers,
+                    "location": "external_run_retrospectives",
+                }
+            )
             continue
         matched_requirements = requirement_ids_for_candidate(candidate, requirement_results)
         items.append(
@@ -473,8 +553,11 @@ def scan_run_local_candidates(
         "reason": "",
         "candidate_count": candidate_count,
         "ready_for_human_approval": len(items),
+        "needs_fix_before_approval": len(blocked_items),
         "items": items[:20],
         "items_truncated": max(0, len(items) - 20),
+        "blocked_items": blocked_items[:20],
+        "blocked_items_truncated": max(0, len(blocked_items) - 20),
     }
 
 

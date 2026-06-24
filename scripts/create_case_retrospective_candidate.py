@@ -62,6 +62,15 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--counterexample", action="append", default=[], help="Counterexample or misuse risk. Can repeat.")
     parser.add_argument("--limit", action="append", default=[], help="Applicability limit. Can repeat.")
+    parser.add_argument(
+        "--domain-evidence",
+        action="append",
+        default=[],
+        help=(
+            "Domain-specific evidence as domain|evidence_anchor|observed_feedback|promotion_limit. "
+            "Can repeat; required before the candidate is approval-ready."
+        ),
+    )
     parser.add_argument("--output", help="Output JSON path. Defaults to <run_dir>/retrospectives/<id>.candidate.json.")
     return parser.parse_args()
 
@@ -156,6 +165,23 @@ def infer_domains(target_artifacts: list[str]) -> list[str]:
     return sorted(domains)
 
 
+def parse_domain_evidence(raw_items: list[str]) -> dict[str, dict[str, str]]:
+    evidence: dict[str, dict[str, str]] = {}
+    for item in raw_items:
+        parts = [part.strip() for part in item.split("|", 3)]
+        if len(parts) != 4:
+            raise SystemExit("--domain-evidence must use domain|evidence_anchor|observed_feedback|promotion_limit")
+        domain, evidence_anchor, observed_feedback, promotion_limit = parts
+        if domain not in ALLOWED_DOMAINS:
+            raise SystemExit(f"unknown retrospective domain in --domain-evidence: {domain}")
+        evidence[domain] = {
+            "evidence_anchor": evidence_anchor,
+            "observed_feedback": observed_feedback,
+            "promotion_limit": promotion_limit,
+        }
+    return evidence
+
+
 def main() -> int:
     args = parse_args()
     manifest_path = Path(args.manifest).resolve()
@@ -183,6 +209,10 @@ def main() -> int:
         raise SystemExit(f"unknown retrospective domains: {unknown_domains}")
     if not domains:
         raise SystemExit("at least one --domain is required when domains cannot be inferred from target artifacts")
+    domain_evidence = parse_domain_evidence(args.domain_evidence)
+    unknown_evidence_domains = sorted(set(domain_evidence) - set(domains))
+    if unknown_evidence_domains:
+        raise SystemExit(f"--domain-evidence references domains not selected for this candidate: {unknown_evidence_domains}")
 
     counterexamples = args.counterexample or ["如果没有人工复核或反例支持，不能把一次反馈升为通用规则。"]
     limits = args.limit or ["这是候选复盘，只能作为人工复核材料；未批准前不得进入全局知识库。"]
@@ -208,6 +238,7 @@ def main() -> int:
             "run_id_hash": stable_hash(str(manifest.get("run_id", ""))),
         },
         "evidence_summary": args.evidence_summary,
+        "domain_evidence": domain_evidence,
         "domains": domains,
         "target_artifacts": target_artifacts,
         "promotions": parse_promotions(args.promotion, target_artifacts),
@@ -216,6 +247,7 @@ def main() -> int:
         "approval_checklist": [
             "确认没有客户姓名、昵称、出生年月日时、截图路径、本机路径或报告原文。",
             "确认 evidence_summary 只保留抽象机制。",
+            "确认每个 selected domain 都有 domain_evidence：证据锚点、可观察反馈和不能推广的边界。",
             "确认 promotions 指向真实项目 artifact。",
             "确认至少一个反例或限制仍然成立。",
             "人工批准后再运行 promote_case_retrospective.py。",

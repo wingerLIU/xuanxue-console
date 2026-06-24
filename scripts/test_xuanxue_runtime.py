@@ -1270,6 +1270,18 @@ class RuntimeWorkflowTests(unittest.TestCase):
                             "status": "candidate",
                             "human_approved": False,
                             "domains": ["relationship", "writing"],
+                            "domain_evidence": {
+                                "relationship": {
+                                    "evidence_anchor": "关系生活域反馈能对应到互补和误读边界。",
+                                    "observed_feedback": "读者指出关系章节减少模板感后更容易共读。",
+                                    "promotion_limit": "只适用于合盘读者稿，不推广到单盘判断。",
+                                },
+                                "writing": {
+                                    "evidence_anchor": "读者指出标题和摘要更像真实交付。",
+                                    "observed_feedback": "改成先结论后证据后阅读阻力下降。",
+                                    "promotion_limit": "只适用于读者版报告结构。",
+                                },
+                            },
                             "target_artifacts": ["templates/relationship-rich-template.md"],
                         },
                         ensure_ascii=False,
@@ -1395,6 +1407,18 @@ class RuntimeWorkflowTests(unittest.TestCase):
                         "status": "candidate",
                         "human_approved": False,
                         "domains": ["team_career", "writing"],
+                        "domain_evidence": {
+                            "team_career": {
+                                "evidence_anchor": "团队反馈能对应到角色分工和钱账边界。",
+                                "observed_feedback": "报告拆开商业现实与命理象意后更容易执行。",
+                                "promotion_limit": "不推广为单人事业判断。",
+                            },
+                            "writing": {
+                                "evidence_anchor": "团队总评减少主观确认句。",
+                                "observed_feedback": "读者更容易区分事实、判断和建议。",
+                                "promotion_limit": "只适用于团队事业合盘交付。",
+                            },
+                        },
                         "target_artifacts": [
                             "knowledge/team-career/README.md",
                             "service/multi-person-career-synastry-sop.md",

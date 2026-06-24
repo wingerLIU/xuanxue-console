@@ -31,6 +31,13 @@ ALLOWED_RETROSPECTIVE_DOMAINS = {
     "case_retrospectives",
     "completeness",
 }
+DOMAIN_EVIDENCE_REQUIRED = ALLOWED_RETROSPECTIVE_DOMAINS - {
+    "source_register",
+    "quality",
+    "case_retrospectives",
+    "completeness",
+}
+DOMAIN_EVIDENCE_REQUIRED_FIELDS = ("evidence_anchor", "observed_feedback", "promotion_limit")
 KNOWLEDGE_PATH_DOMAIN_ALIASES = {
     "team-career": "team_career",
     "sources": "source_register",
@@ -286,6 +293,36 @@ def candidate_warnings(data: dict[str, Any]) -> list[str]:
     return warnings
 
 
+def domain_evidence_blockers(data: dict[str, Any]) -> list[str]:
+    domains = {str(item) for item in as_list(data.get("domains"))}
+    required_domains = sorted(domains & DOMAIN_EVIDENCE_REQUIRED)
+    evidence = data.get("domain_evidence")
+    if not required_domains:
+        return []
+    if not isinstance(evidence, dict):
+        return [
+            "candidate missing domain_evidence; add evidence_anchor, observed_feedback and promotion_limit for: "
+            + ", ".join(required_domains)
+        ]
+
+    blockers: list[str] = []
+    for domain in required_domains:
+        domain_evidence = evidence.get(domain)
+        if not isinstance(domain_evidence, dict):
+            blockers.append(
+                f"candidate missing domain_evidence for {domain}; add evidence_anchor, observed_feedback and promotion_limit before approval."
+            )
+            continue
+        missing_fields = [
+            field
+            for field in DOMAIN_EVIDENCE_REQUIRED_FIELDS
+            if not str(domain_evidence.get(field, "")).strip()
+        ]
+        if missing_fields:
+            blockers.append(f"candidate domain_evidence for {domain} missing fields: {', '.join(missing_fields)}.")
+    return blockers
+
+
 def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     paths = manifest.get("paths", {})
     raw_dir = paths.get("retrospectives_dir") if isinstance(paths, dict) else None
@@ -310,6 +347,8 @@ def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
             approval_blockers.append("candidate has no domains.")
         if not as_list(target_artifacts):
             approval_blockers.append("candidate has no target_artifacts.")
+        if isinstance(data, dict):
+            approval_blockers.extend(domain_evidence_blockers(data))
         if data.get("human_approved") is True:
             approval_blockers.append("candidate is already marked human_approved; promote or normalize status instead of re-approving.")
         candidates.append(

@@ -57,6 +57,9 @@
     "evidence_summary": {
       "type": "string"
     },
+    "domain_evidence": {
+      "type": "object"
+    },
     "domains": {
       "type": "array",
       "items": {

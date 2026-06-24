@@ -9,6 +9,7 @@
 - `human_approved`: `false`
 - `approved_by`: ``
 - `domains`: `bazi` / `ziwei` / `western` / `mbti` / `liuyao` / `xiaoliuren` / `writing` / `relationship` / `team_career` / `fengshui` / `source_register` / `quality` / `case_retrospectives` / `completeness`
+- `domain_evidence`: 每个会影响判断或表达的 `domain` 都要写证据锚点、观察反馈和推广边界；缺这个字段的候选只能待补证据，不能算 ready。
 - `target_artifacts`: 规则卡 / 写作模板 / 校验脚本 / 服务 SOP / 风险边界
 
 ## 去隐私摘要
@@ -89,6 +90,13 @@
     "raw_material_location": "external-only"
   },
   "evidence_summary": "只写抽象证据，不写客户原文。",
+  "domain_evidence": {
+    "writing": {
+      "evidence_anchor": "读者指出某类开头太像流程说明。",
+      "observed_feedback": "改成先给明确判断、再给证据后，读者更容易继续读。",
+      "promotion_limit": "只适用于读者交付稿，不适用于技术复盘或审计报告。"
+    }
+  },
   "domains": [
     "writing"
   ],
@@ -122,7 +130,7 @@ python -B -X utf8 scripts\create_retrospective_intake.py --manifest <RUN_DIR>\ca
 优先用工具生成候选 JSON，避免手写时带入本机路径、出生资料或客户原文：
 
 ```powershell
-python -B -X utf8 scripts\create_case_retrospective_candidate.py --manifest <RUN_DIR>\case_manifest.json --slug reader-hook --title "去隐私复盘标题" --domain writing --evidence-summary "只写抽象证据" --target-artifact knowledge/writing/reader-rich-report.md
+python -B -X utf8 scripts\create_case_retrospective_candidate.py --manifest <RUN_DIR>\case_manifest.json --slug reader-hook --title "去隐私复盘标题" --domain writing --evidence-summary "只写抽象证据" --domain-evidence "writing|读者指出某类开头太像流程说明|改成先给明确判断后更容易继续读|只适用于读者交付稿" --target-artifact knowledge/writing/reader-rich-report.md
 ```
 
 候选文件会保存在 `<RUN_DIR>\retrospectives\`，并保持 `human_approved=false`。只有人工确认后，才能运行：

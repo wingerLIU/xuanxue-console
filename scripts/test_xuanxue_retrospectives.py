@@ -25,6 +25,14 @@ def write_retrospective_control_files(retro_dir: Path) -> None:
 
 
 def candidate_base(*, retro_id: str, domains: list[str], target_artifacts: list[str]) -> dict:
+    domain_evidence = {
+        domain: {
+            "evidence_anchor": f"{domain} 去隐私证据锚点",
+            "observed_feedback": f"{domain} 可观察反馈",
+            "promotion_limit": f"{domain} 推广边界",
+        }
+        for domain in domains
+    }
     return {
         "schema_version": "0.1.0",
         "id": retro_id,
@@ -47,6 +55,7 @@ def candidate_base(*, retro_id: str, domains: list[str], target_artifacts: list[
             "run_id_hash": "runhash",
         },
         "evidence_summary": "抽象复盘机制，只用于验证脚本行为。",
+        "domain_evidence": domain_evidence,
         "domains": domains,
         "target_artifacts": target_artifacts,
         "promotions": [
@@ -332,6 +341,16 @@ class RetrospectivePromotionTests(unittest.TestCase):
                 json.dumps(candidate, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
+            blocked_candidate = candidate_base(
+                retro_id="CR-20990101-team-career-needs-evidence",
+                domains=["team_career", "writing"],
+                target_artifacts=["knowledge/team-career/README.md"],
+            )
+            blocked_candidate.pop("domain_evidence")
+            (candidate_dir / "CR-20990101-team-career-needs-evidence.candidate.json").write_text(
+                json.dumps(blocked_candidate, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
             proc = subprocess.run(
                 [
                     sys.executable,
@@ -352,14 +371,19 @@ class RetrospectivePromotionTests(unittest.TestCase):
             self.assertFalse(result["goal_complete"])
             summary = result["run_local_candidate_summary"]
             self.assertTrue(summary["enabled"])
-            self.assertEqual(summary["candidate_count"], 1)
+            self.assertEqual(summary["candidate_count"], 2)
             self.assertEqual(summary["ready_for_human_approval"], 1)
+            self.assertEqual(summary["needs_fix_before_approval"], 1)
             item = summary["items"][0]
             self.assertEqual(item["id"], "CR-20990101-team-career-ready")
             self.assertEqual(item["location"], "external_run_retrospectives")
             self.assertIn("REQ-RETRO-TEAM-CAREER", item["matched_unsatisfied_requirements"])
             self.assertNotIn("REQ-RETRO-ANY", item["matched_unsatisfied_requirements"])
             self.assertIn("<RUN_DIR>\\retrospectives\\CR-20990101-team-career-ready.candidate.json", item["dry_run_command"])
+            blocked = summary["blocked_items"][0]
+            self.assertEqual(blocked["id"], "CR-20990101-team-career-needs-evidence")
+            self.assertFalse(blocked["approval_ready"])
+            self.assertTrue(any("missing domain_evidence" in reason for reason in blocked["approval_blockers"]))
             self.assertNotIn(str(runs_root), json.dumps(summary, ensure_ascii=False))
 
     def test_global_retrospective_rejects_candidate_status(self) -> None:
