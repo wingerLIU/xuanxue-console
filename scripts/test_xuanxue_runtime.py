@@ -214,6 +214,10 @@ class RuntimeWorkflowTests(unittest.TestCase):
                 "--target-artifact knowledge/bazi/foundations.md",
                 collection_plan["bazi"]["candidate_command"],
             )
+            self.assertIn(
+                '--domain-evidence "bazi|<evidence-anchor>|<observed-feedback>|<promotion-limit>"',
+                collection_plan["bazi"]["candidate_command"],
+            )
             bazi_evidence = "\n".join(collection_plan["bazi"]["evidence_to_collect"])
             self.assertIn("哪个八字结构判断被现实经历验证或推翻", bazi_evidence)
             writing_evidence = "\n".join(collection_plan["writing"]["evidence_to_collect"])
@@ -281,6 +285,10 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("templates/relationship-rich-template.md", relationship_plan["suggested_target_artifacts"])
             self.assertIn("scripts/validate_relationship_report.py", relationship_plan["suggested_target_artifacts"])
             self.assertIn("--domain relationship", relationship_plan["candidate_command"])
+            self.assertIn(
+                '--domain-evidence "relationship|<evidence-anchor>|<observed-feedback>|<promotion-limit>"',
+                relationship_plan["candidate_command"],
+            )
             self.assertIn(
                 "--target-artifact templates/relationship-rich-template.md",
                 relationship_plan["candidate_command"],
@@ -356,6 +364,10 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("templates/team-career-synastry-template.md", team_plan["suggested_target_artifacts"])
             self.assertIn("--domain team_career", team_plan["candidate_command"])
             self.assertIn(
+                '--domain-evidence "team_career|<evidence-anchor>|<observed-feedback>|<promotion-limit>"',
+                team_plan["candidate_command"],
+            )
+            self.assertIn(
                 "--target-artifact knowledge/team-career/README.md",
                 team_plan["candidate_command"],
             )
@@ -365,6 +377,10 @@ class RuntimeWorkflowTests(unittest.TestCase):
             fengshui_plan = collection_plan["fengshui"]
             self.assertIn("knowledge/fengshui/README.md", fengshui_plan["suggested_target_artifacts"])
             self.assertIn("--domain fengshui", fengshui_plan["candidate_command"])
+            self.assertIn(
+                '--domain-evidence "fengshui|<evidence-anchor>|<observed-feedback>|<promotion-limit>"',
+                fengshui_plan["candidate_command"],
+            )
             self.assertIn(
                 "--target-artifact knowledge/fengshui/README.md",
                 fengshui_plan["candidate_command"],

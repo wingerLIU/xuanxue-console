@@ -322,6 +322,7 @@ def retrospective_candidate_command(domain: str, target_artifact: str) -> str:
         "--slug <deidentified-slug> "
         "--title \"去隐私复盘标题\" "
         "--evidence-summary \"只写抽象证据\" "
+        f"--domain-evidence \"{command_domain}|<evidence-anchor>|<observed-feedback>|<promotion-limit>\" "
         f"--target-artifact {target_artifact}"
     )
 
