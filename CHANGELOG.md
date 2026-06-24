@@ -23,6 +23,7 @@
 - `create_retrospective_intake.py` 会在 blocked 候选下列出每个 domain 待补的 `domain_evidence` 字段，方便人工补证据但不自动生成证据。
 - blocked 候选的 `domain_evidence_required` 现在带上对应领域的追问问题，让人工补证据能直接回到真实反馈，而不是只看到字段名。
 - source documentation audit 现在区分 `active_backlog_source_ids` 和 `tracked_backlog_source_ids`，避免把“仍需找公开全文”和“已登记但还缺案例验证”的来源缺口混成一类。
+- `knowledge_context.json` 现在同步输出 `source_backlog_items`、`active_source_backlog_ids` 和 `tracked_source_backlog_ids`，让长文和追问能看到来源缺口；活跃 backlog 不能当报告证据，已追踪 backlog 只能写边界。
 - 《紫微斗数全集》主动来源缺口补充 2026-06-24 复查记录：未找到可晋升公开全文；搜索线索只能更新 backlog，不得绕过来源晋升条件进入规则卡。
 - 风水方位知识卡补齐反馈记录最小字段和候选复盘命令，要求记录执行变化、现实驱动、证据等级和降级边界，避免把单次感觉写成通用规则。
 - 客户资料表增加方位反馈复盘字段，便于后续收集睡眠、专注、客户响应、沟通摩擦等可观察指标。

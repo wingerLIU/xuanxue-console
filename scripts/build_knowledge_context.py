@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -13,6 +14,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 KNOWLEDGE_MAP = PROJECT_ROOT / "knowledge" / "knowledge_map.json"
 SOURCE_REGISTER = PROJECT_ROOT / "knowledge" / "sources" / "source-register.json"
+RESEARCH_BACKLOG = PROJECT_ROOT / "knowledge" / "sources" / "research-backlog.md"
 COVERAGE_MATRIX = PROJECT_ROOT / "knowledge" / "completeness" / "coverage-matrix.json"
 RETRO_REQUIREMENTS = PROJECT_ROOT / "knowledge" / "completeness" / "retrospective-requirements.json"
 RETRO_DIR = PROJECT_ROOT / "knowledge" / "case-retrospectives"
@@ -20,6 +22,14 @@ KNOWLEDGE_CONTEXT_SCHEMA = PROJECT_ROOT / "schemas" / "knowledge_context.schema.
 
 COMBO_MODULES = ["bazi", "ziwei", "western", "mbti", "liuyao", "xiaoliuren"]
 ALWAYS_CONTEXT_MODULES = ["writing", "source_register", "completeness"]
+SOURCE_ID_RE = re.compile(r"SRC-[A-Z0-9-]+")
+BACKLOG_SECTION_RE = re.compile(r"^##\s+(RB-\d+)\s+(.+?)\s*$", re.MULTILINE)
+ACTIVE_SOURCE_BACKLOG_STATUSES = {
+    "catalog_found_no_public_fulltext",
+    "source_not_found",
+    "source_missing",
+    "needs_research",
+}
 TARGET_ARTIFACT_PRIORITIES = {
     "bazi": [
         "knowledge/bazi/foundations.md",
@@ -245,6 +255,52 @@ def source_entries_by_id(register: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {str(entry.get("id")): entry for entry in entries if isinstance(entry, dict) and entry.get("id")}
 
 
+def ids_in_text(text: str) -> set[str]:
+    return set(SOURCE_ID_RE.findall(text))
+
+
+def research_backlog_items(path: Path = RESEARCH_BACKLOG) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    text = path.read_text(encoding="utf-8")
+    sections = list(BACKLOG_SECTION_RE.finditer(text))
+    items: list[dict[str, Any]] = []
+    for index, match in enumerate(sections):
+        start = match.end()
+        end = sections[index + 1].start() if index + 1 < len(sections) else len(text)
+        body = text[start:end]
+        source_ids: list[str] = []
+        status = ""
+        needed_for = ""
+        current_state = ""
+        promotion_condition = ""
+        for line in body.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("- `source_id`:"):
+                source_ids = sorted(ids_in_text(stripped))
+            elif stripped.startswith("- `status`:"):
+                status = stripped.split(":", 1)[1].strip().strip("`")
+            elif stripped.startswith("- `needed_for`:"):
+                needed_for = stripped.split(":", 1)[1].strip()
+            elif stripped.startswith("- `current_state`:"):
+                current_state = stripped.split(":", 1)[1].strip()
+            elif stripped.startswith("- `promotion_condition`:"):
+                promotion_condition = stripped.split(":", 1)[1].strip()
+        items.append(
+            {
+                "id": match.group(1),
+                "title": match.group(2).strip(),
+                "status": status,
+                "source_ids": source_ids,
+                "active_research": status in ACTIVE_SOURCE_BACKLOG_STATUSES,
+                "needed_for": needed_for,
+                "current_state": current_state,
+                "promotion_condition": promotion_condition,
+            }
+        )
+    return items
+
+
 def coverage_by_id(coverage: dict[str, Any]) -> dict[str, dict[str, Any]]:
     domains = coverage.get("domains", [])
     if not isinstance(domains, list):
@@ -425,6 +481,7 @@ def main() -> int:
     knowledge_map = load_json(KNOWLEDGE_MAP)
     source_register = load_json(SOURCE_REGISTER)
     coverage = load_json(COVERAGE_MATRIX)
+    all_backlog_items = research_backlog_items()
     modules_map = knowledge_map.get("modules", {})
     if not isinstance(modules_map, dict):
         raise SystemExit("knowledge_map.modules must be an object")
@@ -486,6 +543,28 @@ def main() -> int:
                 "limits": entry.get("limits"),
             }
         )
+    selected_source_id_set = set(selected_source_ids)
+    selected_backlog_items = [
+        item for item in all_backlog_items if selected_source_id_set.intersection(set(item.get("source_ids", [])))
+    ]
+    active_source_backlog_ids = sorted(
+        {
+            source_id
+            for item in selected_backlog_items
+            if item.get("active_research") is True
+            for source_id in item.get("source_ids", [])
+            if source_id in selected_source_id_set
+        }
+    )
+    tracked_source_backlog_ids = sorted(
+        {
+            source_id
+            for item in selected_backlog_items
+            if item.get("active_research") is not True
+            for source_id in item.get("source_ids", [])
+            if source_id in selected_source_id_set
+        }
+    )
 
     output_path, manifest = resolve_output(args)
     result = {
@@ -496,6 +575,9 @@ def main() -> int:
         "knowledge_files": files,
         "source_ids": selected_source_ids,
         "source_entries": source_entries,
+        "source_backlog_items": selected_backlog_items,
+        "active_source_backlog_ids": active_source_backlog_ids,
+        "tracked_source_backlog_ids": tracked_source_backlog_ids,
         "goal_completion_blockers": selected_blockers,
         "retrospective_requirements": selected_retro_requirements,
         "retrospective_collection_plan": retro_collection_plan,
@@ -505,6 +587,8 @@ def main() -> int:
             "Reader-rich is the default paid delivery; concise reports are add-ons and must not replace rich unless the user explicitly requests short-only delivery.",
             "Missing Ziwei, Western, MBTI or divination inputs should narrow the evidence scope of the rich report, not skip it; write a single-system or available-systems rich report with clear limits.",
             "Use source_entries as provenance boundaries, not as client-facing quotations.",
+            "Active source_backlog_items are research gaps: do not use them as report evidence or strong conclusions.",
+            "Tracked source_backlog_items may describe boundaries, but cannot upgrade a weak signal into a verified rule.",
             "Do not use random web pages directly in a client report.",
             "New online classics must enter source-register, online-classics and promoted rule cards before report use.",
             "Case feedback must enter via external retrospectives candidate and human approval.",

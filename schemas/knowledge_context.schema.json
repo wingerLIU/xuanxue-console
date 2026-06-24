@@ -9,6 +9,9 @@
     "knowledge_files",
     "source_ids",
     "source_entries",
+    "source_backlog_items",
+    "active_source_backlog_ids",
+    "tracked_source_backlog_ids",
     "goal_completion_blockers",
     "retrospective_requirements",
     "retrospective_collection_plan",
@@ -67,6 +70,34 @@
         ]
       },
       "minItems": 1
+    },
+    "source_backlog_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "status",
+          "source_ids",
+          "active_research",
+          "needed_for",
+          "current_state",
+          "promotion_condition"
+        ]
+      }
+    },
+    "active_source_backlog_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tracked_source_backlog_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "goal_completion_blockers": {
       "type": "array"

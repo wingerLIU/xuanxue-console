@@ -187,6 +187,11 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("knowledge/bazi/foundations.md", paths)
             self.assertIn("knowledge/ziwei/foundations.md", paths)
             self.assertIn("SRC-BAZI-PROJECT-SYNTHESIS", context["source_ids"])
+            self.assertIn("SRC-ZIWEI-DOUSHU-QUANJI", context["active_source_backlog_ids"])
+            backlog_items = {item["id"]: item for item in context["source_backlog_items"]}
+            self.assertIn("RB-002", backlog_items)
+            self.assertIn("SRC-ZIWEI-DOUSHU-QUANJI", backlog_items["RB-002"]["source_ids"])
+            self.assertTrue(backlog_items["RB-002"]["active_research"])
             retrospective_requirements = {item["id"]: item for item in context["retrospective_requirements"]}
             self.assertIn("REQ-RETRO-BAZI", retrospective_requirements)
             self.assertIn("REQ-RETRO-ZIWEI", retrospective_requirements)
@@ -225,6 +230,7 @@ class RuntimeWorkflowTests(unittest.TestCase):
             usage_rules = "\n".join(context["usage_rules"])
             self.assertIn("Reader-rich is the default paid delivery", usage_rules)
             self.assertIn("Missing Ziwei, Western, MBTI or divination inputs", usage_rules)
+            self.assertIn("Active source_backlog_items are research gaps", usage_rules)
             self.assertTrue(context["goal_completion_blockers"])
 
     def test_relationship_knowledge_context_has_specific_retrospective_targets(self) -> None:
@@ -353,6 +359,10 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("knowledge/fengshui/README.md", knowledge_paths)
             self.assertIn("service/client-intake-form.md", knowledge_paths)
             self.assertIn("templates/concise-report-template.md", knowledge_paths)
+            self.assertIn("SRC-FENGSHUI-ZHAIJING", context["source_ids"])
+            fengshui_sources = {item["id"]: item for item in context["source_entries"]}
+            self.assertEqual(fengshui_sources["SRC-FENGSHUI-ZHAIJING"]["status"], "candidate")
+            self.assertIn("罗盘坐向", fengshui_sources["SRC-FENGSHUI-ZHAIJING"]["limits"])
             retrospective_requirements = {item["id"]: item for item in context["retrospective_requirements"]}
             self.assertIn("REQ-RETRO-TEAM-CAREER", retrospective_requirements)
             self.assertIn("REQ-RETRO-FENGSHUI", retrospective_requirements)
