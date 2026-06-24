@@ -62,6 +62,19 @@ def candidate_base(*, retro_id: str, domains: list[str], target_artifacts: list[
 
 
 class RetrospectivePromotionTests(unittest.TestCase):
+    def test_retrospective_protocol_documents_domain_evidence_thresholds(self) -> None:
+        protocol = (PROJECT_ROOT / "knowledge" / "case-retrospectives" / "promotion-protocol.md").read_text(
+            encoding="utf-8"
+        )
+        template = (PROJECT_ROOT / "knowledge" / "case-retrospectives" / "template.md").read_text(encoding="utf-8")
+        for domain in ["bazi", "ziwei", "western", "liuyao", "relationship", "team_career", "fengshui", "writing"]:
+            self.assertIn(f"`{domain}`", protocol)
+            self.assertIn(f"`{domain}`", template)
+        self.assertIn("证据只够写作反馈时，就只选 `writing` 或 `quality`", protocol)
+        self.assertIn("不要为了填补 coverage 把证据不足的命理域写进去", template)
+        self.assertIn("起卦时间/方式、判断窗口和后续真实结果", protocol)
+        self.assertIn("执行动作、观察周期、实际变化", protocol)
+
     def test_promote_retrospective_defaults_to_curated(self) -> None:
         candidate = candidate_base(
             retro_id="CR-20990101-unit-retro-promote",
