@@ -139,6 +139,8 @@ python -X utf8 scripts\build_knowledge_context.py --manifest <TEAM_RUN_DIR>\case
 
 读取 `knowledge/fengshui/README.md` 后再写建议。没有现场勘测、罗盘坐向、户型图和长期执行反馈时，只能写低风险、可撤回、可观察的空间建议；不能写“必发财”“必破财”“某方一定有灾”这类传统风水强断。城市选择仍然先看客户、成本、行业、家庭生活和现金流，命理象意只作辅助。
 
+风水方位交付必须留下可复盘口径：本次证据等级、建议类型、低成本试法、观察周期和可观察指标。读者后续反馈时，先用 `create_followup_context.py` 生成追问上下文，再把反馈写入 `<RUN_DIR>\calibration\dialogue\*.md`。只有反馈已经去隐私、能说明执行变化和降级边界，并经过人工确认，才用 `create_case_retrospective_candidate.py --domain fengshui --target-artifact knowledge/fengshui/README.md` 生成候选复盘；不要把单次“感觉有效”晋升成通用风水规则。
+
 ## 4. 长文写作
 
 先生成脚本草稿作为证据：

@@ -18,6 +18,9 @@
 ### Changed
 
 - README 增加项目动机：把玄学视为古代世界模型，把大模型视为现代世界模型，主线是可复查、可反馈的解释实验。
+- 风水方位知识卡补齐反馈记录最小字段和候选复盘命令，要求记录执行变化、现实驱动、证据等级和降级边界，避免把单次感觉写成通用规则。
+- 客户资料表增加方位反馈复盘字段，便于后续收集睡眠、专注、客户响应、沟通摩擦等可观察指标。
+- 生产 SOP 补充风水方位交付后的复盘路径：先走 run-local follow-up/dialogue，再生成 `fengshui` 候选复盘，人工确认后才可晋升。
 - README 增加 MingLi-Bench / Tianfu Agent 相关工作说明，并补充判断强度分级。
 - 新增 `docs/evaluation-roadmap.md`，记录后续评测路线：事实计算、报告一致性、追问 grounding 和真实反馈复盘。
 - coverage matrix 根据已有 curated 去隐私复盘，关闭 writing、relationship 和全局复盘层的旧 blocker；八字、紫微、西占、六爻、团队事业合盘和风水方位仍保留真实反馈缺口。

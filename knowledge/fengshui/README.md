@@ -149,3 +149,35 @@ classical_source_id: `SRC-FENGSHUI-ZHAIJING`
 - 适用限制是什么：行业、预算、房型、通勤、家庭成员、健康状态或季节。
 - 是否有户型图、罗盘坐向或现场反馈；如果没有，报告是否明确降级。
 - 建议执行成本是否合理；有没有因为建议太麻烦、太贵或不可撤回导致无法验证。
+
+## 反馈记录最小字段
+
+风水方位类反馈必须先留在 run-local，不直接晋升知识库。记录时至少保留这些去隐私字段：
+
+- `original_goal`: 想改善的现实目标，例如睡眠、专注、客户响应、团队沟通、城市试点。
+- `evidence_level`: 使用本卡的 `level_1_lifestyle`、`level_2_direction_preference` 或 `level_3_site_informed`，不要事后抬高证据等级。
+- `suggestion_type`: 城市 / 办公位 / 居住空间 / 出行方向 / 开运辅助。
+- `suggestion_summary`: 去掉姓名、城市、地址和具体项目后的建议摘要。
+- `actual_change`: 2-4 周后可描述的变化；没有变化也要记录。
+- `likely_driver`: 更像来自现实环境调整、生活习惯、商业资源、执行动作，还是方位象意。
+- `misread_or_limit`: 哪一句太玄、太泛、太贵、不可执行，或因为缺户型/坐向必须降级。
+- `next_rule_candidate`: 这条反馈是否能改进 `knowledge/fengshui/README.md`、资料收集表或报告模板。
+
+不要把单次反馈写成“某方位必然有效”。至少要有两类信息同时成立，才考虑晋升为知识库候选：一是建议和实际变化之间有可观察链条，二是已经说明现实驱动和方位象意的边界。
+
+## 候选复盘命令
+
+当读者给出执行反馈，先在 `<RUN_DIR>/calibration/dialogue/` 记录原始追问和回答口径，再生成候选复盘：
+
+```powershell
+python -X utf8 scripts\create_case_retrospective_candidate.py --manifest <RUN_DIR>\case_manifest.json --slug fengshui-direction-feedback --title "去隐私风水方位执行反馈复盘" --domain fengshui --evidence-summary "只写去隐私后的目标、建议、执行变化和降级边界" --target-artifact knowledge/fengshui/README.md
+```
+
+人工确认后才可晋升：
+
+```powershell
+python -X utf8 scripts\promote_case_retrospective.py --candidate <RUN_DIR>\retrospectives\CR-YYYYMMDD-fengshui-direction-feedback.candidate.json --approved-by <APPROVER> --dry-run
+python -X utf8 scripts\promote_case_retrospective.py --candidate <RUN_DIR>\retrospectives\CR-YYYYMMDD-fengshui-direction-feedback.candidate.json --approved-by <APPROVER>
+python -X utf8 scripts\audit_case_retrospectives.py
+python -X utf8 scripts\audit_knowledge_coverage.py
+```
