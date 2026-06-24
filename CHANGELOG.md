@@ -21,6 +21,7 @@
 - run-local 候选复盘新增 `domain_evidence` 审批门槛；缺少证据锚点、可观察反馈和推广边界的候选会进入待补证据队列，不再算作 ready。
 - `build_knowledge_context.py` 生成的候选复盘命令同步带上 `--domain-evidence` 占位，避免新 run 的 intake 文档继续教旧流程。
 - `create_retrospective_intake.py` 会在 blocked 候选下列出每个 domain 待补的 `domain_evidence` 字段，方便人工补证据但不自动生成证据。
+- blocked 候选的 `domain_evidence_required` 现在带上对应领域的追问问题，让人工补证据能直接回到真实反馈，而不是只看到字段名。
 - 风水方位知识卡补齐反馈记录最小字段和候选复盘命令，要求记录执行变化、现实驱动、证据等级和降级边界，避免把单次感觉写成通用规则。
 - 客户资料表增加方位反馈复盘字段，便于后续收集睡眠、专注、客户响应、沟通摩擦等可观察指标。
 - 生产 SOP 补充风水方位交付后的复盘路径：先走 run-local follow-up/dialogue，再生成 `fengshui` 候选复盘，人工确认后才可晋升。

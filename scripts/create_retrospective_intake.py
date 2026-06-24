@@ -323,7 +323,10 @@ def domain_evidence_blockers(data: dict[str, Any]) -> list[str]:
     return blockers
 
 
-def domain_evidence_required_items(data: dict[str, Any]) -> list[dict[str, Any]]:
+def domain_evidence_required_items(
+    data: dict[str, Any],
+    requirements: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
     domains = {str(item) for item in as_list(data.get("domains"))}
     required_domains = sorted(domains & DOMAIN_EVIDENCE_REQUIRED)
     evidence = data.get("domain_evidence")
@@ -339,7 +342,13 @@ def domain_evidence_required_items(data: dict[str, Any]) -> list[dict[str, Any]]
         else:
             missing_fields = list(DOMAIN_EVIDENCE_REQUIRED_FIELDS)
         if missing_fields:
-            items.append({"domain": domain, "missing_fields": missing_fields})
+            items.append(
+                {
+                    "domain": domain,
+                    "missing_fields": missing_fields,
+                    "evidence_questions": current_evidence_questions(domain, requirements),
+                }
+            )
     return items
 
 
@@ -352,6 +361,7 @@ def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     if not retro_dir.exists() or is_relative_to(retro_dir.resolve(), PROJECT_ROOT):
         return []
     candidates: list[dict[str, Any]] = []
+    requirements = requirements_by_domain()
     for path in sorted(retro_dir.glob("*.candidate.json")):
         try:
             data = load_json(path)
@@ -383,7 +393,7 @@ def run_local_candidates(manifest: dict[str, Any]) -> list[dict[str, Any]]:
                 "warnings": warnings,
                 "approval_ready": not approval_blockers,
                 "approval_blockers": approval_blockers,
-                "domain_evidence_required": domain_evidence_required_items(data) if isinstance(data, dict) else [],
+                "domain_evidence_required": domain_evidence_required_items(data, requirements) if isinstance(data, dict) else [],
                 "promotion_dry_run_command": promotion_dry_run_command_for_candidate(path.name),
                 "promotion_command": promotion_command_for_candidate(path.name),
             }
@@ -778,6 +788,11 @@ def build_markdown(manifest: dict[str, Any], context: dict[str, Any], retro_dir:
                 for entry in required_evidence:
                     fields = " / ".join(f"`{field}`" for field in as_list(entry.get("missing_fields")))
                     lines.append(f"    - `{entry.get('domain', '')}`: {fields}")
+                    questions = [str(question) for question in as_list(entry.get("evidence_questions")) if str(question).strip()]
+                    if questions:
+                        lines.append("      - 补证据时优先回答：")
+                        for question in questions[:3]:
+                            lines.append(f"        - {question}")
             for warning in as_list(item.get("warnings")):
                 lines.append(f"  - warning: {warning}")
             lines.extend(

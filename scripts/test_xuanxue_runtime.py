@@ -1189,6 +1189,8 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertIn("target_artifacts imply missing domains: relationship", markdown)
             self.assertIn("domain_evidence 待补", markdown)
             self.assertIn("`writing`: `evidence_anchor` / `observed_feedback` / `promotion_limit`", markdown)
+            self.assertIn("补证据时优先回答", markdown)
+            self.assertIn("哪段让读者愿意继续读，哪段像模板话", markdown)
             self.assertIn("promote_case_retrospective.py", markdown)
             self.assertIn("人工确认前预览命令", markdown)
             self.assertIn("--dry-run", markdown)
@@ -1206,14 +1208,15 @@ class RuntimeWorkflowTests(unittest.TestCase):
             self.assertFalse(local_candidate["human_approved"])
             self.assertFalse(local_candidate["approval_ready"])
             self.assertTrue(local_candidate["approval_blockers"])
+            domain_evidence_required = local_candidate["domain_evidence_required"]
+            self.assertEqual(len(domain_evidence_required), 1)
+            self.assertEqual(domain_evidence_required[0]["domain"], "writing")
             self.assertEqual(
-                local_candidate["domain_evidence_required"],
-                [
-                    {
-                        "domain": "writing",
-                        "missing_fields": ["evidence_anchor", "observed_feedback", "promotion_limit"],
-                    }
-                ],
+                domain_evidence_required[0]["missing_fields"],
+                ["evidence_anchor", "observed_feedback", "promotion_limit"],
+            )
+            self.assertTrue(
+                any("哪段让读者愿意继续读" in question for question in domain_evidence_required[0]["evidence_questions"])
             )
             self.assertIn("target_artifacts", local_candidate)
             self.assertTrue(any("missing domains: relationship" in item for item in local_candidate["warnings"]))
