@@ -165,6 +165,24 @@ READER_RICH_FIRST_SECTION_FORBIDDEN = [
 ]
 
 READER_RICH_MIN_SECOND_PERSON_COUNT = 20
+READER_RICH_MIN_OPENING_FACT_ANCHORS = 4
+
+READER_RICH_GENERIC_OPENING_PATTERNS = [
+    r"需要被理解",
+    r"不适合被消耗",
+    r"边界感",
+    r"安全感",
+    r"慢热",
+    r"敏感",
+    r"不太会表达",
+    r"不会表达",
+    r"嘴硬心软",
+    r"外冷内热",
+    r"内心很柔软",
+    r"稳定地爱",
+    r"情绪价值",
+    r"被稳定地爱",
+]
 
 
 def parse_args() -> argparse.Namespace:
@@ -266,6 +284,14 @@ def h2_section_map(text: str) -> dict[str, str]:
     return {key: "\n".join(value) for key, value in sections.items()}
 
 
+def reader_rich_opening_body(text: str) -> str:
+    sections = h2_section_map(text)
+    return "\n".join(
+        sections.get(title, "")
+        for title in ["01 判断型摘要", "02 先看结论"]
+    )
+
+
 def concise_missing_marker_groups(text: str) -> list[str]:
     missing = []
     for label, markers in READER_CONCISE_ANY_MARKER_GROUPS.items():
@@ -293,7 +319,10 @@ def main() -> int:
     required += args.must_contain
     if args.facts_json:
         report = json.loads(Path(args.facts_json).read_text(encoding="utf-8"))
-        required += facts_markers(report)
+        fact_marker_items = facts_markers(report)
+        required += fact_marker_items
+    else:
+        fact_marker_items = []
     missing = [item for item in required if item not in text]
     forbidden_found = [item for item in forbidden if item in text]
     format_failures: list[str] = []
@@ -336,6 +365,29 @@ def main() -> int:
                 f"found {second_person_count} occurrences of 你, "
                 f"minimum {READER_RICH_MIN_SECOND_PERSON_COUNT}"
             )
+        if fact_marker_items:
+            opening_body = reader_rich_opening_body(text)
+            opening_fact_anchors = sorted({marker for marker in fact_marker_items if marker in opening_body})
+            required_opening_anchors = min(READER_RICH_MIN_OPENING_FACT_ANCHORS, len(set(fact_marker_items)))
+            if len(opening_fact_anchors) < required_opening_anchors:
+                format_failures.append(
+                    "reader-rich opening needs case-specific fact anchors in sections 01/02: "
+                    f"found {len(opening_fact_anchors)} {opening_fact_anchors}, "
+                    f"minimum {required_opening_anchors}. Rewrite the opening around this case's pillars, "
+                    "current luck cycle, Ziwei markers, Western placements, or time-sensitive facts."
+                )
+            generic_opening_hits = sorted(
+                {
+                    pattern
+                    for pattern in READER_RICH_GENERIC_OPENING_PATTERNS
+                    if re.search(pattern, opening_body)
+                }
+            )
+            if generic_opening_hits and len(opening_fact_anchors) < len(generic_opening_hits) + 2:
+                format_failures.append(
+                    "reader-rich opening leans on generic reader-facing phrases without enough case anchors: "
+                    f"{generic_opening_hits}. Keep them only when the same opening also names the concrete evidence."
+                )
     if args.profile == "reader-concise":
         h2_count = len(h2_headings(text))
         if h2_count < READER_CONCISE_MIN_H2_COUNT:

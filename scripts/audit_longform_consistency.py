@@ -57,6 +57,22 @@ LEXICAL_OVERUSE_LIMITS = {
     "表达": 42,
 }
 
+GENERIC_OPENING_PATTERNS = [
+    r"需要被理解",
+    r"不适合被消耗",
+    r"边界感",
+    r"安全感",
+    r"慢热",
+    r"敏感",
+    r"不太会表达",
+    r"不会表达",
+    r"嘴硬心软",
+    r"外冷内热",
+    r"内心很柔软",
+    r"稳定地爱",
+    r"被稳定地爱",
+]
+
 COMMERCIAL_TEMPLATE_LIMITS = {
     "修改次数": 2,
     "报价表": 2,
@@ -233,6 +249,14 @@ def h3_section_map(text: str) -> dict[str, str]:
     return {key: "\n".join(value) for key, value in sections.items()}
 
 
+def opening_body(text: str) -> str:
+    sections = section_map(text)
+    return "\n".join(
+        sections.get(title, "")
+        for title in ["01 判断型摘要", "02 先看结论"]
+    )
+
+
 def expected_facts(report: dict[str, Any]) -> dict[str, Any]:
     facts: dict[str, Any] = {
         "natal_pillars": [],
@@ -267,6 +291,18 @@ def expected_facts(report: dict[str, Any]) -> dict[str, Any]:
             if row.get("body") and row.get("sign"):
                 facts["western_placements"].append(f"{row['body']}{row['sign']}")
     return facts
+
+
+def fact_anchor_markers(facts: dict[str, Any]) -> list[str]:
+    markers: list[str] = []
+    for key in ["natal_pillars", "flow_pillars", "western_placements", "ziwei_markers"]:
+        values = facts.get(key, [])
+        if isinstance(values, list):
+            markers.extend(str(item) for item in values if item)
+    current_dayun = facts.get("current_dayun")
+    if current_dayun:
+        markers.append(str(current_dayun))
+    return sorted(set(markers))
 
 
 def fact_failures(text: str, facts: dict[str, Any]) -> list[str]:
@@ -327,6 +363,35 @@ def section_warnings(text: str) -> list[str]:
     for marker in ["时间可信度", "稳定", "敏感"]:
         if marker not in time_boundary:
             warnings.append(f"time-sensitivity sections missing marker: {marker}")
+    return warnings
+
+
+def opening_specificity_warnings(text: str, facts: dict[str, Any]) -> list[str]:
+    body = opening_body(text)
+    if not body:
+        return []
+    warnings: list[str] = []
+    markers = fact_anchor_markers(facts)
+    anchor_hits = sorted(marker for marker in markers if marker in body)
+    generic_hits = sorted(
+        {
+            pattern
+            for pattern in GENERIC_OPENING_PATTERNS
+            if re.search(pattern, body)
+        }
+    )
+    if markers and len(anchor_hits) < min(4, len(markers)):
+        warnings.append(
+            "opening sections lack case-specific anchors: "
+            f"found {len(anchor_hits)} {anchor_hits}; "
+            "sections 01/02 should name this case's pillars, luck cycle, Ziwei markers, Western placements, "
+            "or time-sensitive facts before broad personality language"
+        )
+    if generic_hits and len(anchor_hits) < len(generic_hits) + 2:
+        warnings.append(
+            "opening sections may feel like reusable copy: generic phrases "
+            f"{generic_hits} are not backed by enough case-specific anchors {anchor_hits}"
+        )
     return warnings
 
 
@@ -536,6 +601,7 @@ def main() -> int:
     )
     warnings = (
         section_warnings(text)
+        + opening_specificity_warnings(text, facts)
         + contradiction_warnings(text)
         + lexical_overuse_warnings(text)
         + similarity_items_warnings
