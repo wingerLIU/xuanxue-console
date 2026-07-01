@@ -95,6 +95,7 @@
 | --- | --- | --- | --- | --- |
 | `SRC-PROJECT-INTERPRETATION-GUIDE` | `references/interpretation-guide.md` | curated | 报告结构、证据链、语气、高风险边界 | 项目方法，不是命理经典 |
 | `SRC-PROJECT-LONGFORM-TEMPLATE` | `templates/longform-analysis-template.md`; `templates/concise-report-template.md`; `scripts/validate_longform_report.py` | curated | reader-rich 付费报告结构、简洁版结构和机器校验 | 控制交付形态，不产生命理事实 |
+| `SRC-PROJECT-FLOW-TIMING-TEMPLATE` | `templates/flow-timing-report-template.md`; `scripts/build_flow_timing_report.py`; `scripts/validate_flow_timing_report.py`; `knowledge/bazi/structure-and-flow.md` | curated | 流月流日行动节奏报告、每日动作表和个案指纹校验 | 只把结构化流年流月流日事实转成行动节奏，不承诺无条件结果 |
 | `SRC-PROJECT-QUALITY-GATE` | `service/quality-gate.md`; `scripts/build_fact_archive.py`; `scripts/finalize_case.py`; `scripts/validate_longform_report.py`; `scripts/audit_longform_consistency.py` | curated | 交付前检查、事实复查档案、runtime knowledge context、串案风险、高风险边界 | 质量控制，不产生命理事实 |
 | `SRC-PROJECT-WRITING-SYNTHESIS` | `knowledge/writing/reader-rich-report.md`; `templates/concise-report-template.md`; `scripts/validate_longform_report.py` | curated | 付费报告的读者口吻、摘要、场景、简洁版和可读性 | 写作规则必须服务证据，不替代证据 |
 | `SRC-PROJECT-TEAM-CAREER-SYNTHESIS` | `knowledge/team-career/README.md`; `service/multi-person-career-synastry-sop.md`; `templates/team-career-synastry-template.md` | curated | 多人事业合盘的团队级 run、商业结构、城市判断、流年流月和复盘采集边界 | 团队判断必须先落到单盘 facts、两两 relationship facts 和现实商业资料，不产生命理事实 |

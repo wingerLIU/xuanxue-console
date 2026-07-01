@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1.0",
   "purpose": "Machine-auditable coverage state for the xuanxue-console knowledge base.",
-  "last_updated": "2026-06-12",
+  "last_updated": "2026-07-02",
   "goal_complete": false,
   "completion_rule": {
     "goal_complete_requires_no_blockers": true,
@@ -72,7 +72,8 @@
         "SRC-BAZI-SANMING-TONGHUI",
         "SRC-BAZI-YUANHAI-ZIPING",
         "SRC-BAZI-SHENFENG-TONGKAO",
-        "SRC-BAZI-PROJECT-SYNTHESIS"
+        "SRC-BAZI-PROJECT-SYNTHESIS",
+        "SRC-PROJECT-FLOW-TIMING-TEMPLATE"
       ],
       "claim_levels": [
         "calculated_fact",
@@ -246,14 +247,18 @@
         "knowledge/writing/reader-rich-report.md",
         "templates/longform-analysis-template.md",
         "templates/concise-report-template.md",
+        "templates/flow-timing-report-template.md",
         "references/interpretation-guide.md",
         "scripts/finalize_case.py",
         "scripts/validate_longform_report.py",
-        "scripts/audit_longform_consistency.py"
+        "scripts/audit_longform_consistency.py",
+        "scripts/build_flow_timing_report.py",
+        "scripts/validate_flow_timing_report.py"
       ],
       "source_ids": [
         "SRC-PROJECT-INTERPRETATION-GUIDE",
         "SRC-PROJECT-LONGFORM-TEMPLATE",
+        "SRC-PROJECT-FLOW-TIMING-TEMPLATE",
         "SRC-PROJECT-QUALITY-GATE",
         "SRC-PROJECT-WRITING-SYNTHESIS"
       ],

@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "last_updated": "2026-06-12",
+  "last_updated": "2026-07-02",
   "purpose": "Machine-readable source registry for every SRC-* entry used by xuanxue-console.",
   "entries": [
     {
@@ -434,6 +434,19 @@
       "used_for": "reader-rich 付费报告结构和简洁版结构。",
       "limits": "控制交付形态，不产生命理事实。",
       "promotion_targets": ["templates/longform-analysis-template.md", "templates/concise-report-template.md", "scripts/validate_longform_report.py"]
+    },
+    {
+      "id": "SRC-PROJECT-FLOW-TIMING-TEMPLATE",
+      "title": "flow timing report template",
+      "type": "project_rule",
+      "status": "curated",
+      "evidence_mode": "project_artifact",
+      "domains": ["bazi", "writing"],
+      "urls": [],
+      "local_paths": ["templates/flow-timing-report-template.md", "scripts/build_flow_timing_report.py", "scripts/validate_flow_timing_report.py", "knowledge/bazi/structure-and-flow.md"],
+      "used_for": "流月流日行动节奏报告、每日动作表和个案指纹校验。",
+      "limits": "只把结构化流年流月流日事实转成行动节奏，不承诺无条件结果。",
+      "promotion_targets": ["templates/flow-timing-report-template.md", "scripts/build_flow_timing_report.py", "scripts/validate_flow_timing_report.py", "knowledge/bazi/structure-and-flow.md"]
     },
     {
       "id": "SRC-PROJECT-QUALITY-GATE",

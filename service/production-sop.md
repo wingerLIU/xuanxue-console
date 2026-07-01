@@ -114,7 +114,43 @@ python -X utf8 scripts\audit_birth_time_sensitivity.py --solar <yyyy-mm-dd> --ti
 
 如果敏感性检查显示八字四柱、紫微命身或西占上升/天顶变化，正文第 03/04 章必须写清楚：稳定项正常解释，敏感项只写倾向和校准问题。
 
-## 3.4 多人事业合盘
+## 3.4 流年、流月和流日时间建议
+
+单盘或合盘里可以做时间相关建议，但必须分层：
+
+- 大运：十年主题和长期能力建设。
+- 流年：年度主题、准备方向、适合扩张还是收口。
+- 流月：未来 3-18 个月的行动节奏，例如谈资源、定框架、发布、复盘、修正或观望。
+- 流日：仅用于已经有明确事项后的短窗口，例如签约、会谈、发布、搬迁、面试；不能替代现实准备。
+
+交付格式固定为：
+
+```text
+时间层级：
+盘面触发：
+适合动作：
+前置条件：
+避坑提醒：
+复盘指标：
+```
+
+如果用户只问“什么时候发财/脱单/翻身”，先改问具体事项和现实进度；如果事项短、窗口近、需要判断成败或对方反馈，优先补六爻/小六壬资料，不从本命盘旧正文硬推。时间建议不承诺结果，只给节奏、准备和风险管理。
+
+### flow_timing_report
+
+当用户需要未来 30 天、60 天、两个月或指定起止日期的流月流日行动表，使用固定能力 `flow_timing_report`。它不是丰富版里的一个段落，而是单独交付的行动节奏 HTML。
+
+推荐命令：
+
+```powershell
+python -X utf8 scripts\build_flow_timing_report.py --facts-json <RUN_DIR>\data\<case>-combo.json --start <yyyy-mm-dd> --days 45 --reader-name <昵称> --case-keyword <关键词1> --case-keyword <关键词2> --case-keyword <关键词3> --case-keyword <关键词4> --case-keyword <关键词5> --output-md <RUN_DIR>\drafts\<case>-flow-timing.md --output-html <RUN_DIR>\delivery\<昵称>-流月流日行动节奏.html --json-output <RUN_DIR>\data\<case>-flow-timing.json
+python -X utf8 scripts\validate_flow_timing_report.py <RUN_DIR>\drafts\<case>-flow-timing.md --case-keyword <关键词1> --case-keyword <关键词2> --case-keyword <关键词3> --case-keyword <关键词4> --case-keyword <关键词5> --min-days 30
+python -X utf8 scripts\validate_flow_timing_report.py <RUN_DIR>\delivery\<昵称>-流月流日行动节奏.html --case-keyword <关键词1> --case-keyword <关键词2> --case-keyword <关键词3> --case-keyword <关键词4> --case-keyword <关键词5> --min-days 30
+```
+
+报告必须先列本 case 指纹，再写每日动作。对 liujiang 这类项目经营场景，关键词应落到 OPC、Liujiang OS、Agent 项目包、团队训练、报价、合作、回款、ROI、对上汇报、不替别人兜底和小闭环试运行；其他人必须换成自己的真实场景。生成后如果每日表只剩“注意沟通、适合推进、谨慎合作”，直接判失败。
+
+## 3.5 多人事业合盘
 
 三人及以上的事业合作、合伙创业或组织关键人协同分析，使用 `service/multi-person-career-synastry-sop.md`，不要把双人 relationship 稿直接扩写成多人结论。
 
@@ -128,7 +164,7 @@ python -X utf8 scripts\audit_birth_time_sensitivity.py --solar <yyyy-mm-dd> --ti
 - 读者正文不得出现“你确认自己……”“这一点与盘面吻合”“前稿判断相符”等主观确认句。
 - 新增成员时只补新增成员的单盘 facts 和其与既有成员的 pair relationship facts，再更新团队矩阵和交付版本。
 
-## 3.5 方位、空间和开运辅助
+## 3.6 方位、空间和开运辅助
 
 只有当用户明确关心城市、方位、办公位置、居住环境或开运辅助时，才在 knowledge context 里加入 `fengshui`：
 
